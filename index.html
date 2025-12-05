@@ -5239,8 +5239,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     </script>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
 <script>
 // تهيئة Firebase
 let database = null;
@@ -5486,6 +5484,86 @@ setInterval(() => {
   }
 }, 30000);
 </script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
+<script>
+// إعدادات Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCDJuqoWLowt4gnzdReCtcCLCywNqSoj_Q",
+  authDomain: "dashboard-a7c4c.firebaseapp.com",
+  databaseURL: "https://dashboard-a7c4c-default-rtdb.firebaseio.com",
+  projectId: "dashboard-a7c4c",
+  storageBucket: "dashboard-a7c4c.firebasestorage.app",
+  messagingSenderId: "902429954750",
+  appId: "1:902429954750:web:77cc0c2ca78150e45a04ef",
+  measurementId: "G-PFT1CE957T"
+};
+
+let database = null;
+
+if (typeof firebase !== 'undefined') {
+  try {
+    firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
+    console.log('✓ Firebase initialized successfully');
+  } catch (error) {
+    console.error('Firebase initialization error:', error);
+  }
+} else {
+  console.error('Firebase SDK not loaded');
+}
+
+function saveDataToFirebase(key, data) {
+  if (!database) {
+    console.warn('Firebase not initialized');
+    return;
+  }
+  
+  try {
+    console.log('Saving to Firebase:', key);
+    database.ref(key).set(data)
+      .then(() => {
+        console.log('✓ Data saved to Firebase!', data);
+      })
+      .catch(error => {
+        console.error('❌ Save error:', error);
+      });
+  } catch (error) {
+    console.error('❌ Error:', error);
+  }
+}
+
+function loadDataFromFirebase(key, callback) {
+  if (!database) {
+    console.warn('Firebase not initialized');
+    callback(null);
+    return;
+  }
+  
+  try {
+    console.log('Loading from Firebase:', key);
+    database.ref(key).once('value')
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          console.log('✓ Data loaded from Firebase:', snapshot.val());
+          callback(snapshot.val());
+        } else {
+          console.log('No data in Firebase for:', key);
+          callback(null);
+        }
+      })
+      .catch(error => {
+        console.error('❌ Load error:', error);
+        callback(null);
+      });
+  } catch (error) {
+    console.error('❌ Error:', error);
+    callback(null);
+  }
+}
+</script>
+
 </body>
 </html>
 
