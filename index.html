@@ -2083,7 +2083,6 @@
         // نظام المستخدمين المتقدم
         const USERS_DATABASE = {
             'user123': { password: 'user123', role: 'viewer', name: 'مستخدم عادي' },
-            'limited456': { password: 'limited456', role: 'limited', name: 'مستخدم محدود' },
             'admin123': { password: 'admin123', role: 'admin', name: 'مشرف النظام' }
         };
         
@@ -2096,7 +2095,6 @@
             
             const permissions = {
                 'viewer': ['view'],
-                'limited': ['view', 'add_center', 'edit_capacity', 'edit_service_card', 'edit_referrals'],
                 'admin': ['view', 'add_center', 'edit_capacity', 'edit_service_card', 'edit_referrals', 'delete', 'manage_users', 'edit_password']
             };
             
