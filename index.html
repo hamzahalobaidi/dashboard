@@ -2859,7 +2859,11 @@
                 // حفظ البيانات
                 try {
                     saveDataToStorage();
-                    console.log('✅ تم حفظ البيانات');
+                    console.log('✅ تم حفظ البيانات في localStorage');
+                    
+                    // حفظ في Firebase أيضاً
+                    saveDataToFirebase('emergencyCenters', emergencyCenters);
+                    console.log('✅ تم حفظ البيانات في Firebase');
                 } catch (error) {
                     console.warn('⚠️ خطأ في حفظ البيانات:', error);
                 }
@@ -3387,6 +3391,10 @@
             displayCenters();
             resetAddCenterModal();
             
+            // حفظ في Firebase
+            saveDataToStorage();
+            saveDataToFirebase('emergencyCenters', emergencyCenters);
+            
             // إطلاق حدث تحديث المركز للحفظ التلقائي
             document.dispatchEvent(new CustomEvent('centerUpdated'));
             
@@ -3398,6 +3406,10 @@
                 emergencyCenters = emergencyCenters.filter(c => c.id !== centerId);
                 updateMainStats();
                 displayCenters();
+                
+                // حفظ في Firebase
+                saveDataToStorage();
+                saveDataToFirebase('emergencyCenters', emergencyCenters);
                 
                 // إطلاق حدث تحديث المركز للحفظ التلقائي
                 document.dispatchEvent(new CustomEvent('centerUpdated'));
