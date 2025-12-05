@@ -19,6 +19,9 @@
 
     
     <style>
+
+        /* ==================== Global Styles ==================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
         * { font-family: 'Cairo', sans-serif; }
         
@@ -891,7 +894,6 @@
 
 /* --- Split from emergency_dashboard_clean_final.html --- */
 
-
                         body { font-family: Arial, sans-serif; direction: rtl; }
                         .bg-white-5 {background: #f5f5f5;border: 1px solid #ddd;}
                         .rounded-lg { border-radius: 8px; }
@@ -911,7 +913,6 @@
                     
 
 /* --- Split from emergency_dashboard_clean_final.html --- */
-
 
                         body { font-family: Arial, sans-serif; margin: 20px; }
                         .header { text-align: center; margin-bottom: 30px; }
@@ -1021,7 +1022,6 @@
     }
 }
 
-
     
         /* Utility Classes */
         .flex-center { display: flex; align-items: center; justify-content: center; }
@@ -1033,9 +1033,14 @@
         .py-4-px-2 { padding: 1rem 0.5rem; text-align: center; }
         .svg-icon { width: 1.25rem; height: 1.25rem; }
     
-    </style>
+    
+        </style>
 </head>
 <body class="animated-bg fullscreen-layout relative overflow-x-auto" id="mainBody">
+    <!-- ============================================ -->
+    <!-- المحتوى الرئيسي -->
+    <!-- ============================================ -->
+    
     <!-- حاوي الإشعارات -->
     <div id="notificationContainer" class="notification-container"></div>
     
@@ -1341,7 +1346,6 @@
                         <p class="text-blue-200 text-xs">لا توجد بيانات</p>
                     </div>
                 </div>
-
 
             </div>
 
@@ -2083,6 +2087,19 @@
 
     
     <script>
+        // ============================================
+        // إدارة الأزمات والكوارث - RCC Dashboard
+        // ============================================
+        // التاريخ: 2025
+        // الإصدار: 6.0.0
+        // ============================================
+        
+        // ============================================
+        // 1. المتغيرات العامة والثوابت
+        // ============================================
+        // عدد المتغيرات: 211
+
+
         // دالة مساعدة للحصول على العناصر
         function getElement(id) {
             return document.getElementById(id);
@@ -3045,6 +3062,10 @@
     </style>
                 </head>
                 <body>
+    <!-- ============================================ -->
+    <!-- المحتوى الرئيسي -->
+    <!-- ============================================ -->
+    
                     <h1>ملخص الحالات المنقولة - تجمع جدة الصحي الثاني</h1>
                     ${content}
                     <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #666;">
@@ -3697,7 +3718,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadEmergencyAlertSettings();
 });
 
-
 // ===== دوال التحكم في البطاقات الجانبية للإحالات =====
 
 // متغيرات لحفظ قيم البطاقات الجانبية
@@ -3854,8 +3874,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSideMedicalCasesData();
 });
 
-
-
 // تحديث التاريخ والوقت
 function updateDateTime() {
     const now = new Date();
@@ -3891,9 +3909,6 @@ setInterval(updateDateTime, 1000);
 
 // تحديث فوري عند تحميل الصفحة
 updateDateTime();
-
-
-
 
 // ====== نظام السعة السريرية ======
 
@@ -4219,8 +4234,6 @@ function closeHospitalBedsModal() {
 document.addEventListener('DOMContentLoaded', function() {
     loadHospitalsBedsData();
 });
-
-
 
 // ===== دوال الفريق المتنقل (Mobile Medical Team) =====
 
@@ -4905,7 +4918,13 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCustomFacilities();
 });
 
-    </script>
+    
+        
+        // ============================================
+        // نهاية الملف البرمجي
+        // ============================================
+
+        </script>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
