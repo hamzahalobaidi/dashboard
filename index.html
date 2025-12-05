@@ -557,6 +557,14 @@
 
     <script>
         // Firebase Configuration
+        // Global Variables (Defined first)
+        window.currentUser = null;
+        window.centers = [];
+        window.users = {
+            'user123': { password: 'user123', role: 'viewer' },
+            'admin123': { password: 'admin123', role: 'admin' }
+        };
+
         const firebaseConfig = {
             apiKey: "AIzaSyAHkGHMXlKGvDQmGGMDhZMNdIRlCfJQnqE",
             authDomain: "dashboard-a7c4c.firebaseapp.com",
@@ -569,15 +577,7 @@
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-
-        // Global Variables
-        window.currentUser = null;
-        window.centers = [];
-        window.users = {
-            'user123': { password: 'user123', role: 'viewer' },
-            'admin123': { password: 'admin123', role: 'admin' }
-        };
+        window.database = firebase.database();
 
         // Login Handler
         document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -620,24 +620,24 @@
         // Load Data from Firebase
         async function loadData() {
             try {
-                const snapshot = await database.ref('emergencyCenters').once('value');
+                const snapshot = await window.database.ref('emergencyCenters').once('value');
                 window.centers = snapshot.val() || [];
                 if (!Array.isArray(window.centers)) {
                     window.centers = Object.values(window.centers);
                 }
                 
                 // Load editable cards
-                const serviceCard = await database.ref('serviceCard').once('value');
+                const serviceCard = await window.database.ref('serviceCard').once('value');
                 if (serviceCard.val()) {
                     document.getElementById('serviceCard').value = serviceCard.val();
                 }
                 
-                const lifeRescue = await database.ref('lifeRescue').once('value');
+                const lifeRescue = await window.database.ref('lifeRescue').once('value');
                 if (lifeRescue.val()) {
                     document.getElementById('lifeRescue').value = lifeRescue.val();
                 }
                 
-                const emergencyReferral = await database.ref('emergencyReferral').once('value');
+                const emergencyReferral = await window.database.ref('emergencyReferral').once('value');
                 if (emergencyReferral.val()) {
                     document.getElementById('emergencyReferral').value = emergencyReferral.val();
                 }
@@ -659,7 +659,7 @@
         // Save Data to Firebase
         async function saveToFirebase() {
             try {
-                await database.ref('emergencyCenters').set(window.centers);
+                await window.database.ref('emergencyCenters').set(window.centers);
                 console.log('✅ تم حفظ البيانات في Firebase');
             } catch (error) {
                 console.error('❌ خطأ في الحفظ:', error);
@@ -734,7 +734,7 @@
             if (confirm('⚠️ هل أنت متأكد من حذف جميع البيانات؟')) {
                 window.centers = [];
                 localStorage.removeItem('emergencyCenters');
-                database.ref('emergencyCenters').set(null);
+                window.database.ref('emergencyCenters').set(null);
                 displayCenters();
                 updateStats();
                 showNotification('✅ تم حذف جميع البيانات');
@@ -755,21 +755,21 @@
         function saveServiceCard() {
             const data = document.getElementById('serviceCard').value;
             localStorage.setItem('serviceCard', data);
-            database.ref('serviceCard').set(data);
+            window.database.ref('serviceCard').set(data);
             showNotification('✅ تم حفظ بطاقة الخدمة');
         }
 
         function saveLifeRescue() {
             const data = document.getElementById('lifeRescue').value;
             localStorage.setItem('lifeRescue', data);
-            database.ref('lifeRescue').set(data);
+            window.database.ref('lifeRescue').set(data);
             showNotification('✅ تم حفظ إحالات إنقاذ الحياة');
         }
 
         function saveEmergencyReferral() {
             const data = document.getElementById('emergencyReferral').value;
             localStorage.setItem('emergencyReferral', data);
-            database.ref('emergencyReferral').set(data);
+            window.database.ref('emergencyReferral').set(data);
             showNotification('✅ تم حفظ الإحالات الطارئة');
         }
 
