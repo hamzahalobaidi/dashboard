@@ -1044,9 +1044,11 @@
                 <p class="text-white/70 mb-8">أدخل كلمة المرور للوصول إلى داشبورد الطوارئ</p>
                 
                 <div class="space-y-4">
+                    <input type="text" id="mainProtectionUsername" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="اسم المستخدم" />
+                    
                     <input type="password" id="mainProtectionPassword" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="كلمة المرور" />
                     
-                    <div id="mainProtectionError" class="text-red-400 text-sm hidden">كلمة المرور غير صحيحة</div>
+                    <div id="mainProtectionError" class="text-red-400 text-sm hidden">بيانات الدخول غير صحيحة</div>
                     
                     <button onclick="checkMainPassword()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105">
                         🚀 دخول
@@ -2077,25 +2079,192 @@
         const MAIN_PASSWORD = "emergency2024"; // كلمة المرور الرئيسية
         let isAuthenticated = false;
 
-        // فحص كلمة المرور الرئيسية
+
+        // نظام المستخدمين المتقدم
+        const USERS_DATABASE = {
+            'user123': { password: 'user123', role: 'viewer', name: 'مستخدم عادي' },
+            'limited456': { password: 'limited456', role: 'limited', name: 'مستخدم محدود' },
+            'admin123': { password: 'admin123', role: 'admin', name: 'مشرف النظام' }
+        };
+        
+        let currentUser = null;
+        let currentUserRole = null;
+        
+        // دالة التحقق من صلاحيات المستخدم
+        function hasPermission(action) {
+            if (!currentUserRole) return false;
+            
+            const permissions = {
+                'viewer': ['view'],
+                'limited': ['view', 'add_center', 'edit_capacity', 'edit_service_card', 'edit_referrals'],
+                'admin': ['view', 'add_center', 'edit_capacity', 'edit_service_card', 'edit_referrals', 'delete', 'manage_users', 'edit_password']
+            };
+            
+            return permissions[currentUserRole]?.includes(action) || false;
+        }
+        
+        // دالة إظهار/إخفاء العناصر حسب الصلاحيات
+        function updateUIBasedOnPermissions() {
+            // إخفاء أزرار التعديل للمستخدم العادي
+            const editButtons = document.querySelectorAll('[data-action="edit"]');
+            const deleteButtons = document.querySelectorAll('[data-action="delete"]');
+            const adminPanel = document.getElementById('adminPanel');
+            
+            editButtons.forEach(btn => {
+                btn.style.display = hasPermission('add_center') ? 'inline-block' : 'none';
+            });
+            
+            deleteButtons.forEach(btn => {
+                btn.style.display = hasPermission('delete') ? 'inline-block' : 'none';
+            });
+            
+            if (adminPanel) {
+                adminPanel.style.display = hasPermission('manage_users') ? 'block' : 'none';
+            }
+        }
+        
+        // دالة تسجيل دخول المستخدم
+        function loginUser(username, password) {
+            const user = USERS_DATABASE[username];
+            
+            if (user && user.password === password) {
+                currentUser = username;
+                currentUserRole = user.role;
+                console.log('تم تسجيل الدخول:', username, 'الدور:', currentUserRole);
+                return true;
+            }
+            return false;
+        }
+        
+        // دالة تسجيل الخروج
+        function logoutUser() {
+            currentUser = null;
+            currentUserRole = null;
+            console.log('تم تسجيل الخروج');
+        }
+        
+        // دالة إضافة مستخدم جديد (للمشرف فقط)
+        function addUser(username, password, role) {
+            if (!hasPermission('manage_users')) {
+                showNotification('خطأ', 'ليس لديك صلاحية إضافة مستخدمين', 'error');
+                return false;
+            }
+            
+            if (USERS_DATABASE[username]) {
+                showNotification('خطأ', 'المستخدم موجود بالفعل', 'error');
+                return false;
+            }
+            
+            USERS_DATABASE[username] = {
+                password: password,
+                role: role,
+                name: username
+            };
+            
+            saveUsersToFirebase();
+            showNotification('نجاح', 'تم إضافة المستخدم بنجاح', 'success');
+            return true;
+        }
+        
+        // دالة تعديل كلمة المرور (للمشرف فقط)
+        function changePassword(username, newPassword) {
+            if (!hasPermission('edit_password')) {
+                showNotification('خطأ', 'ليس لديك صلاحية تعديل كلمات المرور', 'error');
+                return false;
+            }
+            
+            if (!USERS_DATABASE[username]) {
+                showNotification('خطأ', 'المستخدم غير موجود', 'error');
+                return false;
+            }
+            
+            USERS_DATABASE[username].password = newPassword;
+            saveUsersToFirebase();
+            showNotification('نجاح', 'تم تعديل كلمة المرور بنجاح', 'success');
+            return true;
+        }
+        
+        // دالة حذف مستخدم (للمشرف فقط)
+        function deleteUser(username) {
+            if (!hasPermission('manage_users')) {
+                showNotification('خطأ', 'ليس لديك صلاحية حذف مستخدمين', 'error');
+                return false;
+            }
+            
+            if (username === currentUser) {
+                showNotification('خطأ', 'لا يمكن حذف حسابك الحالي', 'error');
+                return false;
+            }
+            
+            delete USERS_DATABASE[username];
+            saveUsersToFirebase();
+            showNotification('نجاح', 'تم حذف المستخدم بنجاح', 'success');
+            return true;
+        }
+        
+        // دالة حفظ المستخدمين في Firebase
+        function saveUsersToFirebase() {
+            if (typeof database !== 'undefined') {
+                database.ref('users').set(USERS_DATABASE).catch(error => {
+                    console.error('خطأ في حفظ المستخدمين:', error);
+                });
+            }
+        }
+        
+        // دالة تحميل المستخدمين من Firebase
+        function loadUsersFromFirebase() {
+            if (typeof database !== 'undefined') {
+                database.ref('users').on('value', snapshot => {
+                    if (snapshot.exists()) {
+                        Object.assign(USERS_DATABASE, snapshot.val());
+                        console.log('تم تحميل المستخدمين من Firebase');
+                    }
+                });
+            }
+        }
+
+        // فحص كلمة المرور الرئيسية (نظام المستخدمين)
         function checkMainPassword() {
-            const password = document.getElementById('mainProtectionPassword').value;
+            const usernameInput = document.getElementById('mainProtectionUsername');
+            const passwordInput = document.getElementById('mainProtectionPassword');
             const errorDiv = document.getElementById('mainProtectionError');
             
-            if (password === MAIN_PASSWORD) {
-                // كلمة المرور صحيحة
+            const username = usernameInput ? usernameInput.value : '';
+            const password = passwordInput.value;
+            
+            // إذا لم يكن هناك حقل اسم المستخدم، استخدم كلمة المرور القديمة
+            if (!usernameInput) {
+                if (password === MAIN_PASSWORD) {
+                    isAuthenticated = true;
+                    currentUser = 'admin';
+                    currentUserRole = 'admin';
+                    document.getElementById('mainProtectionModal').style.display = 'none';
+                    document.getElementById('protectedContent').classList.remove('hidden');
+                    initializeDashboard();
+                    updateUIBasedOnPermissions();
+                } else {
+                    errorDiv.classList.remove('hidden');
+                    passwordInput.value = '';
+                    setTimeout(() => {
+                        errorDiv.classList.add('hidden');
+                    }, 3000);
+                }
+                return;
+            }
+            
+            // نظام المستخدمين الجديد
+            if (loginUser(username, password)) {
                 isAuthenticated = true;
                 document.getElementById('mainProtectionModal').style.display = 'none';
                 document.getElementById('protectedContent').classList.remove('hidden');
-                
-                // تشغيل الداشبورد
                 initializeDashboard();
+                updateUIBasedOnPermissions();
+                showNotification('مرحباً', 'تم تسجيل الدخول بنجاح كـ ' + username, 'success');
             } else {
-                // كلمة المرور خاطئة
                 errorDiv.classList.remove('hidden');
-                document.getElementById('mainProtectionPassword').value = '';
-                
-                // إخفاء رسالة الخطأ بعد 3 ثواني
+                errorDiv.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
+                usernameInput.value = '';
+                passwordInput.value = '';
                 setTimeout(() => {
                     errorDiv.classList.add('hidden');
                 }, 3000);
@@ -2152,6 +2321,9 @@
             });
             
             console.log('تم تحميل الداشبورد بنجاح');
+            
+            // تحديث الواجهة بناءً على الصلاحيات
+            updateUIBasedOnPermissions();
         }
 
         let emergencyCenters = [];
