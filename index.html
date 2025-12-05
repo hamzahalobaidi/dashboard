@@ -1230,7 +1230,7 @@
                 </div>
 
                 <!-- بطاقة إحالات إنقاذ الحياة -->
-                <div class="bg-gradient-to-br from-red-500/20 to-red-600/10 backdrop-blur-lg rounded-2xl p-4 border border-red-300/20 card-hover" onclick="if(isAdminMode) editSideLifeSavingCases()">
+                <div class="bg-gradient-to-br from-red-500/20 to-red-600/10 backdrop-blur-lg rounded-2xl p-4 border border-red-300/20 card-hover" onclick="if(hasPermission('edit_referrals')) editSideLifeSavingCases(); else showNotification('خطأ', 'ليس لديك صلاحية التعديل', 'error')">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-red-200 text-sm font-medium">إحالات إنقاذ الحياة</p>
@@ -1247,7 +1247,7 @@
                 </div>
 
                 <!-- بطاقة إحالات طارئة -->
-                <div class="bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 backdrop-blur-lg rounded-2xl p-4 border border-yellow-300/20 card-hover" onclick="if(isAdminMode) editSideEmergencyCases()">
+                <div class="bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 backdrop-blur-lg rounded-2xl p-4 border border-yellow-300/20 card-hover" onclick="if(hasPermission('edit_referrals')) editSideEmergencyCases(); else showNotification('خطأ', 'ليس لديك صلاحية التعديل', 'error')">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-yellow-200 text-sm font-medium">إحالات طارئة</p>
@@ -1269,25 +1269,25 @@
                         <div class="flex-1">
                             <p class="text-purple-200 text-sm font-medium">شراء خدمة</p>
                             <div class="grid grid-cols-2 gap-2 mt-2">
-                                <div class="bg-green-500/20 rounded p-1 text-center" onclick="if(isAdminMode) editServicePurchase('transferred')">
+                                <div class="bg-green-500/20 rounded p-1 text-center" onclick="if(hasPermission('edit_service_card')) editServicePurchase('transferred'); else showNotification('خطأ', 'ليس لديك صلاحية التعديل', 'error')">
                                     <p class="text-green-300 font-semibold text-sm" id="servicePurchaseTransferred">0</p>
                                     <p class="text-xs text-green-200">تم النقل</p>
                                 </div>
-                                <div class="bg-red-500/20 rounded p-1 text-center" onclick="if(isAdminMode) editServicePurchase('rejected')">
+                                <div class="bg-red-500/20 rounded p-1 text-center" onclick="if(hasPermission('edit_service_card')) editServicePurchase('rejected'); else showNotification('خطأ', 'ليس لديك صلاحية التعديل', 'error')">
                                     <p class="text-red-300 font-semibold text-sm" id="servicePurchaseRejected">0</p>
                                     <p class="text-xs text-red-200">تم الرفض</p>
                                 </div>
-                                <div class="bg-yellow-500/20 rounded p-1 text-center" onclick="if(isAdminMode) editServicePurchase('pending')">
+                                <div class="bg-yellow-500/20 rounded p-1 text-center" onclick="if(hasPermission('edit_service_card')) editServicePurchase('pending'); else showNotification('خطأ', 'ليس لديك صلاحية التعديل', 'error')">
                                     <p class="text-yellow-300 font-semibold text-sm" id="servicePurchasePending">0</p>
                                     <p class="text-xs text-yellow-200">تحت الإجراء</p>
                                 </div>
-                                <div class="bg-gray-500/20 rounded p-1 text-center" onclick="if(isAdminMode) editServicePurchase('other')">
+                                <div class="bg-gray-500/20 rounded p-1 text-center" onclick="if(hasPermission('edit_service_card')) editServicePurchase('other'); else showNotification('خطأ', 'ليس لديك صلاحية التعديل', 'error')">
                                     <p class="text-gray-300 font-semibold text-sm" id="servicePurchaseOther">0</p>
                                     <p class="text-xs text-gray-200">أخرى</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="flex flex-col items-center justify-center ml-2" onclick="if(isAdminMode) editServicePurchaseTotal()">
+                        <div class="flex flex-col items-center justify-center ml-2" onclick="if(hasPermission('edit_service_card')) editServicePurchaseTotal(); else showNotification('خطأ', 'ليس لديك صلاحية التعديل', 'error')">
                             <p class="text-2xl font-bold text-white cursor-pointer hover:text-purple-200 transition-colors" id="servicePurchaseTotal">0</p>
                             <p class="text-purple-300 text-xs">المجموع</p>
                         </div>
@@ -1311,7 +1311,7 @@
                 </div>
 
                 <!-- بطاقة Mobile Medical Team -->
-                <div class="bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-lg rounded-2xl p-4 border border-blue-300/20 card-hover" onclick="if(isAdminMode) openMobileTeamsModal()" style="cursor: pointer;">
+                <div class="bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-lg rounded-2xl p-4 border border-blue-300/20 card-hover" onclick="if(hasPermission('edit_capacity')) openMobileTeamsModal(); else showNotification('خطأ', 'ليس لديك صلاحية التعديل', 'error')" style="cursor: pointer;">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-blue-200 text-sm font-medium">Mobile Medical Team</p>
@@ -1358,7 +1358,7 @@
                         <button onclick="showViewMode()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200">
                             وضع العرض
                         </button>
-                        <button onclick="showAdminMode()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200">
+                        <button onclick="showAdminMode()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200" id="adminModeButton" style="display: none;">
                             وضع الإدارة
                         </button>
                         <div class="bg-white/10 backdrop-blur-lg rounded-xl px-4 py-2 border border-white/20">
@@ -2109,6 +2109,7 @@
             const editButtons = document.querySelectorAll('[data-action="edit"]');
             const deleteButtons = document.querySelectorAll('[data-action="delete"]');
             const adminPanel = document.getElementById('adminPanel');
+            const adminModeButton = document.getElementById('adminModeButton');
             
             editButtons.forEach(btn => {
                 btn.style.display = hasPermission('add_center') ? 'inline-block' : 'none';
@@ -2120,6 +2121,10 @@
             
             if (adminPanel) {
                 adminPanel.style.display = hasPermission('manage_users') ? 'block' : 'none';
+            }
+            
+            if (adminModeButton) {
+                adminModeButton.style.display = hasPermission('add_center') ? 'block' : 'none';
             }
         }
         
@@ -2735,6 +2740,11 @@
         }
 
         function showAdminMode() {
+            // التحقق من الصلاحيات
+            if (!hasPermission('add_center')) {
+                showNotification('خطأ', 'ليس لديك صلاحية الوصول إلى وضع الإدارة', 'error');
+                return;
+            }
             document.getElementById('loginModal').style.display = 'flex';
         }
 
