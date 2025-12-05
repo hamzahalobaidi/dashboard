@@ -572,9 +572,9 @@
         const database = firebase.database();
 
         // Global Variables
-        let currentUser = null;
-        let centers = [];
-        const users = {
+        window.currentUser = null;
+        window.centers = [];
+        window.users = {
             'user123': { password: 'user123', role: 'viewer' },
             'admin123': { password: 'admin123', role: 'admin' }
         };
@@ -585,9 +585,9 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            if (users[username] && users[username].password === password) {
-                currentUser = { username, role: users[username].role };
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            if (window.users[username] && window.users[username].password === password) {
+                window.currentUser = { username, role: window.users[username].role };
+                localStorage.setItem('currentUser', JSON.stringify(window.currentUser));
                 showDashboard();
                 loadData();
             } else {
@@ -601,16 +601,16 @@
             document.getElementById('dashboard').classList.add('show');
             
             // Show admin buttons only for admin
-            if (currentUser.role === 'admin') {
+            if (window.currentUser.role === 'admin') {
                 document.getElementById('adminButtons').style.display = 'flex';
             }
         }
 
         // Logout
         function logout() {
-            currentUser = null;
+            window.currentUser = null;
             localStorage.removeItem('currentUser');
-            centers = [];
+            window.centers = [];
             document.getElementById('dashboard').classList.remove('show');
             document.getElementById('loginContainer').classList.add('show');
             document.getElementById('username').value = '';
@@ -621,9 +621,9 @@
         async function loadData() {
             try {
                 const snapshot = await database.ref('emergencyCenters').once('value');
-                centers = snapshot.val() || [];
-                if (!Array.isArray(centers)) {
-                    centers = Object.values(centers);
+                window.centers = snapshot.val() || [];
+                if (!Array.isArray(window.centers)) {
+                    window.centers = Object.values(window.centers);
                 }
                 
                 // Load editable cards
@@ -659,7 +659,7 @@
         // Save Data to Firebase
         async function saveToFirebase() {
             try {
-                await database.ref('emergencyCenters').set(centers);
+                await database.ref('emergencyCenters').set(window.centers);
                 console.log('✅ تم حفظ البيانات في Firebase');
             } catch (error) {
                 console.error('❌ خطأ في الحفظ:', error);
@@ -669,12 +669,12 @@
         // Display Centers
         function displayCenters() {
             const tbody = document.getElementById('centersList');
-            if (centers.length === 0) {
+            if (window.centers.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-inbox"></i><p>لا توجد مراكز إسعافية مضافة</p></td></tr>';
                 return;
             }
 
-            tbody.innerHTML = centers.map((center, index) => `
+            tbody.innerHTML = window.centers.map((center, index) => `
                 <tr>
                     <td>${index + 1}</td>
                     <td>${center.name}</td>
@@ -683,7 +683,7 @@
                     <td>${center.capacity}</td>
                     <td><span style="color: var(--success);">✅ نشط</span></td>
                     <td>
-                        ${currentUser.role === 'admin' ? `
+                        ${window.currentUser.role === 'admin' ? `
                             <button class="btn btn-primary" onclick="editCenter(${index})">✏️ تعديل</button>
                             <button class="btn btn-danger" onclick="deleteCenter(${index})">🗑️ حذف</button>
                         ` : ''}
@@ -694,9 +694,9 @@
 
         // Update Stats
         function updateStats() {
-            document.getElementById('centerCount').textContent = centers.length;
-            document.getElementById('staffCount').textContent = centers.reduce((sum, c) => sum + (c.staff || 0), 0);
-            document.getElementById('capacityCount').textContent = centers.reduce((sum, c) => sum + (c.capacity || 0), 0);
+            document.getElementById('centerCount').textContent = window.centers.length;
+            document.getElementById('staffCount').textContent = window.centers.reduce((sum, c) => sum + (c.staff || 0), 0);
+            document.getElementById('capacityCount').textContent = window.centers.reduce((sum, c) => sum + (c.capacity || 0), 0);
         }
 
         // Add Center
@@ -708,8 +708,8 @@
                 staff: parseInt(document.getElementById('centerStaff').value),
                 capacity: parseInt(document.getElementById('centerCapacity').value)
             };
-            centers.push(newCenter);
-            localStorage.setItem('emergencyCenters', JSON.stringify(centers));
+            window.centers.push(newCenter);
+            localStorage.setItem('emergencyCenters', JSON.stringify(window.centers));
             saveToFirebase();
             displayCenters();
             updateStats();
@@ -720,8 +720,8 @@
         // Delete Center
         function deleteCenter(index) {
             if (confirm('هل أنت متأكد من حذف هذا المركز؟')) {
-                centers.splice(index, 1);
-                localStorage.setItem('emergencyCenters', JSON.stringify(centers));
+                window.centers.splice(index, 1);
+                localStorage.setItem('emergencyCenters', JSON.stringify(window.centers));
                 saveToFirebase();
                 displayCenters();
                 updateStats();
@@ -732,7 +732,7 @@
         // Clear All Data
         function clearAllData() {
             if (confirm('⚠️ هل أنت متأكد من حذف جميع البيانات؟')) {
-                centers = [];
+                window.centers = [];
                 localStorage.removeItem('emergencyCenters');
                 database.ref('emergencyCenters').set(null);
                 displayCenters();
@@ -786,7 +786,7 @@
         window.addEventListener('load', function() {
             const saved = localStorage.getItem('currentUser');
             if (saved) {
-                currentUser = JSON.parse(saved);
+                window.currentUser = JSON.parse(saved);
                 showDashboard();
                 loadData();
             } else {
