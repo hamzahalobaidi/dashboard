@@ -2294,7 +2294,25 @@
             // تحميل البيانات المحفوظة أولاً
             const dataLoaded = loadDataFromStorage();
             
-            // تحديث العرض
+            // تحميل البيانات من Firebase
+            console.log('جاري تحميل البيانات من Firebase...');
+            loadDataFromFirebase('emergencyCenters', function(data) {
+                if (data) {
+                    console.log('تم تحميل البيانات من Firebase:', data);
+                    emergencyCenters = data;
+                    // حفظ في localStorage أيضاً
+                    saveDataToStorage();
+                } else {
+                    console.log('لا توجد بيانات في Firebase');
+                }
+                // تحديث العرض
+                updateMainStats();
+                displayCenters();
+                updateTopActiveCenters();
+                updateLastUpdateTime();
+            });
+            
+            // تحديث العرض الفوري من localStorage
             updateMainStats();
             displayCenters();
             updateTopActiveCenters();
