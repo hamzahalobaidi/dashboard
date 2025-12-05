@@ -5241,6 +5241,65 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script>
+// تهيئة Firebase
+let database = null;
+if (typeof firebase !== 'undefined') {
+  firebase.initializeApp(firebaseConfig);
+  database = firebase.database();
+  console.log('✓ تم تهيئة Firebase بنجاح');
+} else {
+  console.error('Firebase لم يتم تحميله');
+}
+// دالة حفظ البيانات في Firebase
+function saveDataToFirebase(key, data) {
+  if (!database) {
+    console.warn('Firebase لم يتم تهيئته بعد');
+    return;
+  }
+  
+  try {
+    database.ref(key).set(data)
+      .then(() => {
+        console.log('✓ تم حفظ البيانات في Firebase بنجاح!');
+      })
+      .catch(error => {
+        console.error('❌ خطأ في الحفظ:', error);
+      });
+  } catch (error) {
+    console.error('❌ خطأ في حفظ البيانات:', error);
+  }
+}
+// دالة قراءة البيانات من Firebase
+function loadDataFromFirebase(key, callback) {
+  if (!database) {
+    console.warn('Firebase لم يتم تهيئته بعد');
+    callback(null);
+    return;
+  }
+  
+  try {
+    database.ref(key).once('value')
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          console.log('✓ تم تحميل البيانات من Firebase:', snapshot.val());
+          callback(snapshot.val());
+        } else {
+          console.log('لا توجد بيانات في Firebase');
+          callback(null);
+        }
+      })
+      .catch(error => {
+        console.error('❌ خطأ في تحميل البيانات من Firebase:', error);
+        callback(null);
+      });
+  } catch (error) {
+    console.error('❌ خطأ في تحميل البيانات:', error);
+    callback(null);
+  }
+}
+</script>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
 <script>
 // إعدادات Firebase
