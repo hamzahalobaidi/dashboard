@@ -5063,24 +5063,64 @@ const originalAddCenter = window.addCenter;
 if (originalAddCenter) {
   window.addCenter = function() {
     originalAddCenter();
-    // حفظ المراكز في Firebase
-    if (emergencyCenters && emergencyCenters.length > 0) {
-      saveDataToFirebase('emergencyCenters', emergencyCenters);
-    }
+    // حفظ المراكز في Firebase بعد إضافة مركز جديد
+    setTimeout(() => {
+      if (emergencyCenters && emergencyCenters.length > 0) {
+        saveDataToFirebase('emergencyCenters', emergencyCenters);
+        console.log('تم حفظ المراكز في Firebase:', emergencyCenters);
+      }
+    }, 500);
+  };
+}
+
+// حفظ البيانات عند تحديث مركز
+const originalUpdateCenter = window.updateCenter;
+if (originalUpdateCenter) {
+  window.updateCenter = function(centerId) {
+    originalUpdateCenter(centerId);
+    setTimeout(() => {
+      if (emergencyCenters && emergencyCenters.length > 0) {
+        saveDataToFirebase('emergencyCenters', emergencyCenters);
+      }
+    }, 500);
+  };
+}
+
+// حفظ البيانات عند حذف مركز
+const originalDeleteCenter = window.deleteCenter;
+if (originalDeleteCenter) {
+  window.deleteCenter = function(centerId) {
+    originalDeleteCenter(centerId);
+    setTimeout(() => {
+      if (emergencyCenters && emergencyCenters.length > 0) {
+        saveDataToFirebase('emergencyCenters', emergencyCenters);
+      } else {
+        database.ref('emergencyCenters').remove();
+      }
+    }, 500);
   };
 }
 
 // تحميل البيانات عند فتح الصفحة
 window.addEventListener('load', function() {
-  loadDataFromFirebase('emergencyCenters', function(data) {
-    if (data && isAuthenticated) {
-      emergencyCenters = data;
-      updateMainStats();
-      displayCenters();
-      console.log('تم تحميل البيانات من Firebase');
-    }
-  });
+  setTimeout(() => {
+    loadDataFromFirebase('emergencyCenters', function(data) {
+      if (data && isAuthenticated) {
+        emergencyCenters = data;
+        updateMainStats();
+        displayCenters();
+        console.log('تم تحميل البيانات من Firebase:', data);
+      }
+    });
+  }, 1000);
 });
+
+// حفظ البيانات تلقائياً كل 30 ثانية
+setInterval(() => {
+  if (isAuthenticated && emergencyCenters && emergencyCenters.length > 0) {
+    saveDataToFirebase('emergencyCenters', emergencyCenters);
+  }
+}, 30000);
 </script>
 </body>
 </html>
