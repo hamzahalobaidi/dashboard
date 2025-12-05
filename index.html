@@ -1931,7 +1931,7 @@
             </div>
             
             <div class="bg-blue-500/10 rounded-xl p-4 mb-4 border border-blue-300/20">
-                <h4 class="text-blue-200 font-medium mb-3">🛏️ أسرة الطوارئ</h4>
+                <h4 class="text-blue-200 font-bold text-lg mb-3">ER</h4>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-white/70 text-xs mb-1">المشغولة:</label>
@@ -1945,7 +1945,7 @@
             </div>
             
             <div class="bg-purple-500/10 rounded-xl p-4 mb-4 border border-purple-300/20">
-                <h4 class="text-purple-200 font-medium mb-3">🏭 أسرة ICU</h4>
+                <h4 class="text-purple-200 font-bold text-lg mb-3">ICU</h4>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-white/70 text-xs mb-1">المشغولة:</label>
@@ -1959,7 +1959,7 @@
             </div>
             
             <div class="bg-pink-500/10 rounded-xl p-4 mb-6 border border-pink-300/20">
-                <h4 class="text-pink-200 font-medium mb-3">💉 أسرة CCU</h4>
+                <h4 class="text-pink-200 font-bold text-lg mb-3">CCU</h4>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-white/70 text-xs mb-1">المشغولة:</label>
@@ -2307,18 +2307,18 @@
                             <div class="flex flex-col items-center">
                                 <div class="text-white font-bold text-lg">${center.currentStaff}/${center.totalStaff}</div>
                                 <div class="w-12 h-2 bg-white/20 rounded-full mt-1">
-                                    <div class="h-2 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full transition-all duration-500" style="width: ${staffPercentage}%"></div>
+                                    <div class="h-2 rounded-full transition-all duration-500" style="width: ${staffPercentage}%; background: ${staffPercentage === 100 ? '#ef4444' : 'linear-gradient(to right, #a78bfa, #a855f7)'}"></div>
                                 </div>
-                                <div class="text-purple-300 text-xs mt-1">${staffPercentage}%</div>
+                                <div class="text-xs mt-1" style="color: ${staffPercentage === 100 ? '#ef4444' : '#c084fc'}">${staffPercentage}%</div>
                             </div>
                         </td>
                         <td class="py-4 px-2 text-center">
                             <div class="flex flex-col items-center">
                                 <div class="text-white font-bold text-lg">${center.activeAmbulances}/${center.totalAmbulances}</div>
                                 <div class="w-12 h-2 bg-white/20 rounded-full mt-1">
-                                    <div class="h-2 bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all duration-500" style="width: ${ambulancePercentage}%"></div>
+                                    <div class="h-2 rounded-full transition-all duration-500" style="width: ${ambulancePercentage}%; background: ${ambulancePercentage === 100 ? '#ef4444' : 'linear-gradient(to right, #4ade80, #22c55e)'}"></div>
                                 </div>
-                                <div class="text-green-300 text-xs mt-1">${ambulancePercentage}%</div>
+                                <div class="text-xs mt-1" style="color: ${ambulancePercentage === 100 ? '#ef4444' : '#86efac'}">${ambulancePercentage}%</div>
                             </div>
                         </td>
                         <td class="py-4 px-2 text-center">
