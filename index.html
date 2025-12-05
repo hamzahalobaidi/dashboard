@@ -4836,9 +4836,16 @@ function createFacilityCardHTML(facility) {
     // إنشاء أقسام الأسرة بناءً على البيانات المتوفرة
     let bedsHTML = '';
     
+    // دالة للحصول على لون النسبة المئوية للسعة السريرية
+    const getBedPercentColor = (percent) => {
+        if (percent >= 75) return '#ef4444'; // أحمر - خطير
+        if (percent >= 50) return '#f97316'; // برتقالي - تحذير
+        return '#10b981'; // أخضر - آمن
+    };
+
     // أسرة الطوارئ
     if (facility.emergency.total > 0) {
-        const emergencyPercentColor = emergencyPercent === 100 ? '#ef4444' : '#10b981';
+        const emergencyPercentColor = getBedPercentColor(emergencyPercent);
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
@@ -4856,7 +4863,7 @@ function createFacilityCardHTML(facility) {
     
     // أسرة ICU
     if (facility.icu.total > 0) {
-        const icuPercentColor = icuPercent === 100 ? '#ef4444' : '#10b981';
+        const icuPercentColor = getBedPercentColor(icuPercent);
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
@@ -4874,7 +4881,7 @@ function createFacilityCardHTML(facility) {
     
     // أسرة CCU
     if (facility.ccu.total > 0) {
-        const ccuPercentColor = ccuPercent === 100 ? '#ef4444' : '#10b981';
+        const ccuPercentColor = getBedPercentColor(ccuPercent);
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
@@ -4892,7 +4899,7 @@ function createFacilityCardHTML(facility) {
     
     // أسرة PICU
     if (facility.picu && facility.picu.total > 0) {
-        const picuPercentColor = picuPercent === 100 ? '#ef4444' : '#10b981';
+        const picuPercentColor = getBedPercentColor(picuPercent);
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
@@ -4910,7 +4917,7 @@ function createFacilityCardHTML(facility) {
     
     // أسرة NICU (آخر قسم بدون border-b)
     if (facility.nicu && facility.nicu.total > 0) {
-        const nicuPercentColor = nicuPercent === 100 ? '#ef4444' : '#10b981';
+        const nicuPercentColor = getBedPercentColor(nicuPercent);
         bedsHTML += `
             <div>
                 <div class="flex items-center justify-between mb-0.5">
@@ -4921,6 +4928,51 @@ function createFacilityCardHTML(facility) {
                     <span class="text-lg font-bold text-white">${facility.nicu.occupied}</span>
                     <span class="${slashColorClass} text-xs mx-0.5">/</span>
                     <span class="text-sm text-white">${facility.nicu.total}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    // دالة للحصول على لون النسبة المئوية للموارد (معاكس للسعة السريرية)
+    const getResourcePercentColor = (percent) => {
+        if (percent >= 75) return '#10b981'; // أخضر - ممتاز
+        if (percent >= 50) return '#f97316'; // برتقالي - تحذير
+        return '#ef4444'; // أحمر - حرج
+    };
+
+    // إنشاء قسم المركبات/الموارد
+    let resourcesHTML = '';
+    if (facility.vehicles && facility.vehicles.total > 0) {
+        const vehiclesPercent = facility.vehicles.total > 0 ? Math.round((facility.vehicles.available / facility.vehicles.total) * 100) : 0;
+        const vehiclesPercentColor = getResourcePercentColor(vehiclesPercent);
+        resourcesHTML += `
+            <div class="mb-1 pb-1 border-b ${borderColorClass}">
+                <div class="flex items-center justify-between mb-0.5">
+                    <p class="${textColorClass} text-lg font-extrabold">🚗</p>
+                    <p class="text-lg font-bold" style="color: ${vehiclesPercentColor};">${vehiclesPercent}%</p>
+                </div>
+                <div class="flex items-baseline">
+                    <span class="text-lg font-bold text-white">${facility.vehicles.available}</span>
+                    <span class="${slashColorClass} text-xs mx-0.5">/</span>
+                    <span class="text-sm text-white">${facility.vehicles.total}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    if (facility.staff && facility.staff.total > 0) {
+        const staffPercent = facility.staff.total > 0 ? Math.round((facility.staff.available / facility.staff.total) * 100) : 0;
+        const staffPercentColor = getResourcePercentColor(staffPercent);
+        resourcesHTML += `
+            <div>
+                <div class="flex items-center justify-between mb-0.5">
+                    <p class="${textColorClass} text-lg font-extrabold">👥</p>
+                    <p class="text-lg font-bold" style="color: ${staffPercentColor};">${staffPercent}%</p>
+                </div>
+                <div class="flex items-baseline">
+                    <span class="text-lg font-bold text-white">${facility.staff.available}</span>
+                    <span class="${slashColorClass} text-xs mx-0.5">/</span>
+                    <span class="text-sm text-white">${facility.staff.total}</span>
                 </div>
             </div>
         `;
@@ -4937,6 +4989,7 @@ function createFacilityCardHTML(facility) {
                 ${deleteButtonHTML}
             </div>
             ${bedsHTML}
+            ${resourcesHTML}
         </div>
     `;
 }
