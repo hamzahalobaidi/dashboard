@@ -1,0 +1,31 @@
+{
+  "name": "emergency-dashboard",
+  "version": "2.0.0",
+  "description": "Emergency Crisis Management Dashboard with Data Synchronization",
+  "main": "api.js",
+  "scripts": {
+    "start": "node api.js",
+    "dev": "nodemon api.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "emergency",
+    "dashboard",
+    "crisis",
+    "management",
+    "sync"
+  ],
+  "author": "Emergency Management Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
