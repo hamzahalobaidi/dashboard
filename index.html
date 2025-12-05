@@ -4838,11 +4838,12 @@ function createFacilityCardHTML(facility) {
     
     // أسرة الطوارئ
     if (facility.emergency.total > 0) {
+        const emergencyPercentColor = emergencyPercent === 100 ? '#ef4444' : '#10b981';
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-xs">🛏️ أسرة الطوارئ</p>
-                    <p class="text-lg font-bold" style="color: #10b981;">${emergencyPercent}%</p>
+                    <p class="${textColorClass} text-lg font-extrabold">ER</p>
+                    <p class="text-lg font-bold" style="color: ${emergencyPercentColor};">${emergencyPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
                     <span class="text-lg font-bold text-white">${facility.emergency.occupied}</span>
@@ -4855,11 +4856,12 @@ function createFacilityCardHTML(facility) {
     
     // أسرة ICU
     if (facility.icu.total > 0) {
+        const icuPercentColor = icuPercent === 100 ? '#ef4444' : '#10b981';
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-xs">🏭 أسرة ICU</p>
-                    <p class="text-lg font-bold" style="color: #10b981;">${icuPercent}%</p>
+                    <p class="${textColorClass} text-lg font-extrabold">ICU</p>
+                    <p class="text-lg font-bold" style="color: ${icuPercentColor};">${icuPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
                     <span class="text-lg font-bold text-white">${facility.icu.occupied}</span>
@@ -4872,11 +4874,12 @@ function createFacilityCardHTML(facility) {
     
     // أسرة CCU
     if (facility.ccu.total > 0) {
+        const ccuPercentColor = ccuPercent === 100 ? '#ef4444' : '#10b981';
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-xs">💉 أسرة CCU</p>
-                    <p class="text-lg font-bold" style="color: #10b981;">${ccuPercent}%</p>
+                    <p class="${textColorClass} text-lg font-extrabold">CCU</p>
+                    <p class="text-lg font-bold" style="color: ${ccuPercentColor};">${ccuPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
                     <span class="text-lg font-bold text-white">${facility.ccu.occupied}</span>
@@ -4889,11 +4892,12 @@ function createFacilityCardHTML(facility) {
     
     // أسرة PICU
     if (facility.picu && facility.picu.total > 0) {
+        const picuPercentColor = picuPercent === 100 ? '#ef4444' : '#10b981';
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-xs">👶 أسرة PICU</p>
-                    <p class="text-lg font-bold" style="color: #10b981;">${picuPercent}%</p>
+                    <p class="${textColorClass} text-lg font-extrabold">PICU</p>
+                    <p class="text-lg font-bold" style="color: ${picuPercentColor};">${picuPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
                     <span class="text-lg font-bold text-white">${facility.picu.occupied}</span>
@@ -4906,11 +4910,12 @@ function createFacilityCardHTML(facility) {
     
     // أسرة NICU (آخر قسم بدون border-b)
     if (facility.nicu && facility.nicu.total > 0) {
+        const nicuPercentColor = nicuPercent === 100 ? '#ef4444' : '#10b981';
         bedsHTML += `
             <div>
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-xs">🍼 أسرة NICU</p>
-                    <p class="text-lg font-bold" style="color: #10b981;">${nicuPercent}%</p>
+                    <p class="${textColorClass} text-lg font-extrabold">NICU</p>
+                    <p class="text-lg font-bold" style="color: ${nicuPercentColor};">${nicuPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
                     <span class="text-lg font-bold text-white">${facility.nicu.occupied}</span>
