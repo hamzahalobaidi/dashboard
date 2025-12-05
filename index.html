@@ -2290,10 +2290,19 @@
                                 <tbody>
             `;
 
+            // دالة لتحديد لون النسبة المئوية للموارد (أخضر = ممتاز، أحمر = حرج)
+            const getResourceColor = (percent) => {
+                if (percent >= 75) return '#10b981'; // أخضر - ممتاز
+                if (percent >= 50) return '#f97316'; // برتقالي - تحذير
+                return '#ef4444'; // أحمر - حرج
+            };
+
             let tableRows = '';
             emergencyCenters.forEach((center, index) => {
                 const staffPercentage = center.totalStaff > 0 ? Math.round((center.currentStaff / center.totalStaff) * 100) : 0;
                 const ambulancePercentage = center.totalAmbulances > 0 ? Math.round((center.activeAmbulances / center.totalAmbulances) * 100) : 0;
+                const staffColor = getResourceColor(staffPercentage);
+                const ambulanceColor = getResourceColor(ambulancePercentage);
                 
                 tableRows += `
                     <tr class="border-b border-white/10 hover:bg-white/5 transition-colors duration-200">
@@ -2307,18 +2316,18 @@
                             <div class="flex flex-col items-center">
                                 <div class="text-white font-bold text-lg">${center.currentStaff}/${center.totalStaff}</div>
                                 <div class="w-12 h-2 bg-white/20 rounded-full mt-1">
-                                    <div class="h-2 rounded-full transition-all duration-500" style="width: ${staffPercentage}%; background: ${staffPercentage === 100 ? '#ef4444' : 'linear-gradient(to right, #a78bfa, #a855f7)'}"></div>
+                                    <div class="h-2 rounded-full transition-all duration-500" style="width: ${staffPercentage}%; background: ${staffColor}"></div>
                                 </div>
-                                <div class="text-xs mt-1" style="color: ${staffPercentage === 100 ? '#ef4444' : '#c084fc'}">${staffPercentage}%</div>
+                                <div class="text-xs mt-1" style="color: ${staffColor}">${staffPercentage}%</div>
                             </div>
                         </td>
                         <td class="py-4 px-2 text-center">
                             <div class="flex flex-col items-center">
                                 <div class="text-white font-bold text-lg">${center.activeAmbulances}/${center.totalAmbulances}</div>
                                 <div class="w-12 h-2 bg-white/20 rounded-full mt-1">
-                                    <div class="h-2 rounded-full transition-all duration-500" style="width: ${ambulancePercentage}%; background: ${ambulancePercentage === 100 ? '#ef4444' : 'linear-gradient(to right, #4ade80, #22c55e)'}"></div>
+                                    <div class="h-2 rounded-full transition-all duration-500" style="width: ${ambulancePercentage}%; background: ${ambulanceColor}"></div>
                                 </div>
-                                <div class="text-xs mt-1" style="color: ${ambulancePercentage === 100 ? '#ef4444' : '#86efac'}">${ambulancePercentage}%</div>
+                                <div class="text-xs mt-1" style="color: ${ambulanceColor}">${ambulancePercentage}%</div>
                             </div>
                         </td>
                         <td class="py-4 px-2 text-center">
@@ -4979,6 +4988,7 @@ function createFacilityCardHTML(facility) {
     }
 
     const deleteButtonHTML = isAdminMode ? `<button onclick="event.stopPropagation(); deleteCustomFacility(${facility.id})" class="text-red-400 hover:text-red-300 text-xs">🗑️</button>` : '';
+    const editBedsButtonHTML = isAdminMode ? `<button onclick="event.stopPropagation(); editCustomFacilityBeds(${facility.id})" class="text-blue-400 hover:text-blue-300 text-xs ml-1">✏️</button>` : '';
     const onClickHandler = isAdminMode ? `onclick="editCustomFacility(${facility.id})"` : '';
     const cursorStyle = isAdminMode ? 'cursor-pointer' : '';
 
@@ -4986,7 +4996,10 @@ function createFacilityCardHTML(facility) {
         <div class="custom-facility-card bg-gradient-to-br ${colorClass} backdrop-blur-lg rounded-lg p-2 border card-hover ${cursorStyle}" ${onClickHandler}>
             <div class="flex items-center justify-between mb-1">
                 <h3 class="text-white font-bold text-sm">🏥 ${facility.name}</h3>
-                ${deleteButtonHTML}
+                <div class="flex items-center">
+                    ${editBedsButtonHTML}
+                    ${deleteButtonHTML}
+                </div>
             </div>
             ${bedsHTML}
             ${resourcesHTML}
@@ -5071,6 +5084,78 @@ function updateCustomFacility(facilityId) {
         saveButton.onclick = saveFacility;
         
         alert('تم تحديث المنشأة بنجاح!');
+    }
+}
+
+// تعديل السعة السريرية فقط للمنشأة المخصصة
+function editCustomFacilityBeds(facilityId) {
+    const facility = customFacilities.find(f => f.id === facilityId);
+    if (!facility) return;
+
+    // فتح نموذج التعديل مع البيانات الحالية للأسرة فقط
+    document.getElementById('facilityName').value = facility.name;
+    document.getElementById('facilityColor').value = facility.color;
+    document.getElementById('facilityEmergencyOccupied').value = facility.emergency.occupied;
+    document.getElementById('facilityEmergencyTotal').value = facility.emergency.total;
+    document.getElementById('facilityIcuOccupied').value = facility.icu.occupied;
+    document.getElementById('facilityIcuTotal').value = facility.icu.total;
+    document.getElementById('facilityCcuOccupied').value = facility.ccu.occupied;
+    document.getElementById('facilityCcuTotal').value = facility.ccu.total;
+    document.getElementById('facilityPicuOccupied').value = facility.picu ? facility.picu.occupied : 0;
+    document.getElementById('facilityPicuTotal').value = facility.picu ? facility.picu.total : 0;
+    document.getElementById('facilityNicuOccupied').value = facility.nicu ? facility.nicu.occupied : 0;
+    document.getElementById('facilityNicuTotal').value = facility.nicu ? facility.nicu.total : 0;
+
+    // تغيير وظيفة الحفظ لتحديث السعة السريرية فقط
+    const saveButton = document.querySelector('#addFacilityModal .btn-success');
+    saveButton.textContent = 'تحديث السعة السريرية';
+    saveButton.onclick = function() {
+        updateCustomFacilityBeds(facilityId);
+    };
+
+    document.getElementById('addFacilityModal').style.display = 'flex';
+}
+
+// تحديث السعة السريرية فقط
+function updateCustomFacilityBeds(facilityId) {
+    const emergencyOccupied = parseInt(document.getElementById('facilityEmergencyOccupied').value) || 0;
+    const emergencyTotal = parseInt(document.getElementById('facilityEmergencyTotal').value) || 0;
+    const icuOccupied = parseInt(document.getElementById('facilityIcuOccupied').value) || 0;
+    const icuTotal = parseInt(document.getElementById('facilityIcuTotal').value) || 0;
+    const ccuOccupied = parseInt(document.getElementById('facilityCcuOccupied').value) || 0;
+    const ccuTotal = parseInt(document.getElementById('facilityCcuTotal').value) || 0;
+    const picuOccupied = parseInt(document.getElementById('facilityPicuOccupied').value) || 0;
+    const picuTotal = parseInt(document.getElementById('facilityPicuTotal').value) || 0;
+    const nicuOccupied = parseInt(document.getElementById('facilityNicuOccupied').value) || 0;
+    const nicuTotal = parseInt(document.getElementById('facilityNicuTotal').value) || 0;
+
+    if (emergencyOccupied > emergencyTotal || icuOccupied > icuTotal || ccuOccupied > ccuTotal || picuOccupied > picuTotal || nicuOccupied > nicuTotal) {
+        alert('عدد الأسرة المشغولة لا يمكن أن يتجاوز العدد الإجمالي');
+        return;
+    }
+
+    const facilityIndex = customFacilities.findIndex(f => f.id === facilityId);
+    if (facilityIndex !== -1) {
+        customFacilities[facilityIndex].emergency = { occupied: emergencyOccupied, total: emergencyTotal };
+        customFacilities[facilityIndex].icu = { occupied: icuOccupied, total: icuTotal };
+        customFacilities[facilityIndex].ccu = { occupied: ccuOccupied, total: ccuTotal };
+        if (picuTotal > 0) {
+            customFacilities[facilityIndex].picu = { occupied: picuOccupied, total: picuTotal };
+        }
+        if (nicuTotal > 0) {
+            customFacilities[facilityIndex].nicu = { occupied: nicuOccupied, total: nicuTotal };
+        }
+
+        localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
+        renderCustomFacilities();
+        closeFacilityModal();
+        
+        // إعادة تعيين زر الحفظ
+        const saveButton = document.querySelector('#addFacilityModal .btn-success');
+        saveButton.textContent = 'إضافة المنشأة';
+        saveButton.onclick = saveFacility;
+        
+        alert('تم تحديث السعة السريرية بنجاح!');
     }
 }
 
