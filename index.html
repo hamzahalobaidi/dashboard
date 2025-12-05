@@ -5347,9 +5347,31 @@ if (originalDeleteCenter) {
   };
 }
 
+
+// دالة للانتظار حتى تهيئة Firebase
+function waitForFirebase(callback, maxAttempts = 50) {
+  let attempts = 0;
+  const interval = setInterval(() => {
+    if (typeof database !== 'undefined' && database !== null) {
+      clearInterval(interval);
+      console.log('✓ Firebase جاهز!');
+      callback();
+    } else {
+      attempts++;
+      if (attempts >= maxAttempts) {
+        clearInterval(interval);
+        console.warn('⚠️ Firebase لم يتم تهيئته بعد محاولات متعددة');
+        callback();
+      }
+    }
+  }, 100);
+}
+
 // تحميل البيانات عند فتح الصفحة
 window.addEventListener('load', function() {
   if (isAuthenticated) {
+    // انتظر حتى يتم تهيئة Firebase
+    waitForFirebase(function() {
     // تحميل من Firebase أولاً (البيانات المشتركة)
     loadDataFromFirebase('emergencyCenters', function(data) {
       if (data && data.length > 0) {
@@ -5379,6 +5401,7 @@ window.addEventListener('load', function() {
           }
         }
       }
+    });
     });
   }
 });
