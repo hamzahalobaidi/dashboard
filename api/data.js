@@ -78,9 +78,10 @@ export default async function handler(req, res) {
         await initDatabase();
 
         const { method, query, body } = req;
+        const key = query.key || (body && body.key);
 
         // GET /api/data - Get all data
-        if (method === 'GET' && !query.key) {
+        if (method === 'GET' && !key) {
             return new Promise((resolve) => {
                 db.all('SELECT key, value, updated_at FROM dashboard_data', (err, rows) => {
                     if (err) {
@@ -90,13 +91,15 @@ export default async function handler(req, res) {
                     }
 
                     const data = {};
-                    rows.forEach(row => {
-                        try {
-                            data[row.key] = JSON.parse(row.value);
-                        } catch (e) {
-                            data[row.key] = row.value;
-                        }
-                    });
+                    if (rows) {
+                        rows.forEach(row => {
+                            try {
+                                data[row.key] = JSON.parse(row.value);
+                            } catch (e) {
+                                data[row.key] = row.value;
+                            }
+                        });
+                    }
 
                     res.status(200).json(data);
                     resolve();
@@ -105,9 +108,9 @@ export default async function handler(req, res) {
         }
 
         // GET /api/data?key=xxx - Get specific data
-        if (method === 'GET' && query.key) {
+        if (method === 'GET' && key) {
             return new Promise((resolve) => {
-                db.get('SELECT value, updated_at FROM dashboard_data WHERE key = ?', [query.key], (err, row) => {
+                db.get('SELECT value, updated_at FROM dashboard_data WHERE key = ?', [key], (err, row) => {
                     if (err) {
                         res.status(500).json({ error: err.message });
                         resolve();
@@ -122,9 +125,9 @@ export default async function handler(req, res) {
 
                     try {
                         const value = JSON.parse(row.value);
-                        res.status(200).json({ key: query.key, value, updated_at: row.updated_at });
+                        res.status(200).json({ key, value, updated_at: row.updated_at });
                     } catch (e) {
-                        res.status(200).json({ key: query.key, value: row.value, updated_at: row.updated_at });
+                        res.status(200).json({ key, value: row.value, updated_at: row.updated_at });
                     }
                     resolve();
                 });
@@ -133,22 +136,25 @@ export default async function handler(req, res) {
 
         // POST /api/data - Save data
         if (method === 'POST') {
-            const { key, value, deviceId } = body;
+            const dataKey = key;
+            const dataValue = body && body.value;
+            const deviceId = body && body.deviceId;
 
-            if (!key || value === undefined) {
+            if (!dataKey || dataValue === undefined) {
                 res.status(400).json({ error: 'Missing key or value' });
                 return;
             }
 
-            const stringValue = typeof value === 'string' ? value : JSON.stringify(value);
+            const stringValue = typeof dataValue === 'string' ? dataValue : JSON.stringify(dataValue);
 
             return new Promise((resolve) => {
                 db.run(
                     `INSERT OR REPLACE INTO dashboard_data (key, value, updated_by)
                      VALUES (?, ?, ?)`,
-                    [key, stringValue, deviceId || 'unknown'],
+                    [dataKey, stringValue, deviceId || 'unknown'],
                     function(err) {
                         if (err) {
+                            console.error('DB Error:', err);
                             res.status(500).json({ error: err.message });
                             resolve();
                             return;
@@ -158,10 +164,15 @@ export default async function handler(req, res) {
                         db.run(
                             `INSERT INTO sync_log (action, key, device_id)
                              VALUES (?, ?, ?)`,
-                            ['save', key, deviceId || 'unknown']
+                            ['save', dataKey, deviceId || 'unknown'],
+                            (logErr) => {
+                                if (logErr) {
+                                    console.error('Log Error:', logErr);
+                                }
+                            }
                         );
 
-                        res.status(200).json({ success: true, key, message: 'Data saved successfully' });
+                        res.status(200).json({ success: true, key: dataKey, message: 'Data saved successfully' });
                         resolve();
                     }
                 );
@@ -169,11 +180,11 @@ export default async function handler(req, res) {
         }
 
         // DELETE /api/data?key=xxx - Delete data
-        if (method === 'DELETE' && query.key) {
-            const { deviceId } = body || {};
+        if (method === 'DELETE' && key) {
+            const deviceId = body && body.deviceId;
 
             return new Promise((resolve) => {
-                db.run('DELETE FROM dashboard_data WHERE key = ?', [query.key], function(err) {
+                db.run('DELETE FROM dashboard_data WHERE key = ?', [key], function(err) {
                     if (err) {
                         res.status(500).json({ error: err.message });
                         resolve();
@@ -184,7 +195,7 @@ export default async function handler(req, res) {
                     db.run(
                         `INSERT INTO sync_log (action, key, device_id)
                          VALUES (?, ?, ?)`,
-                        ['delete', query.key, deviceId || 'unknown']
+                        ['delete', key, deviceId || 'unknown']
                     );
 
                     res.status(200).json({ success: true, message: 'Data deleted successfully' });
