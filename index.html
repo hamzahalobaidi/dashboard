@@ -5254,8 +5254,16 @@ const firebaseConfig = {
 };
 
 // تهيئة Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+let database = null;
+
+// انتظر حتى يتم تحميل Firebase بالكامل
+if (typeof firebase !== 'undefined') {
+  firebase.initializeApp(firebaseConfig);
+  database = firebase.database();
+  console.log('✓ تم تهيئة Firebase بنجاح');
+} else {
+  console.error('Firebase لم يتم تحميله');
+}
 
 // دالة حفظ البيانات في Firebase
 function saveDataToFirebase(key, data) {
