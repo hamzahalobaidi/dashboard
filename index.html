@@ -5349,39 +5349,38 @@ if (originalDeleteCenter) {
 
 // تحميل البيانات عند فتح الصفحة
 window.addEventListener('load', function() {
-  setTimeout(() => {
-    if (isAuthenticated) {
-      // تحميل من Firebase أولاً (البيانات المشتركة)
-      loadDataFromFirebase('emergencyCenters', function(data) {
-        if (data) {
-          emergencyCenters = data;
-          updateMainStats();
-          displayCenters();
-          console.log('تم تحميل البيانات من Firebase:', data);
-          // حفظ في localStorage أيضاً للسرعة
-          saveDataToStorage(true);
-        } else {
-          // إذا لم توجد بيانات في Firebase، حمل من localStorage
-          const savedData = localStorage.getItem('emergencyDashboardData');
-          if (savedData) {
-            try {
-              const data = JSON.parse(savedData);
-              if (data.emergencyCenters && data.emergencyCenters.length > 0) {
-                emergencyCenters = data.emergencyCenters;
-                updateMainStats();
-                displayCenters();
-                console.log('تم تحميل البيانات من localStorage:', emergencyCenters);
-                // حفظ في Firebase
-                saveDataToFirebase('emergencyCenters', emergencyCenters);
-              }
-            } catch (error) {
-              console.error('خطأ في تحميل البيانات من localStorage:', error);
+  if (isAuthenticated) {
+    // تحميل من Firebase أولاً (البيانات المشتركة)
+    loadDataFromFirebase('emergencyCenters', function(data) {
+      if (data && data.length > 0) {
+        emergencyCenters = data;
+        updateMainStats();
+        displayCenters();
+        console.log('✓ تم تحميل البيانات من Firebase:', data);
+        // حفظ في localStorage أيضاً للسرعة
+        saveDataToStorage(true);
+      } else {
+        console.log('لا توجد بيانات في Firebase، جاري البحث في localStorage...');
+        // إذا لم توجد بيانات في Firebase، حمل من localStorage
+        const savedData = localStorage.getItem('emergencyDashboardData');
+        if (savedData) {
+          try {
+            const data = JSON.parse(savedData);
+            if (data.emergencyCenters && data.emergencyCenters.length > 0) {
+              emergencyCenters = data.emergencyCenters;
+              updateMainStats();
+              displayCenters();
+              console.log('✓ تم تحميل البيانات من localStorage:', emergencyCenters);
+              // حفظ في Firebase
+              saveDataToFirebase('emergencyCenters', emergencyCenters);
             }
+          } catch (error) {
+            console.error('خطأ في تحميل البيانات من localStorage:', error);
           }
         }
-      });
-    }
-  }, 1000);
+      }
+    });
+  }
 });
 
 // حفظ البيانات تلقائياً كل 30 ثانية
