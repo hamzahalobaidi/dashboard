@@ -1358,7 +1358,7 @@
                         <button onclick="showViewMode()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200">
                             وضع العرض
                         </button>
-                        <button onclick="showAdminMode()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200" id="adminModeButton" style="display: none;">
+                        <button onclick="showAdminMode()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200" id="adminModeButton">
                             وضع الإدارة
                         </button>
                         <div class="bg-white/10 backdrop-blur-lg rounded-xl px-4 py-2 border border-white/20">
@@ -2123,8 +2123,9 @@
                 adminPanel.style.display = hasPermission('manage_users') ? 'block' : 'none';
             }
             
+            // إظهار زر وضع الإدارة للمستخدمين المخولين فقط
             if (adminModeButton) {
-                adminModeButton.style.display = hasPermission('add_center') ? 'block' : 'none';
+                adminModeButton.style.display = (hasPermission('add_center') || currentUserRole === 'admin') ? 'block' : 'none';
             }
         }
         
