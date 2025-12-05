@@ -4,35 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إدارة الأزمات والكوارث - RCC - تجمع جدة الصحي الثاني</title>
-
+    
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="assets/android-chrome-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="assets/android-chrome-512x512.png">
-
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
 
+    
     <style>
-
-        /* ==================== Global Styles ==================== */
-
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
         * { font-family: 'Cairo', sans-serif; }
-
+        
         /* إزالة شريط التمرير */
         ::-webkit-scrollbar {
             display: none;
         }
-
+        
         html, body {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-
+        
         /* تخطيط ملء الشاشة */
         html, body {
             height: 100vh;
@@ -40,13 +39,13 @@
             padding: 0;
             overflow-x: hidden;
         }
-
+        
         .fullscreen-layout {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-
+        
         .compact-container {
             width: 100%;
             max-width: none;
@@ -55,20 +54,20 @@
             display: flex;
             flex-direction: column;
         }
-
+        
         /* تصغير أحجام العناصر */
         .compact-card {
             padding: 0.75rem !important;
         }
-
+        
         .compact-text {
             font-size: 0.875rem;
         }
-
+        
         .compact-title {
             font-size: 1.125rem;
         }
-
+        
         /* أيقونات احترافية محسنة */
         .professional-icon {
             width: 48px;
@@ -87,7 +86,7 @@
             position: relative;
             overflow: hidden;
         }
-
+        
         .professional-icon::before {
             content: '';
             position: absolute;
@@ -98,74 +97,74 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
             transition: left 0.5s ease;
         }
-
+        
         .professional-icon:hover::before {
             left: 100%;
         }
-
+        
         .professional-icon:hover {
             transform: translateY(-2px) scale(1.05);
             box-shadow: 0 12px 40px rgba(0,0,0,0.15);
         }
-
+        
         /* أيقونات البطاقات العلوية الحديثة */
         .icon-staff {
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(124, 58, 237, 0.2));
             color: #8b5cf6;
         }
-
+        
         .icon-life-saving {
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.2));
             color: #ef4444;
         }
-
+        
         .icon-moderate {
             background: linear-gradient(135deg, rgba(249, 115, 22, 0.3), rgba(234, 88, 12, 0.2));
             color: #f97316;
         }
-
+        
         .icon-stable {
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(22, 163, 74, 0.2));
             color: #22c55e;
         }
-
+        
         .icon-home {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.2));
             color: #3b82f6;
         }
-
+        
         .icon-health-center {
             background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(8, 145, 178, 0.2));
             color: #06b6d4;
         }
-
+        
         .icon-target {
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.2));
             color: #10b981;
         }
-
+        
         .icon-team {
             background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(8, 145, 178, 0.2));
             color: #06b6d4;
         }
-
+        
         .icon-clock {
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.2));
             color: #f59e0b;
         }
-
+        
         .icon-weather {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.2));
             color: #3b82f6;
         }
-
+        
         /* تحسين البطاقات */
         .enhanced-card {
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
-
+        
         .enhanced-card::before {
             content: '';
             position: absolute;
@@ -176,17 +175,17 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             animation: shimmer 3s ease-in-out infinite;
         }
-
+        
         @keyframes shimmer {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
-
+        
         .enhanced-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
-
+        
         /* تحسين النصوص */
         .enhanced-number {
             font-size: 2.5rem;
@@ -194,55 +193,55 @@
             line-height: 1;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-
+        
         .enhanced-label {
             font-size: 0.9rem;
             font-weight: 600;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
-
+        
         .enhanced-subtitle {
             font-size: 0.8rem;
             opacity: 0.8;
             font-weight: 500;
         }
-
+        
         .compact-number {
             font-size: 1.5rem;
         }
-
+        
         .compact-spacing {
             gap: 0.5rem;
         }
-
+        
         .animated-bg {
             background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483);
             background-size: 400% 400%;
             animation: gradientShift 20s ease infinite;
         }
-
+        
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
+        
         .pulse-bg {
             background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
             animation: pulse 4s ease-in-out infinite;
         }
-
+        
         .emergency-glow {
             box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), 0 0 40px rgba(99, 102, 241, 0.2);
             animation: emergencyPulse 2s ease-in-out infinite;
         }
-
+        
         @keyframes emergencyPulse {
             0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3), 0 0 40px rgba(99, 102, 241, 0.2); }
             50% { box-shadow: 0 0 30px rgba(139, 92, 246, 0.5), 0 0 60px rgba(99, 102, 241, 0.4); }
         }
-
+        
         /* تأثير وميض الإسعاف */
         .ambulance-flash {
             position: fixed;
@@ -254,7 +253,7 @@
             z-index: 1;
             opacity: 0.3;
         }
-
+        
         .flash-red {
             position: absolute;
             top: 20%;
@@ -266,7 +265,7 @@
             filter: blur(40px);
             animation: flashRed 2s ease-in-out infinite;
         }
-
+        
         .flash-blue {
             position: absolute;
             top: 60%;
@@ -278,7 +277,7 @@
             filter: blur(50px);
             animation: flashBlue 2.5s ease-in-out infinite;
         }
-
+        
         .flash-white {
             position: absolute;
             top: 40%;
@@ -291,55 +290,55 @@
             filter: blur(30px);
             animation: flashWhite 1.8s ease-in-out infinite;
         }
-
+        
         @keyframes flashRed {
             0%, 100% { opacity: 0.2; transform: scale(1); }
             50% { opacity: 0.6; transform: scale(1.2); }
         }
-
+        
         @keyframes flashBlue {
             0%, 100% { opacity: 0.3; transform: scale(1); }
             50% { opacity: 0.7; transform: scale(1.3); }
         }
-
+        
         @keyframes flashWhite {
             0%, 100% { opacity: 0.1; transform: translateX(-50%) scale(1); }
             50% { opacity: 0.4; transform: translateX(-50%) scale(1.1); }
         }
-
+        
         .card-hover {
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
         }
-
+        
         .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
         }
-
+        
         .status-indicator {
             animation: statusBlink 2s ease-in-out infinite;
         }
-
+        
         @keyframes statusBlink {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
-
+        
         .zoom-controls {
             position: fixed;
             bottom: 20px;
             left: 20px;
             z-index: 1000;
         }
-
+        
         .fullscreen-btn {
             position: fixed;
             top: 20px;
             left: 20px;
             z-index: 1000;
         }
-
+        
         .print-btn {
             position: fixed;
             top: 20px;
@@ -347,23 +346,23 @@
             z-index: 1000;
             display: none;
         }
-
+        
         .print-btn.admin-mode {
             display: block;
         }
-
+        
         .settings-btn {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 1000;
         }
-
+        
         .scale-75 { transform: scale(0.75); }
         .scale-90 { transform: scale(0.9); }
         .scale-110 { transform: scale(1.1); }
         .scale-125 { transform: scale(1.25); }
-
+        
         /* أيقونات حديثة وشفافة */
         .modern-icon {
             font-size: 3rem;
@@ -379,43 +378,43 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
         }
-
+        
         .modern-icon:hover {
             transform: scale(1.05);
             box-shadow: 0 12px 40px rgba(0,0,0,0.2);
         }
-
+        
         .icon-staff {
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1));
             color: #a78bfa;
         }
-
+        
         .icon-ambulance {
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.1));
             color: #4ade80;
             animation: pulse 2s ease-in-out infinite;
         }
-
+        
         .icon-health {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.1));
             color: #60a5fa;
         }
-
+        
         .icon-emergency {
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1));
             color: #f87171;
         }
-
+        
         .icon-time {
             background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(245, 158, 11, 0.1));
             color: #fbbf24;
         }
-
+        
         .icon-centers {
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(99, 102, 241, 0.1));
             color: #818cf8;
         }
-
+        
         /* شعار الإسعاف الاحترافي */
         .professional-logo {
             width: 60px;
@@ -431,12 +430,12 @@
             position: relative;
             overflow: hidden;
         }
-
+        
         .professional-logo:hover {
             transform: scale(1.05);
             box-shadow: 0 12px 40px rgba(220, 38, 38, 0.4);
         }
-
+        
         .professional-logo::before {
             content: '';
             position: absolute;
@@ -447,20 +446,20 @@
             background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
             animation: logoShine 3s ease-in-out infinite;
         }
-
+        
         @keyframes logoShine {
             0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
             50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
             100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
         }
-
+        
         .logo-cross {
             color: white;
             font-size: 28px;
             font-weight: bold;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
-
+        
         /* تحسين تعديل زمن الاستجابة */
         .response-time-edit {
             margin-top: 15px;
@@ -469,7 +468,7 @@
             border-radius: 10px;
             border: 1px solid rgba(245, 158, 11, 0.3);
         }
-
+        
         .response-time-input {
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(245, 158, 11, 0.3);
@@ -479,13 +478,13 @@
             width: 100px;
             text-align: center;
         }
-
+        
         .response-time-input:focus {
             outline: none;
             border-color: rgba(245, 158, 11, 0.6);
             box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
         }
-
+        
         @keyframes spin-slow {
             from {
                 transform: rotate(0deg);
@@ -494,15 +493,15 @@
                 transform: rotate(360deg);
             }
         }
-
+        
         .animate-spin-slow {
             animation: spin-slow 8s linear infinite;
         }
-
+        
         .settings-btn button:hover .animate-spin-slow {
             animation-duration: 2s;
         }
-
+        
         /* باقي الأنماط */
         .settings-dropdown {
             position: absolute;
@@ -519,12 +518,12 @@
             z-index: 1000;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         .settings-dropdown.show {
             display: block;
             animation: slideDown 0.3s ease-out;
         }
-
+        
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -535,7 +534,7 @@
                 transform: translateY(0);
             }
         }
-
+        
         .settings-dropdown select,
         .settings-dropdown input {
             background: rgba(51, 65, 85, 0.8) !important;
@@ -547,14 +546,14 @@
             width: 100% !important;
             transition: all 0.3s ease !important;
         }
-
+        
         .settings-dropdown select:focus,
         .settings-dropdown input:focus {
             border-color: rgba(139, 92, 246, 0.6) !important;
             box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
             outline: none !important;
         }
-
+        
         .settings-dropdown label {
             color: #e2e8f0 !important;
             font-weight: 500 !important;
@@ -562,14 +561,14 @@
             display: block !important;
             font-size: 14px !important;
         }
-
+        
         .zoom-controls {
             display: flex;
             gap: 8px;
             align-items: center;
             margin-top: 12px;
         }
-
+        
         .zoom-btn {
             background: rgba(139, 92, 246, 0.8) !important;
             border: none !important;
@@ -580,19 +579,19 @@
             font-size: 12px !important;
             transition: all 0.3s ease !important;
         }
-
+        
         .zoom-btn:hover {
             background: rgba(139, 92, 246, 1) !important;
             transform: translateY(-1px);
         }
-
+        
         #zoomLevel {
             color: #a78bfa !important;
             font-weight: bold !important;
             min-width: 40px !important;
             text-align: center !important;
         }
-
+        
         .login-modal {
             position: fixed;
             top: 0;
@@ -606,7 +605,7 @@
             justify-content: center;
             z-index: 2000;
         }
-
+        
         .login-form {
             background: rgba(30, 41, 59, 0.95);
             backdrop-filter: blur(20px);
@@ -617,7 +616,7 @@
             max-width: 90vw;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
-
+        
         .form-input {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(139, 92, 246, 0.3);
@@ -736,7 +735,7 @@
             margin-top: 10px;
             font-size: 14px;
         }
-
+        
         @media print {
             .no-print { display: none !important; }
             body { background: white !important; }
@@ -888,8 +887,10 @@
         .center-card .text-sm {
             font-size: 12px !important;
         }
+    
 
 /* --- Split from emergency_dashboard_clean_final.html --- */
+
 
                         body { font-family: Arial, sans-serif; direction: rtl; }
                         .bg-white-5 {background: #f5f5f5;border: 1px solid #ddd;}
@@ -907,8 +908,10 @@
                         .text-xs { font-size: 0.75rem; }
                         .mt-4 { margin-top: 16px; }
                         .space-y-3 > * + * { margin-top: 12px; }
+                    
 
 /* --- Split from emergency_dashboard_clean_final.html --- */
+
 
                         body { font-family: Arial, sans-serif; margin: 20px; }
                         .header { text-align: center; margin-bottom: 30px; }
@@ -1000,51 +1003,38 @@
     .medical-case-edit {
         padding: 8px;
     }
-
+    
     .medical-case-input {
         width: 60px;
         padding: 4px 8px;
         font-size: 12px;
     }
-
+    
     .admin-medical-buttons {
         grid-template-columns: 1fr;
         gap: 8px;
     }
-
+    
     .admin-medical-buttons button {
         padding: 10px 12px;
         font-size: 14px;
     }
 }
 
-        /* Utility Classes */
-        .flex-center { display: flex; align-items: center; justify-content: center; }
-        .flex-between { display: flex; align-items: center; justify-content: space-between; }
-        .flex-col { display: flex; flex-direction: column; }
-        .space-y-2 { display: flex; flex-direction: column; gap: 0.5rem; }
-        .space-x-3 { display: flex; gap: 0.75rem; }
-        .transition-all { transition: all 0.3s ease; }
-        .py-4-px-2 { padding: 1rem 0.5rem; text-align: center; }
-        .svg-icon { width: 1.25rem; height: 1.25rem; }
 
-        </style>
+    </style>
 </head>
 <body class="animated-bg fullscreen-layout relative overflow-x-auto" id="mainBody">
-    <!-- ============================================ -->
-    <!-- المحتوى الرئيسي -->
-    <!-- ============================================ -->
-
     <!-- حاوي الإشعارات -->
     <div id="notificationContainer" class="notification-container"></div>
-
+    
     <!-- تأثير وميض الإسعاف -->
     <div class="ambulance-flash">
         <div class="flash-red"></div>
         <div class="flash-blue"></div>
         <div class="flash-white"></div>
     </div>
-
+    
     <!-- نافذة الحماية الرئيسية -->
     <div id="mainProtectionModal" class="fixed inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center z-50">
         <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl max-w-md w-full mx-4">
@@ -1052,17 +1042,17 @@
                 <div class="text-6xl mb-6">🔐</div>
                 <h2 class="text-3xl font-bold text-white mb-4">دخول محمي</h2>
                 <p class="text-white/70 mb-8">أدخل كلمة المرور للوصول إلى داشبورد الطوارئ</p>
-
+                
                 <div class="space-y-4">
                     <input type="password" id="mainProtectionPassword" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="كلمة المرور" />
-
+                    
                     <div id="mainProtectionError" class="text-red-400 text-sm hidden">كلمة المرور غير صحيحة</div>
-
+                    
                     <button onclick="checkMainPassword()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105">
                         🚀 دخول
                     </button>
                 </div>
-
+                
                 <div class="mt-8 text-white/50 text-sm">
                     <p>داشبورد إدارة الأزمات والكوارث</p>
                     <p>تجمع جدة الصحي الثاني</p>
@@ -1341,6 +1331,7 @@
                     </div>
                 </div>
 
+
             </div>
 
             <!-- المحتوى الرئيسي -->
@@ -1602,7 +1593,7 @@
             <div class="hidden xl:block w-72 space-y-4 mt-20">
                 <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-4 border border-purple-300/20">
                     <h3 class="text-white font-bold text-lg mb-4">📈 الاتجاهات والتحليلات</h3>
-
+                    
                     <!-- رسم دائري لتوزيع الحالات -->
                     <div class="bg-gradient-to-r from-purple-500/20 to-purple-600/10 rounded-xl p-4 mb-4 border border-purple-300/20">
                         <h4 class="text-purple-200 text-sm font-medium mb-3">توزيع الحالات حسب النوع</h4>
@@ -1619,7 +1610,7 @@
                     </div>
 
                 <!-- البطاقات الثابتة تم حذفها - يتم عرض المنشآت من خلال الإضافة فقط -->
-
+                
                 <!-- حاوية البطاقات المخصصة -->
                 <div id="customCentersContainer" class="space-y-3">
                     <!-- سيتم إضافة البطاقات المخصصة هنا ديناميكياً -->
@@ -1791,7 +1782,7 @@
         <div class="login-form" style="width: 600px; max-width: 95vw; max-height: 90vh; overflow-y: auto;">
             <div class="login-title">🚨 إدارة الأحداث الجارية</div>
             <div class="text-white/70 mb-6">إضافة وإدارة الأحداث الطارئة</div>
-
+            
             <!-- حالة الشريط -->
             <div class="mb-6 p-4 bg-white/10 rounded-xl border border-white/20">
                 <div class="flex items-center justify-between mb-3">
@@ -1820,13 +1811,13 @@
             <!-- إضافة حدث جديد -->
             <div class="mb-6 p-4 bg-white/5 rounded-xl border border-white/10">
                 <h3 class="text-white font-medium mb-4">➕ إضافة حدث جديد</h3>
-
+                
                 <div class="mb-4">
                     <label class="block text-white font-medium text-sm mb-2">رمز الحدث (emoji):</label>
                     <input type="text" id="newEventIcon" class="form-input" placeholder="🚨" maxlength="5">
                     <p class="text-white/50 text-xs mt-1">مثال: 🚨 🔥 ⚡ 🏥 ⚠️</p>
                 </div>
-
+                
                 <div class="mb-4">
                     <label class="block text-white font-medium text-sm mb-2">وصف الحدث:</label>
                     <textarea id="newEventDescription" class="form-input" rows="3" placeholder="أدخل وصف الحدث..."></textarea>
@@ -1896,15 +1887,15 @@
         <div class="login-form" style="width: 550px; max-width: 95vw; max-height: 90vh; overflow-y: auto;">
             <div class="login-title">👥 تعديل Mobile Medical Team</div>
             <div class="text-white/70 mb-4">أضف المنشآت وعدد الفرق (حد أقصى 5 منشآت)</div>
-
+            
             <div id="mobileTeamsInputs" class="space-y-3 mb-4">
                 <!-- سيتم إضافة الحقول ديناميكياً -->
             </div>
-
+            
             <button id="addFacilityBtn" onclick="addMobileFacility()" class="btn-secondary w-full mb-4" style="background: rgba(59, 130, 246, 0.2); border-color: rgba(59, 130, 246, 0.3);">
                 ➕ إضافة منشأة
             </button>
-
+            
             <div class="flex space-x-3 space-x-reverse">
                 <button onclick="saveMobileTeams()" class="btn-success flex-1">حفظ</button>
                 <button onclick="closeMobileTeamsModal()" class="btn-secondary flex-1">إلغاء</button>
@@ -1917,11 +1908,11 @@
         <div class="login-form" style="width: 400px; max-width: 95vw;">
             <div class="login-title" id="bedTypesManagerTitle">🏥 إدارة الأقسام</div>
             <div class="text-white/70 mb-6">اختر الأقسام التي تريد عرضها على البطاقة</div>
-
+            
             <div id="bedTypesCheckboxes" class="space-y-3 mb-6">
                 <!-- الاختيارات تضاف هنا ديناميكياً -->
             </div>
-
+            
             <div class="flex space-x-3 space-x-reverse">
                 <button onclick="closeBedTypesManager()" class="btn-success flex-1">تم التطبيق</button>
                 <button onclick="closeBedTypesManager()" class="btn-secondary flex-1">إغلاق</button>
@@ -1934,12 +1925,12 @@
         <div class="login-form" style="width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto;">
             <div class="login-title">🏭 تعديل السعة السريرية</div>
             <div class="text-white/70 mb-6">أدخل بيانات المستشفى والسعة السريرية</div>
-
+            
             <div class="mb-4">
                 <label class="block text-white font-medium text-sm mb-2">اسم المستشفى:</label>
                 <input type="text" id="hospitalNameInput" class="form-input" placeholder="مثال: مستشفى الملك فهد">
             </div>
-
+            
             <div class="bg-blue-500/10 rounded-xl p-4 mb-4 border border-blue-300/20">
                 <h4 class="text-blue-200 font-medium mb-3">🛏️ أسرة الطوارئ</h4>
                 <div class="grid grid-cols-2 gap-3">
@@ -1953,7 +1944,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="bg-purple-500/10 rounded-xl p-4 mb-4 border border-purple-300/20">
                 <h4 class="text-purple-200 font-medium mb-3">🏭 أسرة ICU</h4>
                 <div class="grid grid-cols-2 gap-3">
@@ -1967,7 +1958,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="bg-pink-500/10 rounded-xl p-4 mb-6 border border-pink-300/20">
                 <h4 class="text-pink-200 font-medium mb-3">💉 أسرة CCU</h4>
                 <div class="grid grid-cols-2 gap-3">
@@ -1981,7 +1972,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="flex space-x-3 space-x-reverse">
                 <button onclick="saveHospitalBeds()" class="btn-success flex-1">حفظ</button>
                 <button onclick="closeHospitalBedsModal()" class="btn-secondary flex-1">إلغاء</button>
@@ -1993,7 +1984,7 @@
     <div id="addFacilityModal" class="login-modal" style="display: none;">
         <div class="login-form" style="width: 600px; max-width: 95vw; max-height: 90vh; overflow-y: auto;">
             <div class="login-title">🏥 إضافة منشأة جديدة</div>
-
+            
             <div class="space-y-4">
                 <!-- اسم المنشأة -->
                 <div>
@@ -2017,7 +2008,7 @@
                 <!-- أنواع الأسرة -->
                 <div class="space-y-4">
                     <p class="text-white/70 text-sm">💡 أدخل فقط أنواع الأسرة التي تريد إضافتها (اترك الحقول فارغة للأنواع غير المطلوبة)</p>
-
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- أسرة الطوارئ -->
                         <div>
@@ -2066,7 +2057,7 @@
                     </div>
                 </div>
             </div>
-
+            
             <div class="flex space-x-3 space-x-reverse mt-6">
                 <button onclick="saveFacility()" class="btn-success flex-1">إضافة المنشأة</button>
                 <button onclick="closeFacilityModal()" class="btn-secondary flex-1">إلغاء</button>
@@ -2077,57 +2068,10 @@
     </div>
     <!-- نهاية المحتوى المحمي -->
 
+    
+
+    
     <script>
-        // ============================================
-        // إدارة الأزمات والكوارث - RCC Dashboard
-        // ============================================
-        // التاريخ: 2025
-        // الإصدار: 6.0.0
-        // ============================================
-
-        // ============================================
-        // 1. المتغيرات العامة والثوابت
-        // ============================================
-        // عدد المتغيرات: 211
-
-        // دالة مساعدة للحصول على العناصر
-        function getElement(id) {
-            return document.getElementById(id);
-        }
-
-        // دالة مساعدة لإنشاء modal
-        function showModal(modalId) {
-            modal = getElement(modalId);
-            if (modal) modal.style.display = 'flex';
-        }
-
-        function hideModal(modalId) {
-            modal = getElement(modalId);
-            if (modal) modal.style.display = 'none';
-        }
-
-        // دالة مساعدة لحفظ البيانات
-        function saveData(key, value) {
-            try {
-                localStorage.setItem(key, JSON.stringify(value));
-                return true;
-            } catch (e) {
-                console.error('Error saving data:', e);
-                return false;
-            }
-        }
-
-        // دالة مساعدة لتحميل البيانات
-        function loadData(key, defaultValue = null) {
-            try {
-                data = localStorage.getItem(key);
-                return data ? JSON.parse(data) : defaultValue;
-            } catch (e) {
-                console.error('Error loading data:', e);
-                return defaultValue;
-            }
-        }
-
 // بيانات المراكز - مصفوفة فارغة للبدء من الصفر
         // نظام الحماية الرئيسي
         const MAIN_PASSWORD = "emergency2024"; // كلمة المرور الرئيسية
@@ -2136,21 +2080,21 @@
         // فحص كلمة المرور الرئيسية
         function checkMainPassword() {
             const password = document.getElementById('mainProtectionPassword').value;
-            errorDiv = document.getElementById('mainProtectionError');
-
+            const errorDiv = document.getElementById('mainProtectionError');
+            
             if (password === MAIN_PASSWORD) {
                 // كلمة المرور صحيحة
                 isAuthenticated = true;
                 document.getElementById('mainProtectionModal').style.display = 'none';
                 document.getElementById('protectedContent').classList.remove('hidden');
-
+                
                 // تشغيل الداشبورد
                 initializeDashboard();
             } else {
                 // كلمة المرور خاطئة
                 errorDiv.classList.remove('hidden');
                 document.getElementById('mainProtectionPassword').value = '';
-
+                
                 // إخفاء رسالة الخطأ بعد 3 ثواني
                 setTimeout(() => {
                     errorDiv.classList.add('hidden');
@@ -2172,30 +2116,43 @@
 
         // تهيئة الداشبورد بعد تسجيل الدخول
         function initializeDashboard() {
+            console.log('بدء تحميل الداشبورد...');
+            
             // تحميل البيانات المحفوظة أولاً
             const dataLoaded = loadDataFromStorage();
-
+            
             // تحديث العرض
             updateMainStats();
             displayCenters();
             updateTopActiveCenters();
             updateLastUpdateTime();
-
+            
             // تعيين التحديث الافتراضي كل 30 ثانية
             document.getElementById('refreshInterval').value = '30000';
             setRefreshInterval();
-
+            
             // حفظ البيانات كل دقيقة تلقائياً (بصمت)
             setInterval(() => {
-                saveDataToStorage(true);            }, 60000);
-
+                saveDataToStorage(true);
+                console.log('تم الحفظ التلقائي للبيانات');
+            }, 60000);
+            
             // إشعار بنجاح التحميل
-            if (dataLoaded) {            } else {                showNotification('مرحباً بك', 'تم تحميل الداشبورد بالبيانات الافتراضية', 'info');
+            if (dataLoaded) {
+                console.log('تم تحميل البيانات المحفوظة بنجاح');
+            } else {
+                console.log('تم استخدام البيانات الافتراضية');
+                showNotification('مرحباً بك', 'تم تحميل الداشبورد بالبيانات الافتراضية', 'info');
             }
-
+            
             // إضافة مستمع للأحداث لحفظ البيانات عند تعديل المراكز (بصمت)
             document.addEventListener('centerUpdated', function() {
-                saveDataToStorage(true);            });        }
+                saveDataToStorage(true);
+                console.log('تم حفظ البيانات بعد تحديث المركز');
+            });
+            
+            console.log('تم تحميل الداشبورد بنجاح');
+        }
 
         let emergencyCenters = [];
 
@@ -2218,12 +2175,12 @@
             const stableCases = emergencyCenters.reduce((sum, center) => sum + center.stableCases, 0);
             const outOfService = emergencyCenters.reduce((sum, center) => sum + (center.inactiveAmbulances || 0), 0);
             const totalCenters = emergencyCenters.length;
-
+            
             // حساب الفرق: كل شخصين = فرقة واحدة
-            totalTeams = Math.floor(currentStaff / 2);
-
+            const totalTeams = Math.floor(currentStaff / 2);
+            
             // حساب إجمالي الحالات
-            totalCases = lifeSavingCases + moderateCases + stableCases + homeCases + healthCenterCases;
+            const totalCases = lifeSavingCases + moderateCases + stableCases + homeCases + healthCenterCases;
 
             // تحديث العناصر بأمان باستخدام IDs محددة
             try {
@@ -2232,25 +2189,25 @@
                     // بطاقة العاملين
                     'currentStaff': currentStaff,
                     'totalStaff': totalStaff,
-
+                    
                     // بطاقة حالات إنقاذ الحياة (من المراكز)
                     'lifeSavingCasesTotal': lifeSavingCases,
-
+                    
                     // بطاقة الحالات الطارئة (الحالات المتوسطة من المراكز)
                     'emergencyCasesTotal': moderateCases,
-
+                    
                     // بطاقة الحالات المستقرة (من المراكز)
                     'stableCasesTotal': stableCases,
-
+                    
                     // بطاقة الحالات المتوسطة (من المراكز)
                     'moderateCasesTotal': moderateCases,
-
+                    
                     // بطاقة الحالات المنزلية (من المراكز)
                     'homeCasesTotal': homeCases,
-
+                    
                     // بطاقة حالات المراكز الصحية (من المراكز)
                     'healthCenterCasesTotal': healthCenterCases,
-
+                    
                     // بطاقات إضافية
                     'responseTime': globalResponseTime.toFixed(1),
                     'totalActiveCenters': totalCenters,
@@ -2258,11 +2215,11 @@
                     'quickStats': totalCases,
                     'vehicleStatus': activeAmbulances,
                     'totalAmbulances': totalAmbulances,
-
+                    
                     // بطاقة إسعافات خارج الخدمة
                     'outOfServiceTotal': outOfService
                 };
-
+                
                 for (const [id, value] of Object.entries(elements)) {
                     const element = document.getElementById(id);
                     if (element) {
@@ -2313,7 +2270,7 @@
                                 إجمالي المراكز: <span class="text-white font-bold">${emergencyCenters.length}</span>
                             </div>
                         </div>
-
+                        
                         <div class="overflow-x-auto">
                             <table class="w-full text-white">
                                 <thead>
@@ -2338,7 +2295,7 @@
             emergencyCenters.forEach((center, index) => {
                 const staffPercentage = center.totalStaff > 0 ? Math.round((center.currentStaff / center.totalStaff) * 100) : 0;
                 const ambulancePercentage = center.totalAmbulances > 0 ? Math.round((center.activeAmbulances / center.totalAmbulances) * 100) : 0;
-
+                
                 tableRows += `
                     <tr class="border-b border-white/10 hover:bg-white/5 transition-colors duration-200">
                         <td class="py-4 px-4">
@@ -2420,7 +2377,7 @@
                                 </tbody>
                             </table>
                         </div>
-
+                        
                         <!-- ملخص إجمالي -->
                         <div class="mt-6 pt-4 border-t border-white/20">
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -2447,7 +2404,7 @@
             `;
 
             grid.innerHTML = tableCard + tableRows + tableFooter;
-
+            
             // تحديث رسم توزيع الحالات
             updateCaseDistributionChart();
         }
@@ -2459,29 +2416,29 @@
             const totalStable = emergencyCenters.reduce((sum, center) => sum + center.stableCases, 0);
             const totalHome = emergencyCenters.reduce((sum, center) => sum + center.homeCases, 0);
             const totalHealthCenter = emergencyCenters.reduce((sum, center) => sum + center.healthCenterCases, 0);
-
-            totalCases = totalLifeSaving + totalModerate + totalStable + totalHome + totalHealthCenter;
-
+            
+            const totalCases = totalLifeSaving + totalModerate + totalStable + totalHome + totalHealthCenter;
+            
             if (totalCases === 0) return;
-
+            
             const lifeSavingPercent = Math.round((totalLifeSaving / totalCases) * 100);
             const moderatePercent = Math.round((totalModerate / totalCases) * 100);
             const stablePercent = Math.round((totalStable / totalCases) * 100);
             const homePercent = Math.round((totalHome / totalCases) * 100);
             const healthCenterPercent = Math.round((totalHealthCenter / totalCases) * 100);
-
+            
             // تحديث الرسم البياني
             const chart = document.getElementById('caseDistributionChart');
             if (!chart) return; // التأكد من وجود العنصر
-
+            
             const circumference = 100;
             let offset = 0;
-
+            
             chart.innerHTML = '';
-
+            
             // إنقاذ حياة (أحمر)
             if (lifeSavingPercent > 0) {
-                path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.setAttribute('d', 'M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831');
                 path.setAttribute('fill', 'none');
                 path.setAttribute('stroke', '#ef4444');
@@ -2491,10 +2448,10 @@
                 chart.appendChild(path);
                 offset += lifeSavingPercent;
             }
-
+            
             // متوسطة (برتقالي)
             if (moderatePercent > 0) {
-                path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.setAttribute('d', 'M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831');
                 path.setAttribute('fill', 'none');
                 path.setAttribute('stroke', '#f97316');
@@ -2504,10 +2461,10 @@
                 chart.appendChild(path);
                 offset += moderatePercent;
             }
-
+            
             // مستقرة (أخضر)
             if (stablePercent > 0) {
-                path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.setAttribute('d', 'M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831');
                 path.setAttribute('fill', 'none');
                 path.setAttribute('stroke', '#22c55e');
@@ -2517,10 +2474,10 @@
                 chart.appendChild(path);
                 offset += stablePercent;
             }
-
+            
             // منزلية (أزرق)
             if (homePercent > 0) {
-                path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.setAttribute('d', 'M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831');
                 path.setAttribute('fill', 'none');
                 path.setAttribute('stroke', '#3b82f6');
@@ -2530,10 +2487,10 @@
                 chart.appendChild(path);
                 offset += homePercent;
             }
-
+            
             // مراكز صحية (نيلي)
             if (healthCenterPercent > 0) {
-                path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.setAttribute('d', 'M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831');
                 path.setAttribute('fill', 'none');
                 path.setAttribute('stroke', '#6366f1');
@@ -2542,11 +2499,11 @@
                 path.setAttribute('stroke-dashoffset', `-${offset}`);
                 chart.appendChild(path);
             }
-
+            
             // تحديث القائمة
             const legend = document.getElementById('caseDistributionLegend');
             if (!legend) return; // التأكد من وجود العنصر
-
+            
             legend.innerHTML = `
                 ${lifeSavingPercent > 0 ? `
                 <div class="flex items-center justify-between">
@@ -2610,9 +2567,9 @@
         }
 
         function attemptLogin() {
-            password = document.getElementById('loginPassword').value;
-            errorDiv = document.getElementById('loginError');
-
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
             if (password === 'admin123') {
                 isAdminMode = true;
                 document.getElementById('loginModal').style.display = 'none';
@@ -2644,12 +2601,12 @@
         }
 
         function clearAddCenterForm() {
-            const inputs = ['centerName', 'centerLocation', 'totalStaffInput', 'currentStaffInput',
-                          'totalAmbulancesInput', 'activeAmbulancesInput', 'inactiveAmbulancesInput',
-                          'supportAmbulancesInput', 'lifeSavingCasesInput', 'homeCasesInput',
+            const inputs = ['centerName', 'centerLocation', 'totalStaffInput', 'currentStaffInput', 
+                          'totalAmbulancesInput', 'activeAmbulancesInput', 'inactiveAmbulancesInput', 
+                          'supportAmbulancesInput', 'lifeSavingCasesInput', 'homeCasesInput', 
                           'moderateCasesInput', 'stableCasesInput', 'responseTimeInput', 'healthCenterCasesInput'];
             inputs.forEach(id => {
-                element = document.getElementById(id);
+                const element = document.getElementById(id);
                 if (element) {
                     element.value = '';
                     element.placeholder = element.placeholder; // الاحتفاظ بالـ placeholder
@@ -2658,12 +2615,19 @@
         }
 
         function addCenter() {
+            console.log('🚀 بدء إضافة مركز جديد...');
+            
             try {
                 // الحصول على البيانات من النموذج
-                name = document.getElementById('centerName').value.trim();
+                const name = document.getElementById('centerName').value.trim();
                 const location = document.getElementById('centerLocation').value.trim();
+                
+                console.log('📝 البيانات المدخلة:', { name, location });
+                
                 // التحقق من البيانات الأساسية
-                if (!name || !location) {                    return;
+                if (!name || !location) {
+                    alert('⚠️ يرجى ملء اسم المركز والموقع على الأقل');
+                    return;
                 }
 
                 // إنشاء المركز الجديد
@@ -2685,37 +2649,53 @@
                     healthCenterCases: parseInt(document.getElementById('healthCenterCasesInput').value) || 0,
                     status: "نشط"
                 };
+
+                console.log('✅ تم إنشاء المركز:', newCenter);
+
                 // إضافة المركز للقائمة
                 emergencyCenters.push(newCenter);
+                console.log('📊 عدد المراكز الحالي:', emergencyCenters.length);
+
                 // تحديث العرض بأمان
                 try {
-                    displayCenters();                } catch (error) {
+                    displayCenters();
+                    console.log('✅ تم تحديث عرض المراكز');
+                } catch (error) {
                     console.warn('⚠️ خطأ في تحديث العرض:', error);
                 }
 
                 // تحديث الإحصائيات بأمان
                 try {
-                    updateMainStats();                } catch (error) {
+                    updateMainStats();
+                    console.log('✅ تم تحديث الإحصائيات');
+                } catch (error) {
                     console.warn('⚠️ خطأ في تحديث الإحصائيات:', error);
                 }
 
                 // إغلاق النافذة
                 closeAddCenterModal();
-
+                
                 // حفظ البيانات
                 try {
-                    saveDataToStorage();                } catch (error) {
+                    saveDataToStorage();
+                    console.log('✅ تم حفظ البيانات');
+                } catch (error) {
                     console.warn('⚠️ خطأ في حفظ البيانات:', error);
                 }
-
+                
                 // إظهار رسالة النجاح
+                alert('🎉 تم إضافة المركز الإسعافي بنجاح!');
+                console.log('🎉 تمت العملية بنجاح!');
+                
             } catch (error) {
-                console.error('❌ خطأ في إضافة المركز:', error);            }
+                console.error('❌ خطأ في إضافة المركز:', error);
+                alert('❌ حدث خطأ في إضافة المركز: ' + error.message);
+            }
         }
 
         // وظائف التعديل السريع
         function showQuickEditModal() {
-            content = document.getElementById('quickEditContent');
+            const content = document.getElementById('quickEditContent');
             content.innerHTML = '';
 
             emergencyCenters.forEach(center => {
@@ -2761,12 +2741,12 @@
 
         function saveQuickEdit() {
             emergencyCenters.forEach(center => {
-                currentStaff = document.getElementById(`edit_currentStaff_${center.id}`);
-                activeAmbulances = document.getElementById(`edit_activeAmbulances_${center.id}`);
-                healthCenterCases = document.getElementById(`edit_healthCenterCases_${center.id}`);
-                lifeSavingCases = document.getElementById(`edit_lifeSavingCases_${center.id}`);
-                moderateCases = document.getElementById(`edit_moderateCases_${center.id}`);
-                stableCases = document.getElementById(`edit_stableCases_${center.id}`);
+                const currentStaff = document.getElementById(`edit_currentStaff_${center.id}`);
+                const activeAmbulances = document.getElementById(`edit_activeAmbulances_${center.id}`);
+                const healthCenterCases = document.getElementById(`edit_healthCenterCases_${center.id}`);
+                const lifeSavingCases = document.getElementById(`edit_lifeSavingCases_${center.id}`);
+                const moderateCases = document.getElementById(`edit_moderateCases_${center.id}`);
+                const stableCases = document.getElementById(`edit_stableCases_${center.id}`);
 
                 if (currentStaff) center.currentStaff = parseInt(currentStaff.value) || 0;
                 if (activeAmbulances) center.activeAmbulances = parseInt(activeAmbulances.value) || 0;
@@ -2779,7 +2759,7 @@
             updateMainStats();
             displayCenters();
             closeQuickEditModal();
-
+            
             // حفظ البيانات فوراً
             saveDataToStorage();
             showNotification('تم حفظ جميع التعديلات بنجاح', 'success');
@@ -2801,7 +2781,7 @@
                 globalResponseTime = newTime;
                 document.getElementById('responseTime').textContent = globalResponseTime.toFixed(1);
                 closeResponseTimeModal();
-
+                
                 // حفظ البيانات فوراً
                 saveDataToStorage();
                 showNotification(`تم تحديث زمن الاستجابة إلى ${globalResponseTime.toFixed(1)} دقيقة`, 'success');
@@ -2820,7 +2800,7 @@
         }
 
         function exportToExcel() {
-            data = emergencyCenters.map(center => ({
+            const data = emergencyCenters.map(center => ({
                 'اسم المركز': center.name,
                 'الموقع': center.location,
                 'إجمالي الموظفين': center.totalStaff,
@@ -2848,15 +2828,15 @@
         function exportToPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-
+            
             // إضافة المحتوى بالإنجليزية لتجنب مشاكل الخط
             doc.setFontSize(16);
             doc.text('Emergency Centers Report', 20, 20);
             doc.text('Jeddah Health Cluster 2', 20, 30);
-
+            
             doc.setFontSize(12);
             let yPosition = 50;
-
+            
             // إضافة الإحصائيات العامة
             doc.text('General Statistics:', 20, yPosition);
             yPosition += 10;
@@ -2870,17 +2850,17 @@
             yPosition += 8;
             doc.text(`Response Time: ${globalResponseTime} minutes`, 20, yPosition);
             yPosition += 15;
-
+            
             // إضافة تفاصيل المراكز
             doc.text('Centers Details:', 20, yPosition);
             yPosition += 10;
-
+            
             emergencyCenters.forEach((center, index) => {
                 if (yPosition > 250) {
                     doc.addPage();
                     yPosition = 20;
                 }
-
+                
                 doc.text(`${index + 1}. ${center.name}`, 20, yPosition);
                 yPosition += 8;
                 doc.text(`   Location: ${center.location}`, 25, yPosition);
@@ -2896,7 +2876,7 @@
                 doc.text(`   Cases - Stable: ${center.stableCases}, Home: ${center.homeCases}`, 25, yPosition);
                 yPosition += 10;
             });
-
+            
             // إضافة التوقيع
             yPosition += 10;
             doc.text('Emergency and Crisis Management Dashboard', 20, yPosition);
@@ -2904,21 +2884,21 @@
             doc.text('Jeddah Health Cluster 2', 20, yPosition);
             yPosition += 8;
             doc.text('Design by Hafalobaidi | Version 6.0.0', 20, yPosition);
-
+            
             doc.save('emergency_centers_report.pdf');
             closeExportModal();
         }
 
         // وظائف ملخص الحالات
         function showCasesSummaryModal() {
-            content = document.getElementById('casesSummaryContent');
-
-            totalLifeSaving = emergencyCenters.reduce((sum, center) => sum + center.lifeSavingCases, 0);
-            totalModerate = emergencyCenters.reduce((sum, center) => sum + center.moderateCases, 0);
-            totalStable = emergencyCenters.reduce((sum, center) => sum + center.stableCases, 0);
-            totalHome = emergencyCenters.reduce((sum, center) => sum + center.homeCases, 0);
-            totalCases = totalLifeSaving + totalModerate + totalStable + totalHome;
-
+            const content = document.getElementById('casesSummaryContent');
+            
+            const totalLifeSaving = emergencyCenters.reduce((sum, center) => sum + center.lifeSavingCases, 0);
+            const totalModerate = emergencyCenters.reduce((sum, center) => sum + center.moderateCases, 0);
+            const totalStable = emergencyCenters.reduce((sum, center) => sum + center.stableCases, 0);
+            const totalHome = emergencyCenters.reduce((sum, center) => sum + center.homeCases, 0);
+            const totalCases = totalLifeSaving + totalModerate + totalStable + totalHome;
+            
             content.innerHTML = `
                 <div class="bg-white/5 rounded-lg p-4 mb-4">
                     <h4 class="text-white font-bold mb-3">📊 الإحصائيات العامة</h4>
@@ -2948,7 +2928,7 @@
                         <p class="text-white font-bold text-lg">إجمالي الحالات: ${totalCases}</p>
                     </div>
                 </div>
-
+                
                 <div class="bg-white/5 rounded-lg p-4">
                     <h4 class="text-white font-bold mb-3">🏥 تفصيل الحالات حسب المراكز</h4>
                     <div class="space-y-3">
@@ -2970,7 +2950,7 @@
                     </div>
                 </div>
             `;
-
+            
             document.getElementById('casesSummaryModal').style.display = 'flex';
         }
 
@@ -2979,7 +2959,7 @@
         }
 
         function printCasesSummary() {
-            content = document.getElementById('casesSummaryContent').innerHTML;
+            const content = document.getElementById('casesSummaryContent').innerHTML;
             const printWindow = window.open('', '_blank');
             printWindow.document.write(`
                 <html>
@@ -3002,24 +2982,9 @@
                         .text-xs { font-size: 0.75rem; }
                         .mt-4 { margin-top: 16px; }
                         .space-y-3 > * + * { margin-top: 12px; }
-
-        /* Utility Classes */
-        .flex-center { display: flex; align-items: center; justify-content: center; }
-        .flex-between { display: flex; align-items: center; justify-content: space-between; }
-        .flex-col { display: flex; flex-direction: column; }
-        .space-y-2 { display: flex; flex-direction: column; gap: 0.5rem; }
-        .space-x-3 { display: flex; gap: 0.75rem; }
-        .transition-all { transition: all 0.3s ease; }
-        .py-4-px-2 { padding: 1rem 0.5rem; text-align: center; }
-        .svg-icon { width: 1.25rem; height: 1.25rem; }
-
-    </style>
+                    </style>
                 </head>
                 <body>
-    <!-- ============================================ -->
-    <!-- المحتوى الرئيسي -->
-    <!-- ============================================ -->
-
                     <h1>ملخص الحالات المنقولة - تجمع جدة الصحي الثاني</h1>
                     ${content}
                     <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #666;">
@@ -3046,7 +3011,7 @@
         }
 
         function loadTodayData() {
-            today = new Date().toISOString().split('T')[0];
+            const today = new Date().toISOString().split('T')[0];
             document.getElementById('historicalDate').value = today;
             loadHistoricalData();
         }
@@ -3060,8 +3025,8 @@
 
         function loadHistoricalData() {
             const selectedDate = document.getElementById('historicalDate').value;
-            content = document.getElementById('historicalDataContent');
-
+            const content = document.getElementById('historicalDataContent');
+            
             // بيانات تجريبية للأيام السابقة
             const historicalData = {
                 totalStaff: Math.floor(Math.random() * 20) + 120,
@@ -3069,7 +3034,7 @@
                 totalCases: Math.floor(Math.random() * 50) + 200,
                 responseTime: (Math.random() * 2 + 3).toFixed(1)
             };
-
+            
             content.innerHTML = `
                 <div class="bg-white/5 rounded-lg p-4">
                     <h4 class="text-white font-bold mb-3">📅 بيانات ${selectedDate}</h4>
@@ -3115,33 +3080,34 @@
 
         function setRefreshInterval() {
             const interval = parseInt(document.getElementById('refreshInterval').value);
-
+            
             if (refreshInterval) {
                 clearInterval(refreshInterval);
             }
-
+            
             if (interval > 0) {
                 refreshInterval = setInterval(() => {
                     // تحديث الوقت فقط بدون تغيير البيانات
                     updateLastUpdateTime();
-
+                    
                     // حفظ البيانات بصمت (بدون تغيير)
                     saveDataToStorage(true);
                 }, interval);
-
+                
                 // إشعار بدء التحديث التلقائي (مرة واحدة فقط)
-                const intervalText = interval === 15000 ? '15 ثانية' :
-                                   interval === 30000 ? '30 ثانية' :
-                                   interval === 60000 ? 'دقيقة واحدة' :
-                                   interval === 300000 ? '5 دقائق' :
+                const intervalText = interval === 15000 ? '15 ثانية' : 
+                                   interval === 30000 ? '30 ثانية' : 
+                                   interval === 60000 ? 'دقيقة واحدة' : 
+                                   interval === 300000 ? '5 دقائق' : 
                                    interval === 900000 ? '15 دقيقة' : 'مخصص';
-
+                
                 showNotification('تم تفعيل التحديث التلقائي', `سيتم تحديث الوقت كل ${intervalText} (البيانات ثابتة)`, 'info');
             } else {
                 showNotification('تم إيقاف التحديث التلقائي', 'لن يتم تحديث الوقت تلقائياً', 'warning');
             }
         }
-
+        
+        
         function updateLastUpdateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString('ar-SA');
@@ -3168,17 +3134,17 @@
         }
 
         function applyZoom() {
-            content = document.getElementById('dashboardContent');
+            const content = document.getElementById('dashboardContent');
             content.style.transform = `scale(${currentZoom / 100})`;
             content.style.transformOrigin = 'top center';
-
+            
             // تعديل الهامش العلوي لمنع قطع المحتوى
             if (currentZoom < 100) {
                 content.style.marginBottom = `${(100 - currentZoom) * 2}px`;
             } else {
                 content.style.marginBottom = '0px';
             }
-
+            
             document.getElementById('zoomLevel').textContent = currentZoom + '%';
         }
 
@@ -3204,14 +3170,14 @@
             document.getElementById('healthCenterCasesInput').value = center.healthCenterCases;
 
             // تغيير وظيفة الزر لتحديث بدلاً من إضافة
-            modal = document.getElementById('addCenterModal');
+            const modal = document.getElementById('addCenterModal');
             const title = modal.querySelector('.login-title');
             const button = modal.querySelector('button[onclick="addCenter()"]');
-
+            
             title.textContent = '✏️ تعديل مركز إسعافي';
             button.textContent = 'تحديث المركز';
             button.setAttribute('onclick', `updateCenter(${centerId})`);
-
+            
             modal.style.display = 'flex';
         }
 
@@ -3239,10 +3205,10 @@
             updateMainStats();
             displayCenters();
             resetAddCenterModal();
-
+            
             // إطلاق حدث تحديث المركز للحفظ التلقائي
             document.dispatchEvent(new CustomEvent('centerUpdated'));
-
+            
             showNotification('تم تحديث المركز بنجاح', 'تم حفظ التغييرات تلقائياً', 'success');
         }
 
@@ -3251,23 +3217,23 @@
                 emergencyCenters = emergencyCenters.filter(c => c.id !== centerId);
                 updateMainStats();
                 displayCenters();
-
+                
                 // إطلاق حدث تحديث المركز للحفظ التلقائي
                 document.dispatchEvent(new CustomEvent('centerUpdated'));
-
+                
                 showNotification('تم حذف المركز بنجاح', 'تم حفظ التغييرات تلقائياً', 'success');
             }
         }
 
         function resetAddCenterModal() {
-            modal = document.getElementById('addCenterModal');
-            title = modal.querySelector('.login-title');
-            button = modal.querySelector('button[onclick^="updateCenter"], button[onclick="addCenter()"]');
-
+            const modal = document.getElementById('addCenterModal');
+            const title = modal.querySelector('.login-title');
+            const button = modal.querySelector('button[onclick^="updateCenter"], button[onclick="addCenter()"]');
+            
             title.textContent = '➕ إضافة مركز إسعافي جديد';
             button.textContent = 'إضافة المركز';
             button.setAttribute('onclick', 'addCenter()');
-
+            
             modal.style.display = 'none';
             clearAddCenterForm();
         }
@@ -3276,7 +3242,7 @@
         document.addEventListener('click', function(event) {
             const settingsBtn = document.querySelector('.settings-btn');
             const settingsDropdown = document.getElementById('settingsDropdown');
-
+            
             if (!settingsBtn.contains(event.target)) {
                 settingsDropdown.classList.remove('show');
             }
@@ -3308,7 +3274,7 @@
             const currentPassword = document.getElementById('currentPassword').value;
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            errorDiv = document.getElementById('passwordChangeError');
+            const errorDiv = document.getElementById('passwordChangeError');
 
             if (currentPassword !== adminPassword) {
                 errorDiv.textContent = 'كلمة المرور الحالية غير صحيحة';
@@ -3329,10 +3295,189 @@
             }
 
             adminPassword = newPassword;
-            closeChangePasswordModal();        }
+            closeChangePasswordModal();
+            alert('تم تغيير كلمة المرور بنجاح!');
+        }
 
         // إصلاح وظيفة تسجيل الدخول لاستخدام كلمة المرور المحدثة
+        function attemptLogin() {
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (password === adminPassword) {
+                isAdminMode = true;
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('adminControls').style.display = 'block';
+                document.getElementById('printButton').classList.add('admin-mode');
+                document.getElementById('loginPassword').value = '';
+                errorDiv.style.display = 'none';
+                displayCenters();
+            } else {
+                errorDiv.textContent = 'كلمة مرور خاطئة';
+                errorDiv.style.display = 'block';
+            }
+        }
 
+        // إصلاح وظائف التاريخ الزمني
+        function loadHistoricalData() {
+            const selectedDate = document.getElementById('historicalDate').value;
+            const contentDiv = document.getElementById('historicalDataContent');
+            
+            if (!selectedDate) {
+                alert('يرجى اختيار تاريخ أولاً');
+                return;
+            }
+
+            // بيانات تجريبية للتواريخ المختلفة
+            const historicalData = generateHistoricalData(selectedDate);
+            
+            contentDiv.innerHTML = `
+                <div class="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-purple-300/20 mb-4">
+                    <h3 class="text-white font-bold mb-3">📅 بيانات ${selectedDate}</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div class="text-white/80">إجمالي الحالات: <span class="text-white font-bold">${historicalData.totalCases}</span></div>
+                        <div class="text-white/80">العاملين النشطين: <span class="text-white font-bold">${historicalData.activeStaff}</span></div>
+                        <div class="text-white/80">الإسعافات النشطة: <span class="text-white font-bold">${historicalData.activeAmbulances}</span></div>
+                        <div class="text-white/80">زمن الاستجابة: <span class="text-white font-bold">${historicalData.responseTime} دقيقة</span></div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-white/20">
+                        <button onclick="printHistoricalData('${selectedDate}')" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm w-full">
+                            🖨️ طباعة البيانات التاريخية
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateHistoricalData(date) {
+            // توليد بيانات تجريبية بناءً على التاريخ
+            const baseDate = new Date(date);
+            const dayOffset = Math.floor(Math.random() * 50);
+            
+            return {
+                totalCases: 180 + dayOffset,
+                activeStaff: 110 + Math.floor(Math.random() * 20),
+                activeAmbulances: 25 + Math.floor(Math.random() * 10),
+                responseTime: (3.5 + Math.random() * 2).toFixed(1)
+            };
+        }
+
+        function printHistoricalData(date) {
+            const printWindow = window.open('', '_blank');
+            const historicalData = generateHistoricalData(date);
+            
+            printWindow.document.write(`
+                <html dir="rtl">
+                <head>
+                    <title>البيانات التاريخية - ${date}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .data-table { width: 100%; border-collapse: collapse; }
+                        .data-table th, .data-table td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+                        .data-table th { background-color: #f5f5f5; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>البيانات التاريخية</h1>
+                        <h2>تجمع جدة الصحي الثاني</h2>
+                        <p>التاريخ: ${date}</p>
+                    </div>
+                    <table class="data-table">
+                        <tr><th>البيان</th><th>القيمة</th></tr>
+                        <tr><td>إجمالي الحالات</td><td>${historicalData.totalCases}</td></tr>
+                        <tr><td>العاملين النشطين</td><td>${historicalData.activeStaff}</td></tr>
+                        <tr><td>الإسعافات النشطة</td><td>${historicalData.activeAmbulances}</td></tr>
+                        <tr><td>زمن الاستجابة</td><td>${historicalData.responseTime} دقيقة</td></tr>
+                    </table>
+                    <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #666;">
+                        <p>تصميم خاص لإدارة الطوارئ والأزمات والكوارث</p>
+                        <p>تجمع جدة الصحي الثاني | تصميم Hafalobaidi</p>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function loadTodayData() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('historicalDate').value = today;
+            loadHistoricalData();
+        }
+
+        function loadYesterdayData() {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            document.getElementById('historicalDate').value = yesterday.toISOString().split('T')[0];
+            loadHistoricalData();
+        }
+
+        // نظام الإشعارات على الشاشة
+        function showNotification(title, message, type = 'success') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-icon">${icons[type]}</div>
+                <div class="notification-content">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // إزالة الإشعار بعد 4 ثوان
+            setTimeout(() => {
+                notification.classList.add('slide-out');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // إصلاح مشكلة التاريخ الزمني - إنشاء بيانات ثابتة لكل تاريخ
+        const historicalDataCache = {};
+
+        function generateHistoricalData(date) {
+            // إذا كانت البيانات محفوظة مسبقاً، استخدمها
+            if (historicalDataCache[date]) {
+                return historicalDataCache[date];
+            }
+            
+            // إنشاء بيانات ثابتة بناءً على التاريخ
+            const baseDate = new Date(date);
+            const dayOfYear = Math.floor((baseDate - new Date(baseDate.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+            
+            // استخدام seed ثابت لكل تاريخ لضمان ثبات البيانات
+            const seed = dayOfYear * 37; // رقم ثابت للحصول على نتائج متسقة
+            
+            const data = {
+                totalCases: 150 + (seed % 80),
+                activeStaff: 100 + (seed % 30),
+                activeAmbulances: 20 + (seed % 15),
+                responseTime: (3.0 + ((seed % 20) / 10)).toFixed(1)
+            };
+            
+            // حفظ البيانات في الذاكرة المؤقتة
+            historicalDataCache[date] = data;
+            return data;
+        }
+        
         // نظام حفظ البيانات الدائم المحسن
         function saveDataToStorage(silent = false) {
             try {
@@ -3343,7 +3488,8 @@
                     lastUpdate: new Date().toISOString(),
                     version: '6.0.0'
                 };
-                localStorage.setItem('emergencyDashboardData', JSON.stringify(dataToSave));.toLocaleTimeString('ar-SA'));
+                localStorage.setItem('emergencyDashboardData', JSON.stringify(dataToSave));
+                console.log('تم حفظ البيانات بنجاح في:', new Date().toLocaleTimeString('ar-SA'));
                 return true;
             } catch (error) {
                 console.error('خطأ في حفظ البيانات:', error);
@@ -3353,11 +3499,13 @@
                 return false;
             }
         }
-
+        
         function loadDataFromStorage() {
-            // عدم تحميل أي بيانات محفوظة - البدء بصفحة فارغة دائماً            return false;
+            // عدم تحميل أي بيانات محفوظة - البدء بصفحة فارغة دائماً
+            console.log('تم تجاهل البيانات المحفوظة - البدء بصفحة فارغة');
+            return false;
         }
-
+        
         function clearStoredData() {
             if (confirm('هل أنت متأكد من حذف جميع البيانات المحفوظة؟\nسيتم إعادة تحميل الصفحة واستخدام البيانات الافتراضية.')) {
                 localStorage.removeItem('emergencyDashboardData');
@@ -3367,14 +3515,14 @@
                 }, 2000);
             }
         }
-
+        
         // وظيفة حفظ يدوي للمستخدم
         function manualSave() {
             if (saveDataToStorage()) {
                 showNotification('تم الحفظ بنجاح', 'تم حفظ جميع البيانات والإعدادات الحالية', 'success');
             }
         }
-
+        
         // وظيفة تصدير البيانات
         function exportData() {
             try {
@@ -3384,16 +3532,16 @@
                     exportDate: new Date().toISOString(),
                     version: '6.0.0'
                 };
-
+                
                 const dataStr = JSON.stringify(dataToExport, null, 2);
                 const dataBlob = new Blob([dataStr], {type: 'application/json'});
                 const url = URL.createObjectURL(dataBlob);
-
+                
                 const link = document.createElement('a');
                 link.href = url;
                 link.download = `emergency_dashboard_backup_${new Date().toISOString().split('T')[0]}.json`;
                 link.click();
-
+                
                 URL.revokeObjectURL(url);
                 showNotification('تم تصدير البيانات', 'تم تنزيل ملف النسخة الاحتياطية', 'success');
             } catch (error) {
@@ -3401,16 +3549,16 @@
                 showNotification('خطأ في التصدير', 'تعذر تصدير البيانات', 'error');
             }
         }
-
+        
         // دالة التحكم بالأهداف
         let currentTarget = 92; // الهدف الحالي
-
+        
         function editTarget() {
             const newTarget = prompt('أدخل الهدف الجديد (نسبة مئوية):', currentTarget);
             if (newTarget !== null && !isNaN(newTarget) && newTarget >= 0 && newTarget <= 100) {
                 currentTarget = parseInt(newTarget);
                 document.getElementById('performanceTarget').textContent = currentTarget + '%';
-
+                
                 // حفظ الهدف الجديد
                 saveDataToStorage(true);
                 showNotification('تم تحديث الهدف', `الهدف الجديد: ${currentTarget}%`, 'success');
@@ -3418,17 +3566,23 @@
                 showNotification('قيمة غير صحيحة', 'يرجى إدخال رقم بين 0 و 100', 'error');
             }
         }
-
+        
         // تهيئة الصفحة المحسنة - فقط للتحقق من الحماية
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('بدء تحميل نظام الحماية...');
+            
             // التحقق من وجود عناصر الحماية
             const protectionModal = document.getElementById('mainProtectionModal');
             const protectedContent = document.getElementById('protectedContent');
-
+            
             if (protectionModal && protectedContent) {
                 // إظهار نافذة الحماية
                 protectionModal.style.display = 'flex';
-                protectedContent.classList.add('hidden');            } else {            }
+                protectedContent.classList.add('hidden');
+                console.log('تم تفعيل نظام الحماية');
+            } else {
+                console.log('خطأ: لم يتم العثور على عناصر الحماية');
+            }
         });;
 
 // ===== دوال إدارة الأحداث الجارية =====
@@ -3446,18 +3600,20 @@ let emergencyEvents = []; // مصفوفة الأحداث
 // تحميل إعدادات الأحداث من التخزين المحلي
 function loadEmergencyAlertSettings() {
     try {
-        saved = localStorage.getItem('emergencyAlertSettings');
+        const saved = localStorage.getItem('emergencyAlertSettings');
         if (saved) {
             emergencyAlertSettings = JSON.parse(saved);
         }
-
+        
         const savedEvents = localStorage.getItem('emergencyEvents');
         if (savedEvents) {
             emergencyEvents = JSON.parse(savedEvents);
         }
-
+        
         updateEmergencyAlertDisplay();
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في تحميل إعدادات الأحداث:', error);
+    }
 }
 
 // حفظ إعدادات الأحداث في التخزين المحلي
@@ -3465,7 +3621,9 @@ function saveEmergencyAlertSettings() {
     try {
         localStorage.setItem('emergencyAlertSettings', JSON.stringify(emergencyAlertSettings));
         localStorage.setItem('emergencyEvents', JSON.stringify(emergencyEvents));
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في حفظ إعدادات الأحداث:', error);
+    }
 }
 
 // تحديث عرض شريط الأحداث
@@ -3474,38 +3632,42 @@ function updateEmergencyAlertDisplay() {
         const alertElement = document.getElementById('emergencyAlert');
         const iconElement = document.getElementById('emergencyIcon');
         const textElement = document.getElementById('emergencyText');
-
+        
         if (alertElement && iconElement && textElement) {
             if (emergencyAlertSettings.isActive && emergencyEvents.length > 0) {
                 alertElement.style.display = 'block';
-
+                
                 // عرض جميع الأحداث
                 let eventsText = '';
                 emergencyEvents.forEach((event, index) => {
                     if (index > 0) eventsText += ' • ';
                     eventsText += `${event.icon} ${event.description}`;
                 });
-
+                
                 iconElement.textContent = emergencyEvents[0].icon;
                 textElement.textContent = eventsText;
             } else {
                 alertElement.style.display = 'none';
             }
         }
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في تحديث عرض الأحداث:', error);
+    }
 }
 
 // عرض نافذة إدارة الأحداث
 function showEmergencyAlertModal() {
     try {
-        modal = document.getElementById('emergencyAlertModal');
-
+        const modal = document.getElementById('emergencyAlertModal');
+        
         if (modal) {
             updateModalStatus();
             updateEventsList();
             modal.style.display = 'flex';
         }
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في عرض نافذة الأحداث:', error);
+    }
 }
 
 // تحديث قائمة الأحداث في النافذة
@@ -3513,7 +3675,7 @@ function updateEventsList() {
     try {
         const eventsList = document.getElementById('eventsList');
         const eventsCount = document.getElementById('eventsCount');
-
+        
         if (eventsList) {
             if (emergencyEvents.length === 0) {
                 eventsList.innerHTML = '<div class="text-white/50 text-sm text-center py-4">لا توجد أحداث</div>';
@@ -3536,11 +3698,13 @@ function updateEventsList() {
                 `).join('');
             }
         }
-
+        
         if (eventsCount) {
             eventsCount.textContent = `${emergencyEvents.length} ${emergencyEvents.length === 1 ? 'حدث' : emergencyEvents.length === 2 ? 'حدثان' : 'أحداث'}`;
         }
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في تحديث قائمة الأحداث:', error);
+    }
 }
 
 // إضافة حدث جديد
@@ -3548,31 +3712,35 @@ function addNewEvent() {
     try {
         const iconInput = document.getElementById('newEventIcon');
         const descriptionInput = document.getElementById('newEventDescription');
-
+        
         if (iconInput && descriptionInput) {
             const icon = iconInput.value.trim() || '🚨';
             const description = descriptionInput.value.trim();
-
-            if (!description) {                return;
+            
+            if (!description) {
+                alert('يرجى إدخال وصف الحدث');
+                return;
             }
-
+            
             emergencyEvents.push({
                 icon: icon,
                 description: description,
                 timestamp: new Date().toISOString()
             });
-
+            
             saveEmergencyAlertSettings();
             updateEventsList();
             updateEmergencyAlertDisplay();
-
+            
             // مسح الحقول
             iconInput.value = '';
             descriptionInput.value = '';
-
+            
             showNotification('تم إضافة الحدث بنجاح', 'success');
         }
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في إضافة الحدث:', error);
+    }
 }
 
 // حذف حدث
@@ -3585,7 +3753,9 @@ function deleteEvent(index) {
             updateEmergencyAlertDisplay();
             showNotification('تم حذف الحدث بنجاح', 'success');
         }
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في حذف الحدث:', error);
+    }
 }
 
 // تحديث حالة الشريط في النافذة
@@ -3594,7 +3764,7 @@ function updateModalStatus() {
         const statusText = document.getElementById('alertStatusText');
         const statusIndicator = document.getElementById('alertStatusIndicator');
         const toggleBtn = document.getElementById('toggleAlertBtn');
-
+        
         if (emergencyAlertSettings.isActive) {
             if (statusText) statusText.textContent = 'نشط';
             if (statusIndicator) statusIndicator.className = 'w-3 h-3 bg-red-500 rounded-full animate-pulse';
@@ -3610,7 +3780,9 @@ function updateModalStatus() {
                 toggleBtn.className = 'w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg font-medium transition-all duration-200';
             }
         }
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في تحديث حالة النافذة:', error);
+    }
 }
 
 // تبديل حالة شريط الأحداث
@@ -3620,23 +3792,28 @@ function toggleEmergencyAlert() {
         updateModalStatus();
         updateEmergencyAlertDisplay();
         saveEmergencyAlertSettings();
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في تبديل حالة الشريط:', error);
+    }
 }
 
 // إغلاق نافذة إدارة الأحداث
 function closeEmergencyAlertModal() {
     try {
-        modal = document.getElementById('emergencyAlertModal');
+        const modal = document.getElementById('emergencyAlertModal');
         if (modal) {
             modal.style.display = 'none';
         }
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في إغلاق النافذة:', error);
+    }
 }
 
 // تحميل إعدادات الأحداث عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', function() {
     loadEmergencyAlertSettings();
 });
+
 
 // ===== دوال التحكم في البطاقات الجانبية للإحالات =====
 
@@ -3653,19 +3830,23 @@ let mobileTeamsData = {};
 // تحميل بيانات البطاقات الجانبية
 function loadSideMedicalCasesData() {
     try {
-        saved = localStorage.getItem('sideMedicalCasesData');
+        const saved = localStorage.getItem('sideMedicalCasesData');
         if (saved) {
             sideMedicalCasesData = JSON.parse(saved);
         }
         updateSideMedicalCasesDisplay();
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في تحميل بيانات البطاقات الجانبية:', error);
+    }
 }
 
 // حفظ بيانات البطاقات الجانبية
 function saveSideMedicalCasesData() {
     try {
         localStorage.setItem('sideMedicalCasesData', JSON.stringify(sideMedicalCasesData));
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في حفظ بيانات البطاقات الجانبية:', error);
+    }
 }
 
 // تحديث عرض البطاقات الجانبية
@@ -3674,20 +3855,22 @@ function updateSideMedicalCasesDisplay() {
         const lifeSavingElement = document.getElementById('sideLifeSavingCases');
         const emergencyElement = document.getElementById('sideEmergencyCases');
         const stableElement = document.getElementById('sideStableCases');
-
+        
         if (lifeSavingElement) lifeSavingElement.textContent = sideMedicalCasesData.lifeSavingCases;
         if (emergencyElement) emergencyElement.textContent = sideMedicalCasesData.emergencyCases;
         if (stableElement) stableElement.textContent = sideMedicalCasesData.stableCases;
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في تحديث عرض البطاقات الجانبية:', error);
+    }
 }
 
 // ===== دوال تعديل إحالات إنقاذ الحياة =====
 function editSideLifeSavingCases() {
     if (!isAdminMode) return;
-
-    modal = document.getElementById('editSideLifeSavingModal');
-    input = document.getElementById('sideLifeSavingInput');
-
+    
+    const modal = document.getElementById('editSideLifeSavingModal');
+    const input = document.getElementById('sideLifeSavingInput');
+    
     if (modal && input) {
         input.value = sideMedicalCasesData.lifeSavingCases;
         modal.style.display = 'flex';
@@ -3696,9 +3879,9 @@ function editSideLifeSavingCases() {
 }
 
 function saveSideLifeSavingCases() {
-    input = document.getElementById('sideLifeSavingInput');
-    value = parseInt(input.value) || 0;
-
+    const input = document.getElementById('sideLifeSavingInput');
+    const value = parseInt(input.value) || 0;
+    
     if (value >= 0) {
         sideMedicalCasesData.lifeSavingCases = value;
         saveSideMedicalCasesData();
@@ -3711,17 +3894,17 @@ function saveSideLifeSavingCases() {
 }
 
 function closeSideLifeSavingModal() {
-    modal = document.getElementById('editSideLifeSavingModal');
+    const modal = document.getElementById('editSideLifeSavingModal');
     if (modal) modal.style.display = 'none';
 }
 
 // ===== دوال تعديل الإحالات الطارئة =====
 function editSideEmergencyCases() {
     if (!isAdminMode) return;
-
-    modal = document.getElementById('editSideEmergencyModal');
-    input = document.getElementById('sideEmergencyInput');
-
+    
+    const modal = document.getElementById('editSideEmergencyModal');
+    const input = document.getElementById('sideEmergencyInput');
+    
     if (modal && input) {
         input.value = sideMedicalCasesData.emergencyCases;
         modal.style.display = 'flex';
@@ -3730,9 +3913,9 @@ function editSideEmergencyCases() {
 }
 
 function saveSideEmergencyCases() {
-    input = document.getElementById('sideEmergencyInput');
-    value = parseInt(input.value) || 0;
-
+    const input = document.getElementById('sideEmergencyInput');
+    const value = parseInt(input.value) || 0;
+    
     if (value >= 0) {
         sideMedicalCasesData.emergencyCases = value;
         saveSideMedicalCasesData();
@@ -3745,17 +3928,17 @@ function saveSideEmergencyCases() {
 }
 
 function closeSideEmergencyModal() {
-    modal = document.getElementById('editSideEmergencyModal');
+    const modal = document.getElementById('editSideEmergencyModal');
     if (modal) modal.style.display = 'none';
 }
 
 // ===== دوال تعديل الإحالات المستقرة =====
 function editSideStableCases() {
     if (!isAdminMode) return;
-
-    modal = document.getElementById('editSideStableModal');
-    input = document.getElementById('sideStableInput');
-
+    
+    const modal = document.getElementById('editSideStableModal');
+    const input = document.getElementById('sideStableInput');
+    
     if (modal && input) {
         input.value = sideMedicalCasesData.stableCases;
         modal.style.display = 'flex';
@@ -3764,9 +3947,9 @@ function editSideStableCases() {
 }
 
 function saveSideStableCases() {
-    input = document.getElementById('sideStableInput');
-    value = parseInt(input.value) || 0;
-
+    const input = document.getElementById('sideStableInput');
+    const value = parseInt(input.value) || 0;
+    
     if (value >= 0) {
         sideMedicalCasesData.stableCases = value;
         saveSideMedicalCasesData();
@@ -3779,7 +3962,7 @@ function saveSideStableCases() {
 }
 
 function closeSideStableModal() {
-    modal = document.getElementById('editSideStableModal');
+    const modal = document.getElementById('editSideStableModal');
     if (modal) modal.style.display = 'none';
 }
 
@@ -3788,31 +3971,33 @@ document.addEventListener('DOMContentLoaded', function() {
     loadSideMedicalCasesData();
 });
 
+
+
 // تحديث التاريخ والوقت
 function updateDateTime() {
-    now = new Date();
-
+    const now = new Date();
+    
     // أسماء الأيام بالعربي
     const daysArabic = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
     const dayName = daysArabic[now.getDay()];
-
+    
     // تنسيق التاريخ
     const day = String(now.getDate()).padStart(2, '0');
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const year = now.getFullYear();
     const dateStr = `${year}/${month}/${day}`;
-
+    
     // تنسيق الوقت
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
     const timeStr = `${hours}:${minutes}:${seconds}`;
-
+    
     // تحديث العرض
     const dayElement = document.getElementById('currentDay');
     const dateElement = document.getElementById('currentDate');
     const timeElement = document.getElementById('currentTime');
-
+    
     if (dayElement) dayElement.textContent = dayName;
     if (dateElement) dateElement.textContent = dateStr;
     if (timeElement) timeElement.textContent = timeStr;
@@ -3823,6 +4008,9 @@ setInterval(updateDateTime, 1000);
 
 // تحديث فوري عند تحميل الصفحة
 updateDateTime();
+
+
+
 
 // ====== نظام السعة السريرية ======
 
@@ -3836,7 +4024,7 @@ let currentEditingBed = null;
 
 // تحميل بيانات السعة السريرية من localStorage
 function loadBedCapacityData() {
-    saved = localStorage.getItem('bedCapacityData');
+    const saved = localStorage.getItem('bedCapacityData');
     if (saved) {
         try {
             bedCapacityData = JSON.parse(saved);
@@ -3882,7 +4070,7 @@ let bedTypesVisibility = {
 
 // تحميل تفضيلات الأقسام من LocalStorage
 function loadBedTypesVisibility() {
-    saved = localStorage.getItem('bedTypesVisibility');
+    const saved = localStorage.getItem('bedTypesVisibility');
     if (saved) {
         try {
             bedTypesVisibility = JSON.parse(saved);
@@ -3931,7 +4119,7 @@ function isBedTypeVisible(hospitalKey, bedType) {
 
 // تحميل بيانات المستشفيات
 function loadHospitalsBedsData() {
-    saved = localStorage.getItem('hospitalsBedsData');
+    const saved = localStorage.getItem('hospitalsBedsData');
     if (saved) {
         try {
             hospitalsBedsData = JSON.parse(saved);
@@ -3939,10 +4127,10 @@ function loadHospitalsBedsData() {
             console.error('Error loading hospitals beds data:', e);
         }
     }
-
+    
     // تحميل تفضيلات الأقسام
     loadBedTypesVisibility();
-
+    
     updateHospitalsBedsDisplay();
 }
 
@@ -3953,28 +4141,28 @@ function saveHospitalsBedsData() {
 
 // تحديث عرض المستشفيات
 function updateHospitalsBedsDisplay() {
-    for (i = 1; i <= 3; i++) {
-        hospitalKey = `hospital${i}`;
-        data = hospitalsBedsData[hospitalKey];
-
+    for (let i = 1; i <= 3; i++) {
+        const hospitalKey = `hospital${i}`;
+        const data = hospitalsBedsData[hospitalKey];
+        
         // تحديث اسم المستشفى
         const nameEl = document.getElementById(`${hospitalKey}Name`);
         if (nameEl) nameEl.textContent = data.name;
-
+        
         // تحديث أسرة الطوارئ
         updateBedTypeDisplay(hospitalKey, 'Emergency', data.emergency);
-
+        
         // تحديث أسرة ICU
         updateBedTypeDisplay(hospitalKey, 'Icu', data.icu);
-
+        
         // تحديث أسرة CCU
         updateBedTypeDisplay(hospitalKey, 'Ccu', data.ccu);
-
+        
         // تحديث أسرة PICU إذا كانت موجودة
         if (data.picu) {
             updateBedTypeDisplay(hospitalKey, 'Picu', data.picu);
         }
-
+        
         // تحديث أسرة NICU إذا كانت موجودة
         if (data.nicu) {
             updateBedTypeDisplay(hospitalKey, 'Nicu', data.nicu);
@@ -3987,14 +4175,14 @@ function updateBedTypeDisplay(hospitalKey, bedType, bedData) {
     // البحث عن جميع عناصر البطاقة
     const card = document.querySelector(`[id="${hospitalKey}Name"]`)?.closest('.bg-gradient-to-br');
     if (!card) return;
-
+    
     // التحقق من رؤية القسم
     const bedTypeLower = bedType.toLowerCase();
     const isVisible = isBedTypeVisible(hospitalKey, bedTypeLower);
-
+    
     // البحث عن جميع عناصر p التي تحتوي على اسم القسم
     const allParagraphs = Array.from(card.querySelectorAll('p'));
-
+    
     // البحث عن عنصر يحتوي على اسم القسم
     const bedTypeLabel = allParagraphs.find(p => {
         const text = p.textContent;
@@ -4004,10 +4192,10 @@ function updateBedTypeDisplay(hospitalKey, bedType, bedData) {
                (bedType === 'PICU' && text.includes('أسرة PICU')) ||
                (bedType === 'NICU' && text.includes('أسرة NICU'));
     });
-
+    
     if (bedTypeLabel) {
         // البحث عن الحاوية الأب (الـ div الذي يحتوي على القسم كاملاً)
-        container = bedTypeLabel.parentElement;
+        let container = bedTypeLabel.parentElement;
         if (container && container.className === '') {
             container.style.display = isVisible ? 'block' : 'none';
         }
@@ -4017,59 +4205,59 @@ function updateBedTypeDisplay(hospitalKey, bedType, bedData) {
 // فتح نافذة إدارة الأقسام المعروضة
 function openBedTypesManager(hospitalNumber) {
     if (!isAdminMode) return;
-
-    hospitalKey = `hospital${hospitalNumber}`;
-    modal = document.getElementById('bedTypesManagerModal');
-
+    
+    const hospitalKey = `hospital${hospitalNumber}`;
+    const modal = document.getElementById('bedTypesManagerModal');
+    
     if (!modal) {
         console.error('لم يتم العثور على نافذة إدارة الأقسام');
         return;
     }
-
+    
     // تحديث النافذة بالبيانات الحالية
     document.getElementById('bedTypesManagerTitle').textContent = `إدارة أقسام ${hospitalsBedsData[hospitalKey].name}`;
-
+    
     // تحديث الاختيارات
     const bedTypes = ['emergency', 'icu', 'ccu', 'picu', 'nicu'];
     const bedTypeLabels = {emergency: 'طوارئ', icu: 'ICU', ccu: 'CCU', picu: 'PICU', nicu: 'NICU'};
-
+    
     const checkboxesContainer = document.getElementById('bedTypesCheckboxes');
     checkboxesContainer.innerHTML = '';
-
+    
     bedTypes.forEach(bedType => {
-        isVisible = isBedTypeVisible(hospitalKey, bedType);
+        const isVisible = isBedTypeVisible(hospitalKey, bedType);
         const checkbox = document.createElement('label');
         checkbox.className = 'flex items-center space-x-3 mb-3 cursor-pointer';
         checkbox.innerHTML = `
-            <input type="checkbox" ${isVisible ? 'checked' : ''}
-                   onchange="toggleBedTypeVisibility('${hospitalKey}', '${bedType}')"
+            <input type="checkbox" ${isVisible ? 'checked' : ''} 
+                   onchange="toggleBedTypeVisibility('${hospitalKey}', '${bedType}')" 
                    class="w-4 h-4 rounded">
             <span class="text-white">عرض أسرة ${bedTypeLabels[bedType]}</span>
         `;
         checkboxesContainer.appendChild(checkbox);
     });
-
+    
     // تخزين مفتاح المستشفى الحالي
     window.currentBedTypesHospital = hospitalKey;
-
+    
     // عرض النافذة
     modal.style.display = 'flex';
 }
 
 // إغلاق نافذة إدارة الأقسام
 function closeBedTypesManager() {
-    modal = document.getElementById('bedTypesManagerModal');
+    const modal = document.getElementById('bedTypesManagerModal');
     if (modal) modal.style.display = 'none';
 }
 
 // فتح نافذة تعديل مستشفى
 function editHospitalBeds(hospitalNumber) {
     if (!isAdminMode) return;
-
+    
     currentEditingHospital = hospitalNumber;
-    hospitalKey = `hospital${hospitalNumber}`;
-    data = hospitalsBedsData[hospitalKey];
-
+    const hospitalKey = `hospital${hospitalNumber}`;
+    const data = hospitalsBedsData[hospitalKey];
+    
     // ملء الحقول بالبيانات الحالية
     document.getElementById('hospitalNameInput').value = data.name.replace('🏗️ ', '');
     document.getElementById('emergencyOccupiedInput').value = data.emergency.occupied;
@@ -4078,7 +4266,7 @@ function editHospitalBeds(hospitalNumber) {
     document.getElementById('icuTotalInput').value = data.icu.total;
     document.getElementById('ccuOccupiedInput').value = data.ccu.occupied;
     document.getElementById('ccuTotalInput').value = data.ccu.total;
-
+    
     // ملء حقول PICU وNICU إذا كانت موجودة
     if (document.getElementById('picuOccupiedInput')) {
         document.getElementById('picuOccupiedInput').value = (data.picu && data.picu.occupied) || 0;
@@ -4088,40 +4276,40 @@ function editHospitalBeds(hospitalNumber) {
         document.getElementById('nicuOccupiedInput').value = (data.nicu && data.nicu.occupied) || 0;
         document.getElementById('nicuTotalInput').value = (data.nicu && data.nicu.total) || 0;
     }
-
+    
     // عرض النافذة
-    modal = document.getElementById('editHospitalBedsModal');
+    const modal = document.getElementById('editHospitalBedsModal');
     if (modal) modal.style.display = 'flex';
 }
 
 // حفظ بيانات المستشفى
 function saveHospitalBeds() {
     if (!currentEditingHospital) return;
-
+    
     const hospitalName = document.getElementById('hospitalNameInput').value.trim();
-    emergencyOccupied = parseInt(document.getElementById('emergencyOccupiedInput').value) || 0;
-    emergencyTotal = parseInt(document.getElementById('emergencyTotalInput').value) || 0;
-    icuOccupied = parseInt(document.getElementById('icuOccupiedInput').value) || 0;
-    icuTotal = parseInt(document.getElementById('icuTotalInput').value) || 0;
-    ccuOccupied = parseInt(document.getElementById('ccuOccupiedInput').value) || 0;
-    ccuTotal = parseInt(document.getElementById('ccuTotalInput').value) || 0;
+    const emergencyOccupied = parseInt(document.getElementById('emergencyOccupiedInput').value) || 0;
+    const emergencyTotal = parseInt(document.getElementById('emergencyTotalInput').value) || 0;
+    const icuOccupied = parseInt(document.getElementById('icuOccupiedInput').value) || 0;
+    const icuTotal = parseInt(document.getElementById('icuTotalInput').value) || 0;
+    const ccuOccupied = parseInt(document.getElementById('ccuOccupiedInput').value) || 0;
+    const ccuTotal = parseInt(document.getElementById('ccuTotalInput').value) || 0;
     const picuOccupied = parseInt(document.getElementById('picuOccupiedInput')?.value) || 0;
     const picuTotal = parseInt(document.getElementById('picuTotalInput')?.value) || 0;
     const nicuOccupied = parseInt(document.getElementById('nicuOccupiedInput')?.value) || 0;
     const nicuTotal = parseInt(document.getElementById('nicuTotalInput')?.value) || 0;
-
+    
     if (!hospitalName) {
         showNotification('خطأ', 'يرجى إدخال اسم المستشفى', 'error');
         return;
     }
-
+    
     // التحقق من عدم تجاوز المشغول للإجمالي
     if (emergencyOccupied > emergencyTotal || icuOccupied > icuTotal || ccuOccupied > ccuTotal || picuOccupied > picuTotal || nicuOccupied > nicuTotal) {
         showNotification('خطأ', 'عدد الأسرة المشغولة لا يمكن أن يكون أكبر من الإجمالي', 'error');
         return;
     }
-
-    hospitalKey = `hospital${currentEditingHospital}`;
+    
+    const hospitalKey = `hospital${currentEditingHospital}`;
     hospitalsBedsData[hospitalKey] = {
         name: '🏭 ' + hospitalName,
         emergency: { occupied: emergencyOccupied, total: emergencyTotal },
@@ -4130,7 +4318,7 @@ function saveHospitalBeds() {
         picu: { occupied: picuOccupied, total: picuTotal },
         nicu: { occupied: nicuOccupied, total: nicuTotal }
     };
-
+    
     saveHospitalsBedsData();
     updateHospitalsBedsDisplay();
     closeHospitalBedsModal();
@@ -4139,7 +4327,7 @@ function saveHospitalBeds() {
 
 // إغلاق نافذة تعديل المستشفى
 function closeHospitalBedsModal() {
-    modal = document.getElementById('editHospitalBedsModal');
+    const modal = document.getElementById('editHospitalBedsModal');
     if (modal) modal.style.display = 'none';
     currentEditingHospital = null;
 }
@@ -4149,6 +4337,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loadHospitalsBedsData();
 });
 
+
+
 // ===== دوال الفريق المتنقل (Mobile Medical Team) =====
 
 let mobileFacilitiesCount = 0;
@@ -4157,8 +4347,8 @@ const MAX_FACILITIES = 5;
 // فتح نافذة تعديل الفريق المتنقل
 function openMobileTeamsModal() {
     if (!isAdminMode) return;
-
-    modal = document.getElementById('editMobileTeamsModal');
+    
+    const modal = document.getElementById('editMobileTeamsModal');
     if (modal) {
         loadMobileTeamsInputs();
         modal.style.display = 'flex';
@@ -4167,32 +4357,32 @@ function openMobileTeamsModal() {
 
 // إغلاق نافذة تعديل الفريق المتنقل
 function closeMobileTeamsModal() {
-    modal = document.getElementById('editMobileTeamsModal');
+    const modal = document.getElementById('editMobileTeamsModal');
     if (modal) modal.style.display = 'none';
 }
 
 // تحميل حقول الإدخال
 function loadMobileTeamsInputs() {
-    container = document.getElementById('mobileTeamsInputs');
+    const container = document.getElementById('mobileTeamsInputs');
     if (!container) return;
-
+    
     container.innerHTML = '';
     mobileFacilitiesCount = 0;
-
+    
     // تحميل البيانات المحفوظة
-    facilities = Object.keys(mobileTeamsData);
-
+    const facilities = Object.keys(mobileTeamsData);
+    
     if (facilities.length === 0) {
         // إضافة حقل واحد افتراضي
         addMobileFacility();
     } else {
         // تحميل الحقول المحفوظة
         facilities.forEach((facilityId, index) => {
-            data = mobileTeamsData[facilityId];
+            const data = mobileTeamsData[facilityId];
             addMobileFacility(data.name, data.teams);
         });
     }
-
+    
     updateAddButton();
 }
 
@@ -4202,13 +4392,13 @@ function addMobileFacility(name = '', teams = 0) {
         showNotification('تنبيه', `الحد الأقصى ${MAX_FACILITIES} منشآت`, 'warning');
         return;
     }
-
-    container = document.getElementById('mobileTeamsInputs');
+    
+    const container = document.getElementById('mobileTeamsInputs');
     if (!container) return;
-
+    
     mobileFacilitiesCount++;
     const facilityId = `facility_${Date.now()}_${mobileFacilitiesCount}`;
-
+    
     const facilityDiv = document.createElement('div');
     facilityDiv.className = 'bg-white/5 rounded-lg p-3 border border-white/10';
     facilityDiv.id = facilityId;
@@ -4220,27 +4410,27 @@ function addMobileFacility(name = '', teams = 0) {
             </button>
         </div>
         <div class="space-y-2">
-            <input type="text"
-                   id="${facilityId}_name"
-                   class="form-input text-sm"
+            <input type="text" 
+                   id="${facilityId}_name" 
+                   class="form-input text-sm" 
                    placeholder="اسم المنشأة"
                    value="${name}">
-            <input type="number"
-                   id="${facilityId}_teams"
-                   class="form-input text-sm"
+            <input type="number" 
+                   id="${facilityId}_teams" 
+                   class="form-input text-sm" 
                    placeholder="عدد الفرق"
                    min="0"
                    value="${teams}">
         </div>
     `;
-
+    
     container.appendChild(facilityDiv);
     updateAddButton();
 }
 
 // حذف منشأة
 function removeMobileFacility(facilityId) {
-    facilityDiv = document.getElementById(facilityId);
+    const facilityDiv = document.getElementById(facilityId);
     if (facilityDiv) {
         facilityDiv.remove();
         mobileFacilitiesCount--;
@@ -4251,10 +4441,10 @@ function removeMobileFacility(facilityId) {
 
 // إعادة ترقيم المنشآت
 function renumberFacilities() {
-    container = document.getElementById('mobileTeamsInputs');
+    const container = document.getElementById('mobileTeamsInputs');
     if (!container) return;
-
-    facilities = container.querySelectorAll('[id^="facility_"]');
+    
+    const facilities = container.querySelectorAll('[id^="facility_"]');
     facilities.forEach((facility, index) => {
         const label = facility.querySelector('span');
         if (label) {
@@ -4281,22 +4471,22 @@ function updateAddButton() {
 
 // حفظ بيانات الفريق المتنقل
 function saveMobileTeams() {
-    container = document.getElementById('mobileTeamsInputs');
+    const container = document.getElementById('mobileTeamsInputs');
     if (!container) return;
-
-    facilities = container.querySelectorAll('[id^="facility_"]');
+    
+    const facilities = container.querySelectorAll('[id^="facility_"]');
     const newData = {};
-    totalTeams = 0;
-
+    let totalTeams = 0;
+    
     facilities.forEach(facility => {
-        facilityId = facility.id;
+        const facilityId = facility.id;
         const nameInput = document.getElementById(`${facilityId}_name`);
         const teamsInput = document.getElementById(`${facilityId}_teams`);
-
+        
         if (nameInput && teamsInput) {
-            name = nameInput.value.trim();
+            const name = nameInput.value.trim();
             const teams = parseInt(teamsInput.value) || 0;
-
+            
             if (name) {
                 newData[facilityId] = {
                     name: name,
@@ -4306,7 +4496,7 @@ function saveMobileTeams() {
             }
         }
     });
-
+    
     mobileTeamsData = newData;
     saveMobileTeamsData();
     updateMobileTeamsDisplay();
@@ -4318,18 +4508,22 @@ function saveMobileTeams() {
 function saveMobileTeamsData() {
     try {
         localStorage.setItem('mobileTeamsData', JSON.stringify(mobileTeamsData));
-    } catch (error) {    }
+    } catch (error) {
+        console.log('خطأ في حفظ بيانات الفريق المتنقل:', error);
+    }
 }
 
 // تحميل البيانات من localStorage
 function loadMobileTeamsData() {
     try {
-        saved = localStorage.getItem('mobileTeamsData');
+        const saved = localStorage.getItem('mobileTeamsData');
         if (saved) {
             mobileTeamsData = JSON.parse(saved);
             updateMobileTeamsDisplay();
         }
-    } catch (error) {        mobileTeamsData = {};
+    } catch (error) {
+        console.log('خطأ في تحميل بيانات الفريق المتنقل:', error);
+        mobileTeamsData = {};
     }
 }
 
@@ -4337,19 +4531,19 @@ function loadMobileTeamsData() {
 function updateMobileTeamsDisplay() {
     const totalElement = document.getElementById('mobileTeamsTotal');
     const distributionElement = document.getElementById('mobileTeamsDistribution');
-
+    
     if (!totalElement || !distributionElement) return;
-
+    
     // حساب الإجمالي
-    totalTeams = 0;
-    facilities = Object.values(mobileTeamsData);
-
+    let totalTeams = 0;
+    const facilities = Object.values(mobileTeamsData);
+    
     facilities.forEach(facility => {
         totalTeams += facility.teams || 0;
     });
-
+    
     totalElement.textContent = totalTeams;
-
+    
     // عرض التوزيع
     if (facilities.length === 0) {
         distributionElement.innerHTML = '<p class="text-blue-200 text-xs">لا توجد بيانات</p>';
@@ -4376,26 +4570,26 @@ document.addEventListener('DOMContentLoaded', function() {
 // دالة تعديل بيانات شراء الخدمة
 function editServicePurchase(type) {
     if (!isAdminMode) return;
-
+    
     const labels = {
         'transferred': 'تم النقل',
-        'rejected': 'تم الرفض',
+        'rejected': 'تم الرفض', 
         'pending': 'تحت الإجراء',
         'other': 'أخرى'
     };
-
+    
     const elementId = 'servicePurchase' + type.charAt(0).toUpperCase() + type.slice(1);
     const currentValue = document.getElementById(elementId).textContent;
-
+    
     const newValue = prompt(`تعديل ${labels[type]}:`, currentValue);
-
+    
     if (newValue !== null && !isNaN(newValue) && newValue >= 0) {
         // تحديث العنصر في الواجهة
         document.getElementById(elementId).textContent = parseInt(newValue) || 0;
-
+        
         // حساب وتحديث العدد الكلي
         updateServicePurchaseTotal();
-
+        
         // حفظ البيانات
         const servicePurchaseData = {
             transferred: parseInt(document.getElementById('servicePurchaseTransferred').textContent) || 0,
@@ -4403,10 +4597,10 @@ function editServicePurchase(type) {
             pending: parseInt(document.getElementById('servicePurchasePending').textContent) || 0,
             other: parseInt(document.getElementById('servicePurchaseOther').textContent) || 0
         };
-
+        
         // حفظ في localStorage
         localStorage.setItem('servicePurchaseData', JSON.stringify(servicePurchaseData));
-
+        
         showNotification(`تم تحديث ${labels[type]} بنجاح`, 'success');
     }
 }
@@ -4417,10 +4611,10 @@ function updateServicePurchaseTotal() {
     const rejected = parseInt(document.getElementById('servicePurchaseRejected').textContent) || 0;
     const pending = parseInt(document.getElementById('servicePurchasePending').textContent) || 0;
     const other = parseInt(document.getElementById('servicePurchaseOther').textContent) || 0;
-
+    
     const total = transferred + rejected + pending + other;
-
-    totalElement = document.getElementById('servicePurchaseTotal');
+    
+    const totalElement = document.getElementById('servicePurchaseTotal');
     if (totalElement) {
         totalElement.textContent = total;
     }
@@ -4429,36 +4623,36 @@ function updateServicePurchaseTotal() {
 // دالة تعديل المجموع الكلي مباشرة
 function editServicePurchaseTotal() {
     if (!isAdminMode) return;
-
+    
     const currentTotal = document.getElementById('servicePurchaseTotal').textContent;
     const newTotal = prompt('تعديل المجموع الكلي لشراء الخدمة:', currentTotal);
-
+    
     if (newTotal !== null && !isNaN(newTotal) && newTotal >= 0) {
         const totalValue = parseInt(newTotal) || 0;
-
+        
         // تحديث المجموع الكلي
         document.getElementById('servicePurchaseTotal').textContent = totalValue;
-
+        
         // إعادة توزيع القيم على العناصر الفرعية بالتساوي
         const perItem = Math.floor(totalValue / 4);
         const remainder = totalValue % 4;
-
+        
         // توزيع القيم
         document.getElementById('servicePurchaseTransferred').textContent = perItem + (remainder > 0 ? 1 : 0);
         document.getElementById('servicePurchaseRejected').textContent = perItem + (remainder > 1 ? 1 : 0);
         document.getElementById('servicePurchasePending').textContent = perItem + (remainder > 2 ? 1 : 0);
         document.getElementById('servicePurchaseOther').textContent = perItem;
-
+        
         // حفظ البيانات الجديدة
-        servicePurchaseData = {
+        const servicePurchaseData = {
             transferred: parseInt(document.getElementById('servicePurchaseTransferred').textContent) || 0,
             rejected: parseInt(document.getElementById('servicePurchaseRejected').textContent) || 0,
             pending: parseInt(document.getElementById('servicePurchasePending').textContent) || 0,
             other: parseInt(document.getElementById('servicePurchaseOther').textContent) || 0
         };
-
+        
         localStorage.setItem('servicePurchaseData', JSON.stringify(servicePurchaseData));
-
+        
         showNotification('تم تحديث المجموع الكلي وإعادة توزيع القيم بنجاح', 'success');
     }
 }
@@ -4467,8 +4661,8 @@ function editServicePurchaseTotal() {
 function loadServicePurchaseData() {
     const savedData = localStorage.getItem('servicePurchaseData');
     if (savedData) {
-        data = JSON.parse(savedData);
-
+        const data = JSON.parse(savedData);
+        
         if (document.getElementById('servicePurchaseTransferred')) {
             document.getElementById('servicePurchaseTransferred').textContent = data.transferred || 0;
         }
@@ -4482,7 +4676,7 @@ function loadServicePurchaseData() {
             document.getElementById('servicePurchaseOther').textContent = data.other || 0;
         }
     }
-
+    
     // تحديث العدد الكلي بعد تحميل البيانات
     updateServicePurchaseTotal();
 }
@@ -4517,25 +4711,29 @@ function closeFacilityModal() {
 
 // حفظ منشأة جديدة
 function saveFacility() {
-    name = document.getElementById('facilityName').value.trim();
+    const name = document.getElementById('facilityName').value.trim();
     const color = document.getElementById('facilityColor').value;
-    emergencyOccupied = parseInt(document.getElementById('facilityEmergencyOccupied').value) || 0;
-    emergencyTotal = parseInt(document.getElementById('facilityEmergencyTotal').value) || 0;
-    icuOccupied = parseInt(document.getElementById('facilityIcuOccupied').value) || 0;
-    icuTotal = parseInt(document.getElementById('facilityIcuTotal').value) || 0;
-    ccuOccupied = parseInt(document.getElementById('facilityCcuOccupied').value) || 0;
-    ccuTotal = parseInt(document.getElementById('facilityCcuTotal').value) || 0;
-    picuOccupied = parseInt(document.getElementById('facilityPicuOccupied').value) || 0;
-    picuTotal = parseInt(document.getElementById('facilityPicuTotal').value) || 0;
-    nicuOccupied = parseInt(document.getElementById('facilityNicuOccupied').value) || 0;
-    nicuTotal = parseInt(document.getElementById('facilityNicuTotal').value) || 0;
+    const emergencyOccupied = parseInt(document.getElementById('facilityEmergencyOccupied').value) || 0;
+    const emergencyTotal = parseInt(document.getElementById('facilityEmergencyTotal').value) || 0;
+    const icuOccupied = parseInt(document.getElementById('facilityIcuOccupied').value) || 0;
+    const icuTotal = parseInt(document.getElementById('facilityIcuTotal').value) || 0;
+    const ccuOccupied = parseInt(document.getElementById('facilityCcuOccupied').value) || 0;
+    const ccuTotal = parseInt(document.getElementById('facilityCcuTotal').value) || 0;
+    const picuOccupied = parseInt(document.getElementById('facilityPicuOccupied').value) || 0;
+    const picuTotal = parseInt(document.getElementById('facilityPicuTotal').value) || 0;
+    const nicuOccupied = parseInt(document.getElementById('facilityNicuOccupied').value) || 0;
+    const nicuTotal = parseInt(document.getElementById('facilityNicuTotal').value) || 0;
 
-    if (!name) {        return;
+    if (!name) {
+        alert('يرجى إدخال اسم المنشأة');
+        return;
     }
 
     // التحقق من عدم تجاوز المشغولة للإجمالي
-    if (emergencyOccupied > emergencyTotal || icuOccupied > icuTotal || ccuOccupied > ccuTotal ||
-        picuOccupied > picuTotal || nicuOccupied > nicuTotal) {        return;
+    if (emergencyOccupied > emergencyTotal || icuOccupied > icuTotal || ccuOccupied > ccuTotal || 
+        picuOccupied > picuTotal || nicuOccupied > nicuTotal) {
+        alert('عدد الأسرة المشغولة لا يمكن أن يتجاوز العدد الإجمالي');
+        return;
     }
 
     const facility = {
@@ -4551,9 +4749,12 @@ function saveFacility() {
 
     customFacilities.push(facility);
     localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
-
+    
     renderCustomFacilities();
-    closeFacilityModal();}
+    closeFacilityModal();
+    
+    alert('تم إضافة المنشأة بنجاح!');
+}
 
 // عرض المنشآت المخصصة
 function renderCustomFacilities() {
@@ -4563,16 +4764,16 @@ function renderCustomFacilities() {
         console.error('لم يتم العثور على حاوية البطاقات المخصصة');
         return;
     }
-
+    
     // إزالة البطاقات المخصصة السابقة
     customContainer.innerHTML = '';
-
+    
     // إضافة البطاقات الجديدة
     customFacilities.forEach(facility => {
         const cardHTML = createFacilityCardHTML(facility);
         customContainer.insertAdjacentHTML('beforeend', cardHTML);
     });
-
+    
     // إخفاء/إظهار أزرار الحذف بناءٔ على وضع الإدارة
     const deleteButtons = customContainer.querySelectorAll('.custom-facility-card button');
     deleteButtons.forEach(btn => {
@@ -4635,7 +4836,7 @@ function createFacilityCardHTML(facility) {
 
     // إنشاء أقسام الأسرة بناءً على البيانات المتوفرة
     let bedsHTML = '';
-
+    
     // أسرة الطوارئ
     if (facility.emergency.total > 0) {
         bedsHTML += `
@@ -4652,7 +4853,7 @@ function createFacilityCardHTML(facility) {
             </div>
         `;
     }
-
+    
     // أسرة ICU
     if (facility.icu.total > 0) {
         bedsHTML += `
@@ -4669,7 +4870,7 @@ function createFacilityCardHTML(facility) {
             </div>
         `;
     }
-
+    
     // أسرة CCU
     if (facility.ccu.total > 0) {
         bedsHTML += `
@@ -4686,7 +4887,7 @@ function createFacilityCardHTML(facility) {
             </div>
         `;
     }
-
+    
     // أسرة PICU
     if (facility.picu && facility.picu.total > 0) {
         bedsHTML += `
@@ -4703,7 +4904,7 @@ function createFacilityCardHTML(facility) {
             </div>
         `;
     }
-
+    
     // أسرة NICU (آخر قسم بدون border-b)
     if (facility.nicu && facility.nicu.total > 0) {
         bedsHTML += `
@@ -4741,12 +4942,14 @@ function deleteCustomFacility(facilityId) {
     if (confirm('هل أنت متأكد من حذف هذه المنشأة؟')) {
         customFacilities = customFacilities.filter(f => f.id !== facilityId);
         localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
-        renderCustomFacilities();    }
+        renderCustomFacilities();
+        alert('تم حذف المنشأة بنجاح!');
+    }
 }
 
 // تعديل منشأة مخصصة
 function editCustomFacility(facilityId) {
-    facility = customFacilities.find(f => f.id === facilityId);
+    const facility = customFacilities.find(f => f.id === facilityId);
     if (!facility) return;
 
     // فتح نموذج التعديل مع البيانات الحالية
@@ -4771,19 +4974,23 @@ function editCustomFacility(facilityId) {
 
 // تحديث منشأة مخصصة
 function updateCustomFacility(facilityId) {
-    name = document.getElementById('facilityName').value.trim();
-    color = document.getElementById('facilityColor').value;
-    emergencyOccupied = parseInt(document.getElementById('facilityEmergencyOccupied').value) || 0;
-    emergencyTotal = parseInt(document.getElementById('facilityEmergencyTotal').value) || 0;
-    icuOccupied = parseInt(document.getElementById('facilityIcuOccupied').value) || 0;
-    icuTotal = parseInt(document.getElementById('facilityIcuTotal').value) || 0;
-    ccuOccupied = parseInt(document.getElementById('facilityCcuOccupied').value) || 0;
-    ccuTotal = parseInt(document.getElementById('facilityCcuTotal').value) || 0;
+    const name = document.getElementById('facilityName').value.trim();
+    const color = document.getElementById('facilityColor').value;
+    const emergencyOccupied = parseInt(document.getElementById('facilityEmergencyOccupied').value) || 0;
+    const emergencyTotal = parseInt(document.getElementById('facilityEmergencyTotal').value) || 0;
+    const icuOccupied = parseInt(document.getElementById('facilityIcuOccupied').value) || 0;
+    const icuTotal = parseInt(document.getElementById('facilityIcuTotal').value) || 0;
+    const ccuOccupied = parseInt(document.getElementById('facilityCcuOccupied').value) || 0;
+    const ccuTotal = parseInt(document.getElementById('facilityCcuTotal').value) || 0;
 
-    if (!name) {        return;
+    if (!name) {
+        alert('يرجى إدخال اسم المنشأة');
+        return;
     }
 
-    if (emergencyOccupied > emergencyTotal || icuOccupied > icuTotal || ccuOccupied > ccuTotal) {        return;
+    if (emergencyOccupied > emergencyTotal || icuOccupied > icuTotal || ccuOccupied > ccuTotal) {
+        alert('عدد الأسرة المشغولة لا يمكن أن يتجاوز العدد الإجمالي');
+        return;
     }
 
     const facilityIndex = customFacilities.findIndex(f => f.id === facilityId);
@@ -4800,11 +5007,14 @@ function updateCustomFacility(facilityId) {
         localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
         renderCustomFacilities();
         closeFacilityModal();
-
+        
         // إعادة تعيين زر الحفظ
-        saveButton = document.querySelector('#addFacilityModal .btn-success');
+        const saveButton = document.querySelector('#addFacilityModal .btn-success');
         saveButton.textContent = 'إضافة المنشأة';
-        saveButton.onclick = saveFacility;    }
+        saveButton.onclick = saveFacility;
+        
+        alert('تم تحديث المنشأة بنجاح!');
+    }
 }
 
 // تحميل المنشآت المخصصة عند بدء التشغيل
@@ -4812,11 +5022,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCustomFacilities();
 });
 
-        // ============================================
-        // نهاية الملف البرمجي
-        // ============================================
-
-        </script>
+    </script>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
@@ -4860,7 +5066,9 @@ if (originalAddCenter) {
     // حفظ المراكز في Firebase بعد إضافة مركز جديد
     setTimeout(() => {
       if (emergencyCenters && emergencyCenters.length > 0) {
-        saveDataToFirebase('emergencyCenters', emergencyCenters);      }
+        saveDataToFirebase('emergencyCenters', emergencyCenters);
+        console.log('تم حفظ المراكز في Firebase:', emergencyCenters);
+      }
     }, 500);
   };
 }
@@ -4900,7 +5108,9 @@ window.addEventListener('load', function() {
       if (data && isAuthenticated) {
         emergencyCenters = data;
         updateMainStats();
-        displayCenters();      }
+        displayCenters();
+        console.log('تم تحميل البيانات من Firebase:', data);
+      }
     });
   }, 1000);
 });
