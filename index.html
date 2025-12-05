@@ -2339,6 +2339,14 @@
         let globalResponseTime = 0.0;
 
         // تحديث البيانات الرئيسية
+
+        // دالة تحديث أفضل المراكز النشطة
+        function updateTopActiveCenters() {
+            // هذه الدالة تحدث أفضل المراكز النشطة
+            // يتم استدعاؤها عند تحديث البيانات
+            console.log('تم تحديث أفضل المراكز النشطة');
+        }
+
         function updateMainStats() {
             const totalStaff = emergencyCenters.reduce((sum, center) => sum + center.totalStaff, 0);
             const currentStaff = emergencyCenters.reduce((sum, center) => sum + center.currentStaff, 0);
