@@ -1,16 +1,17 @@
 /**
- * Sync Manager - يدير مزامنة البيانات بين الداشبورد وقاعدة البيانات
- * يحل محل localStorage بـ API calls
- * محسّن لـ Vercel Serverless Functions
+ * Sync Manager - يدير مزامنة البيانات مع Supabase
+ * يحفظ واسترجع البيانات من قاعدة البيانات السحابية
  */
 
 class SyncManager {
-    constructor(apiUrl = '/api') {
+    constructor(apiUrl = '/api/sync') {
         this.apiUrl = apiUrl;
         this.deviceId = this.getOrCreateDeviceId();
         this.syncInterval = 30000; // 30 seconds
         this.isSyncing = false;
         this.pendingChanges = new Map();
+        
+        console.log('🔄 SyncManager initialized with device ID:', this.deviceId);
         
         // Start automatic sync
         this.startAutoSync();
@@ -29,11 +30,11 @@ class SyncManager {
     }
 
     /**
-     * Save data to database
+     * Save data to Supabase
      */
     async saveData(key, value) {
         try {
-            const response = await fetch(`${this.apiUrl}/data?key=${encodeURIComponent(key)}`, {
+            const response = await fetch(`${this.apiUrl}?key=${encodeURIComponent(key)}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,11 +94,11 @@ class SyncManager {
     }
 
     /**
-     * Load data from database
+     * Load data from Supabase
      */
     async loadData(key) {
         try {
-            const response = await fetch(`${this.apiUrl}/data?key=${encodeURIComponent(key)}`);
+            const response = await fetch(`${this.apiUrl}?key=${encodeURIComponent(key)}`);
 
             if (response.status === 404) {
                 console.log(`⚠️ Data not found: ${key}`);
@@ -118,11 +119,11 @@ class SyncManager {
     }
 
     /**
-     * Load all data from database
+     * Load all data from Supabase
      */
     async loadAllData() {
         try {
-            const response = await fetch(`${this.apiUrl}/data`);
+            const response = await fetch(this.apiUrl);
 
             if (!response.ok) {
                 throw new Error(`Failed to load all data: ${response.statusText}`);
@@ -138,11 +139,11 @@ class SyncManager {
     }
 
     /**
-     * Delete data from database
+     * Delete data from Supabase
      */
     async deleteData(key) {
         try {
-            const response = await fetch(`${this.apiUrl}/data?key=${encodeURIComponent(key)}`, {
+            const response = await fetch(`${this.apiUrl}?key=${encodeURIComponent(key)}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -184,7 +185,7 @@ class SyncManager {
     }
 
     /**
-     * Sync pending changes to database
+     * Sync pending changes to Supabase
      */
     async syncPendingChanges() {
         if (this.pendingChanges.size === 0 || this.isSyncing) {
@@ -226,7 +227,7 @@ class SyncManager {
      */
     async checkHealth() {
         try {
-            const response = await fetch(`${this.apiUrl}/health`);
+            const response = await fetch('/api/health');
             return response.ok;
         } catch (error) {
             console.error('❌ API health check failed:', error);
@@ -236,7 +237,7 @@ class SyncManager {
 }
 
 // Create global instance
-const syncManager = new SyncManager('/api');
+const syncManager = new SyncManager('/api/sync');
 
 // Check API health on load
 window.addEventListener('load', async () => {
