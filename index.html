@@ -5268,14 +5268,18 @@ if (typeof firebase !== 'undefined') {
 // دالة حفظ البيانات في Firebase
 function saveDataToFirebase(key, data) {
   if (typeof database === 'undefined' || !database) {
-    console.warn('Firebase لم يتم تهيئته بعد');
+    console.warn('Firebase لم يتم تهيئته بعد، جاري إعادة المحاولة...');
+    // إعادة محاولة بعد 500ms
+    setTimeout(() => saveDataToFirebase(key, data), 500);
     return;
   }
   
   try {
-    database.ref(key).set(data).catch(error => console.error('خطأ في الحفظ:', error));
+    database.ref(key).set(data)
+      .then(() => console.log('✓ تم حفظ البيانات في Firebase بنجاح!'))
+      .catch(error => console.error('❌ خطأ في الحفظ:', error));
   } catch (error) {
-    console.error('خطأ في حفظ البيانات:', error);
+    console.error('❌ خطأ في حفظ البيانات:', error);
   }
 }
 
