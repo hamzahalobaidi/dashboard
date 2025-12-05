@@ -1022,6 +1022,17 @@
 }
 
 
+    
+        /* Utility Classes */
+        .flex-center { display: flex; align-items: center; justify-content: center; }
+        .flex-between { display: flex; align-items: center; justify-content: space-between; }
+        .flex-col { display: flex; flex-direction: column; }
+        .space-y-2 { display: flex; flex-direction: column; gap: 0.5rem; }
+        .space-x-3 { display: flex; gap: 0.75rem; }
+        .transition-all { transition: all 0.3s ease; }
+        .py-4-px-2 { padding: 1rem 0.5rem; text-align: center; }
+        .svg-icon { width: 1.25rem; height: 1.25rem; }
+    
     </style>
 </head>
 <body class="animated-bg fullscreen-layout relative overflow-x-auto" id="mainBody">
@@ -2072,6 +2083,44 @@
 
     
     <script>
+        // دالة مساعدة للحصول على العناصر
+        function getElement(id) {
+            return document.getElementById(id);
+        }
+        
+        // دالة مساعدة لإنشاء modal
+        function showModal(modalId) {
+            const modal = getElement(modalId);
+            if (modal) modal.style.display = 'flex';
+        }
+        
+        function hideModal(modalId) {
+            const modal = getElement(modalId);
+            if (modal) modal.style.display = 'none';
+        }
+        
+        // دالة مساعدة لحفظ البيانات
+        function saveData(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+                return true;
+            } catch (e) {
+                console.error('Error saving data:', e);
+                return false;
+            }
+        }
+        
+        // دالة مساعدة لتحميل البيانات
+        function loadData(key, defaultValue = null) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultValue;
+            } catch (e) {
+                console.error('Error loading data:', e);
+                return defaultValue;
+            }
+        }
+
 // بيانات المراكز - مصفوفة فارغة للبدء من الصفر
         // نظام الحماية الرئيسي
         const MAIN_PASSWORD = "emergency2024"; // كلمة المرور الرئيسية
@@ -2982,7 +3031,18 @@
                         .text-xs { font-size: 0.75rem; }
                         .mt-4 { margin-top: 16px; }
                         .space-y-3 > * + * { margin-top: 12px; }
-                    </style>
+                    
+        /* Utility Classes */
+        .flex-center { display: flex; align-items: center; justify-content: center; }
+        .flex-between { display: flex; align-items: center; justify-content: space-between; }
+        .flex-col { display: flex; flex-direction: column; }
+        .space-y-2 { display: flex; flex-direction: column; gap: 0.5rem; }
+        .space-x-3 { display: flex; gap: 0.75rem; }
+        .transition-all { transition: all 0.3s ease; }
+        .py-4-px-2 { padding: 1rem 0.5rem; text-align: center; }
+        .svg-icon { width: 1.25rem; height: 1.25rem; }
+    
+    </style>
                 </head>
                 <body>
                     <h1>ملخص الحالات المنقولة - تجمع جدة الصحي الثاني</h1>
