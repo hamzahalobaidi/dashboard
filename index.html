@@ -2869,9 +2869,11 @@
                     saveDataToStorage();
                     console.log('✅ تم حفظ البيانات في localStorage');
                     
-                    // حفظ في Firebase أيضاً
-                    saveDataToFirebase('emergencyCenters', emergencyCenters);
-                    console.log('✅ تم حفظ البيانات في Firebase');
+                    // حفظ في Firebase بعد تأخير (لإعطاء Firebase وقت للتهيئة)
+                    setTimeout(() => {
+                        saveDataToFirebase('emergencyCenters', emergencyCenters);
+                        console.log('✅ تم حفظ البيانات في Firebase');
+                    }, 2000);
                 } catch (error) {
                     console.warn('⚠️ خطأ في حفظ البيانات:', error);
                 }
@@ -5256,7 +5258,9 @@ const firebaseConfig = {
 // تهيئة Firebase
 let database = null;
 
-// انتظر حتى يتم تحميل Firebase بالكامل
+// تهيئة Firebase
+let database = null;
+
 if (typeof firebase !== 'undefined') {
   firebase.initializeApp(firebaseConfig);
   database = firebase.database();
@@ -5267,17 +5271,19 @@ if (typeof firebase !== 'undefined') {
 
 // دالة حفظ البيانات في Firebase
 function saveDataToFirebase(key, data) {
-  if (typeof database === 'undefined' || !database) {
-    console.warn('Firebase لم يتم تهيئته بعد، جاري إعادة المحاولة...');
-    // إعادة محاولة بعد 500ms
-    setTimeout(() => saveDataToFirebase(key, data), 500);
+  if (!database) {
+    console.warn('Firebase لم يتم تهيئته بعد');
     return;
   }
   
   try {
     database.ref(key).set(data)
-      .then(() => console.log('✓ تم حفظ البيانات في Firebase بنجاح!'))
-      .catch(error => console.error('❌ خطأ في الحفظ:', error));
+      .then(() => {
+        console.log('✓ تم حفظ البيانات في Firebase بنجاح!');
+      })
+      .catch(error => {
+        console.error('❌ خطأ في الحفظ:', error);
+      });
   } catch (error) {
     console.error('❌ خطأ في حفظ البيانات:', error);
   }
@@ -5285,25 +5291,29 @@ function saveDataToFirebase(key, data) {
 
 // دالة قراءة البيانات من Firebase
 function loadDataFromFirebase(key, callback) {
-  if (typeof database === 'undefined' || !database) {
+  if (!database) {
     console.warn('Firebase لم يتم تهيئته بعد');
     callback(null);
     return;
   }
   
   try {
-    database.ref(key).once('value', snapshot => {
-      if (snapshot.exists()) {
-        callback(snapshot.val());
-      } else {
+    database.ref(key).once('value')
+      .then(snapshot => {
+        if (snapshot.exists()) {
+          console.log('✓ تم تحميل البيانات من Firebase:', snapshot.val());
+          callback(snapshot.val());
+        } else {
+          console.log('لا توجد بيانات في Firebase');
+          callback(null);
+        }
+      })
+      .catch(error => {
+        console.error('❌ خطأ في تحميل البيانات من Firebase:', error);
         callback(null);
-      }
-    }).catch(error => {
-      console.error('خطأ في تحميل البيانات من Firebase:', error);
-      callback(null);
-    });
+      });
   } catch (error) {
-    console.error('خطأ في تحميل البيانات:', error);
+    console.error('❌ خطأ في تحميل البيانات:', error);
     callback(null);
   }
 }
