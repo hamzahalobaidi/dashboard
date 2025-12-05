@@ -1343,7 +1343,7 @@
                     <div class="flex items-center space-x-3 space-x-reverse">
                         <!-- شعار تجمع جدة الصحي الثاني -->
                         <div class="flex items-center">
-                            <img src="logo.png" alt="شعار تجمع جدة الصحي الثاني" class="h-16 w-auto mr-4" style="filter: brightness(1.1) contrast(1.1);">
+                            <img src="assets/logo.png" alt="شعار تجمع جدة الصحي الثاني" class="h-16 w-auto mr-4" style="filter: brightness(1.1) contrast(1.1);">
                         </div>
                         <div>
                             <h1 class="text-2xl font-bold text-white">إدارة الأزمات والكوارث - RCC</h1>
@@ -2992,7 +2992,61 @@
                         <p>تجمع جدة الصحي الثاني</p>
                         <p>تصميم Hafalobaidi | النسخة 6.0.0</p>
                     </div>
-                </body>
+                
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCDJuqoWLowt4gnzdReCtcCLCywNqSoj_Q",
+  authDomain: "dashboard-a7c4c.firebaseapp.com",
+  databaseURL: "https://dashboard-a7c4c-default-rtdb.firebaseio.com",
+  projectId: "dashboard-a7c4c",
+  storageBucket: "dashboard-a7c4c.firebasestorage.app",
+  messagingSenderId: "902429954750",
+  appId: "1:902429954750:web:77cc0c2ca78150e45a04ef",
+  measurementId: "G-PFT1CE957T"
+};
+
+
+// تهيئة Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// دالة حفظ البيانات
+function saveDataToFirebase(key, data) {
+  database.ref(key).set(data).catch(error => console.error('خطأ في الحفظ:', error));
+}
+
+// دالة قراءة البيانات
+function loadDataFromFirebase(key, callback) {
+  database.ref(key).on('value', snapshot => {
+    if (snapshot.exists()) {
+      callback(snapshot.val());
+    }
+  });
+}
+
+// تحديث دالة إضافة المنشأة
+const originalAddCenter = window.addCenter;
+window.addCenter = function() {
+  originalAddCenter();
+  // حفظ المراكز في Firebase
+  const centers = JSON.parse(localStorage.getItem('centers') || '[]');
+  saveDataToFirebase('centers', centers);
+};
+
+// تحميل البيانات عند فتح الصفحة
+window.addEventListener('load', function() {
+  loadDataFromFirebase('centers', function(data) {
+    if (data) {
+      localStorage.setItem('centers', JSON.stringify(data));
+      displayCenters();
+    }
+  });
+});
+</script>
+</body>
                 </html>
             `);
             printWindow.document.close();
@@ -3395,7 +3449,61 @@
                         <p>تصميم خاص لإدارة الطوارئ والأزمات والكوارث</p>
                         <p>تجمع جدة الصحي الثاني | تصميم Hafalobaidi</p>
                     </div>
-                </body>
+                
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCDJuqoWLowt4gnzdReCtcCLCywNqSoj_Q",
+  authDomain: "dashboard-a7c4c.firebaseapp.com",
+  databaseURL: "https://dashboard-a7c4c-default-rtdb.firebaseio.com",
+  projectId: "dashboard-a7c4c",
+  storageBucket: "dashboard-a7c4c.firebasestorage.app",
+  messagingSenderId: "902429954750",
+  appId: "1:902429954750:web:77cc0c2ca78150e45a04ef",
+  measurementId: "G-PFT1CE957T"
+};
+
+
+// تهيئة Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// دالة حفظ البيانات
+function saveDataToFirebase(key, data) {
+  database.ref(key).set(data).catch(error => console.error('خطأ في الحفظ:', error));
+}
+
+// دالة قراءة البيانات
+function loadDataFromFirebase(key, callback) {
+  database.ref(key).on('value', snapshot => {
+    if (snapshot.exists()) {
+      callback(snapshot.val());
+    }
+  });
+}
+
+// تحديث دالة إضافة المنشأة
+const originalAddCenter = window.addCenter;
+window.addCenter = function() {
+  originalAddCenter();
+  // حفظ المراكز في Firebase
+  const centers = JSON.parse(localStorage.getItem('centers') || '[]');
+  saveDataToFirebase('centers', centers);
+};
+
+// تحميل البيانات عند فتح الصفحة
+window.addEventListener('load', function() {
+  loadDataFromFirebase('centers', function(data) {
+    if (data) {
+      localStorage.setItem('centers', JSON.stringify(data));
+      displayCenters();
+    }
+  });
+});
+</script>
+</body>
                 </html>
             `);
             
@@ -5023,6 +5131,60 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
     </script>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCDJuqoWLowt4gnzdReCtcCLCywNqSoj_Q",
+  authDomain: "dashboard-a7c4c.firebaseapp.com",
+  databaseURL: "https://dashboard-a7c4c-default-rtdb.firebaseio.com",
+  projectId: "dashboard-a7c4c",
+  storageBucket: "dashboard-a7c4c.firebasestorage.app",
+  messagingSenderId: "902429954750",
+  appId: "1:902429954750:web:77cc0c2ca78150e45a04ef",
+  measurementId: "G-PFT1CE957T"
+};
+
+
+// تهيئة Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// دالة حفظ البيانات
+function saveDataToFirebase(key, data) {
+  database.ref(key).set(data).catch(error => console.error('خطأ في الحفظ:', error));
+}
+
+// دالة قراءة البيانات
+function loadDataFromFirebase(key, callback) {
+  database.ref(key).on('value', snapshot => {
+    if (snapshot.exists()) {
+      callback(snapshot.val());
+    }
+  });
+}
+
+// تحديث دالة إضافة المنشأة
+const originalAddCenter = window.addCenter;
+window.addCenter = function() {
+  originalAddCenter();
+  // حفظ المراكز في Firebase
+  const centers = JSON.parse(localStorage.getItem('centers') || '[]');
+  saveDataToFirebase('centers', centers);
+};
+
+// تحميل البيانات عند فتح الصفحة
+window.addEventListener('load', function() {
+  loadDataFromFirebase('centers', function(data) {
+    if (data) {
+      localStorage.setItem('centers', JSON.stringify(data));
+      displayCenters();
+    }
+  });
+});
+</script>
 </body>
 </html>
 
