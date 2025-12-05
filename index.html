@@ -5259,26 +5259,41 @@ const database = firebase.database();
 
 // دالة حفظ البيانات في Firebase
 function saveDataToFirebase(key, data) {
-  database.ref(key).set(data).catch(error => console.error('خطأ في الحفظ:', error));
+  if (typeof database === 'undefined' || !database) {
+    console.warn('Firebase لم يتم تهيئته بعد');
+    return;
+  }
+  
+  try {
+    database.ref(key).set(data).catch(error => console.error('خطأ في الحفظ:', error));
+  } catch (error) {
+    console.error('خطأ في حفظ البيانات:', error);
+  }
 }
 
 // دالة قراءة البيانات من Firebase
 function loadDataFromFirebase(key, callback) {
-  if (typeof database === 'undefined') {
+  if (typeof database === 'undefined' || !database) {
+    console.warn('Firebase لم يتم تهيئته بعد');
     callback(null);
     return;
   }
   
-  database.ref(key).once('value', snapshot => {
-    if (snapshot.exists()) {
-      callback(snapshot.val());
-    } else {
+  try {
+    database.ref(key).once('value', snapshot => {
+      if (snapshot.exists()) {
+        callback(snapshot.val());
+      } else {
+        callback(null);
+      }
+    }).catch(error => {
+      console.error('خطأ في تحميل البيانات من Firebase:', error);
       callback(null);
-    }
-  }).catch(error => {
-    console.error('خطأ في تحميل البيانات من Firebase:', error);
+    });
+  } catch (error) {
+    console.error('خطأ في تحميل البيانات:', error);
     callback(null);
-  });
+  }
 }
 
 // حفظ البيانات عند إضافة مركز
