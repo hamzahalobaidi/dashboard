@@ -1,10 +1,11 @@
 /**
  * Sync Manager - يدير مزامنة البيانات بين الداشبورد وقاعدة البيانات
  * يحل محل localStorage بـ API calls
+ * محسّن لـ Vercel Serverless Functions
  */
 
 class SyncManager {
-    constructor(apiUrl = '/api/dashboard') {
+    constructor(apiUrl = '/api') {
         this.apiUrl = apiUrl;
         this.deviceId = this.getOrCreateDeviceId();
         this.syncInterval = 30000; // 30 seconds
@@ -32,7 +33,7 @@ class SyncManager {
      */
     async saveData(key, value) {
         try {
-            const response = await fetch(`${this.apiUrl}/data`, {
+            const response = await fetch(`${this.apiUrl}/data?key=${encodeURIComponent(key)}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,24 +71,15 @@ class SyncManager {
      */
     async saveBatch(items) {
         try {
-            const response = await fetch(`${this.apiUrl}/data/batch`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    items,
-                    deviceId: this.deviceId
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`Failed to save batch: ${response.statusText}`);
+            // For Vercel, save items individually
+            const results = [];
+            for (const item of items) {
+                const result = await this.saveData(item.key, item.value);
+                results.push(result);
             }
-
-            const result = await response.json();
+            
             console.log(`✅ Batch saved: ${items.length} items`);
-            return result;
+            return { success: true, message: `${items.length} items saved successfully` };
         } catch (error) {
             console.error('❌ Error saving batch:', error);
             
@@ -105,7 +97,7 @@ class SyncManager {
      */
     async loadData(key) {
         try {
-            const response = await fetch(`${this.apiUrl}/data/${key}`);
+            const response = await fetch(`${this.apiUrl}/data?key=${encodeURIComponent(key)}`);
 
             if (response.status === 404) {
                 console.log(`⚠️ Data not found: ${key}`);
@@ -150,7 +142,7 @@ class SyncManager {
      */
     async deleteData(key) {
         try {
-            const response = await fetch(`${this.apiUrl}/data/${key}`, {
+            const response = await fetch(`${this.apiUrl}/data?key=${encodeURIComponent(key)}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -234,7 +226,7 @@ class SyncManager {
      */
     async checkHealth() {
         try {
-            const response = await fetch(`${this.apiUrl.replace('/data', '')}/health`);
+            const response = await fetch(`${this.apiUrl}/health`);
             return response.ok;
         } catch (error) {
             console.error('❌ API health check failed:', error);
@@ -244,11 +236,17 @@ class SyncManager {
 }
 
 // Create global instance
-const syncManager = new SyncManager(
-    window.location.hostname === 'localhost' 
-        ? 'http://localhost:3001/api/dashboard'
-        : '/api/dashboard'
-);
+const syncManager = new SyncManager('/api');
+
+// Check API health on load
+window.addEventListener('load', async () => {
+    const isHealthy = await syncManager.checkHealth();
+    if (isHealthy) {
+        console.log('✅ API is healthy and ready');
+    } else {
+        console.warn('⚠️ API health check failed, using fallback');
+    }
+});
 
 // Export for use
 if (typeof module !== 'undefined' && module.exports) {
