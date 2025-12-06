@@ -1297,6 +1297,22 @@
                     </div>
                 </div>
 
+                <!-- بطاقة شراء الخدمة -->
+                <div class="bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-lg rounded-2xl p-4 border border-blue-300/20 card-hover" onclick="if(isAdminMode) openServicePurchaseModal()" style="cursor: pointer;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-200 text-sm font-medium">شراء خدمة</p>
+                            <p class="text-2xl font-bold text-white" id="servicePurchaseTotalCount">0</p>
+                            <p class="text-blue-300 text-xs">إجمالي الحالات</p>
+                        </div>
+                        <div class="professional-icon" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.2)); color: #3b82f6;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 2L6.46 6.46M15 2l2.54 4.46M2 9h20M3 9l1.68 8.4c.4 2 2.3 3.6 4.32 3.6h5c2.02 0 3.92-1.6 4.32-3.6L21 9"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <!-- المحتوى الرئيسي -->
@@ -1812,6 +1828,42 @@
         </div>
     </div>
 
+    <!-- نافذة تعديل بيانات شراء الخدمة (متزامنة) -->
+    <div id="editServicePurchaseModal" class="login-modal" style="display: none;">
+        <div class="login-form" style="width: 500px; max-width: 95vw;">
+            <div class="login-title">🛍️ تعديل بيانات شراء الخدمة</div>
+            <div class="text-white/70 mb-6">أدخل بيانات الحالات</div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block text-white font-medium text-sm mb-2">إجمالي الحالات:</label>
+                    <input type="number" id="servicePurchaseTotalInput" class="form-input" min="0" placeholder="0">
+                </div>
+                <div>
+                    <label class="block text-white font-medium text-sm mb-2">تم النقل:</label>
+                    <input type="number" id="servicePurchaseTransferredInput" class="form-input" min="0" placeholder="0">
+                </div>
+                <div>
+                    <label class="block text-white font-medium text-sm mb-2">تم الرفض:</label>
+                    <input type="number" id="servicePurchaseRejectedInput" class="form-input" min="0" placeholder="0">
+                </div>
+                <div>
+                    <label class="block text-white font-medium text-sm mb-2">تحت الإجراء:</label>
+                    <input type="number" id="servicePurchaseUnderProcessInput" class="form-input" min="0" placeholder="0">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-white font-medium text-sm mb-2">حالات أخرى:</label>
+                    <input type="number" id="servicePurchaseOtherInput" class="form-input" min="0" placeholder="0">
+                </div>
+            </div>
+            
+            <div class="flex space-x-3 space-x-reverse">
+                <button onclick="saveServicePurchase()" class="btn-success flex-1">حفظ</button>
+                <button onclick="closeServicePurchaseModal()" class="btn-secondary flex-1">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
     <!-- نافذة تعديل إحالات إنقاذ الحياة -->
     <div id="editSideLifeSavingModal" class="login-modal" style="display: none;">
         <div class="login-form" style="width: 400px; max-width: 95vw;">
@@ -2132,6 +2184,12 @@
                     updateReferralsDisplay();
                 }
                 
+                if (allData.servicePurchaseData) {
+                    servicePurchaseData = allData.servicePurchaseData;
+                    console.log('✅ تم تحميل servicePurchaseData');
+                    updateServicePurchaseDisplay();
+                }
+                
                 console.log('✅ تم تحميل جميع البيانات من Supabase بنجاح');
                 return true;
             } catch (error) {
@@ -2142,6 +2200,7 @@
         
         // تهيئة الداشبورد بعد تسجيل الدخول
         function initializeDashboard() {
+                loadServicePurchaseData();
             console.log('بدء تحميل الداشبورد...');
             
             // تحميل البيانات من Supabase أولاً
@@ -2151,6 +2210,7 @@
                 
                 // تحديث العرض
                 updateMainStats();
+                loadServicePurchaseData();
                 displayCenters();
                 updateTopActiveCenters();
                 updateLastUpdateTime();
@@ -4921,6 +4981,102 @@ function saveEmergencyReferrals() {
 
 function closeEmergencyReferralsModal() {
     const modal = document.getElementById('editEmergencyReferralsModal');
+    if (modal) modal.style.display = 'none';
+}
+
+// ===== إدارة شراء الخدمة =====
+
+// متغيرات لتخزين بيانات شراء الخدمة
+let servicePurchaseData = {
+    totalCases: 0,
+    transferredCases: 0,
+    rejectedCases: 0,
+    underProcessCases: 0,
+    otherCases: 0
+};
+
+// تحميل بيانات شراء الخدمة من Supabase
+async function loadServicePurchaseData() {
+    try {
+        const data = await syncManager.loadData('servicePurchaseData');
+        if (data) {
+            servicePurchaseData = data;
+            console.log('✅ تم تحميل بيانات شراء الخدمة');
+            updateServicePurchaseDisplay();
+        }
+    } catch (error) {
+        console.error('❌ خطأ في تحميل بيانات شراء الخدمة:', error);
+    }
+}
+
+// حفظ بيانات شراء الخدمة إلى Supabase
+async function saveServicePurchaseData() {
+    try {
+        await syncManager.saveData('servicePurchaseData', servicePurchaseData);
+        console.log('✅ تم حفظ بيانات شراء الخدمة');
+    } catch (error) {
+        console.error('❌ خطأ في حفظ بيانات شراء الخدمة:', error);
+    }
+}
+
+// تحديث عرض بيانات شراء الخدمة
+function updateServicePurchaseDisplay() {
+    const totalElement = document.getElementById('servicePurchaseTotalCount');
+    if (totalElement) {
+        totalElement.textContent = servicePurchaseData.totalCases || 0;
+    }
+}
+
+// فتح نافذة تعديل بيانات شراء الخدمة
+function openServicePurchaseModal() {
+    if (!isAdminMode) return;
+    
+    const modal = document.getElementById('editServicePurchaseModal');
+    if (modal) {
+        // ملء البيانات الحالية
+        document.getElementById('servicePurchaseTotalInput').value = servicePurchaseData.totalCases || 0;
+        document.getElementById('servicePurchaseTransferredInput').value = servicePurchaseData.transferredCases || 0;
+        document.getElementById('servicePurchaseRejectedInput').value = servicePurchaseData.rejectedCases || 0;
+        document.getElementById('servicePurchaseUnderProcessInput').value = servicePurchaseData.underProcessCases || 0;
+        document.getElementById('servicePurchaseOtherInput').value = servicePurchaseData.otherCases || 0;
+        
+        modal.style.display = 'flex';
+    }
+}
+
+// حفظ بيانات شراء الخدمة
+function saveServicePurchase() {
+    const totalInput = document.getElementById('servicePurchaseTotalInput');
+    const transferredInput = document.getElementById('servicePurchaseTransferredInput');
+    const rejectedInput = document.getElementById('servicePurchaseRejectedInput');
+    const underProcessInput = document.getElementById('servicePurchaseUnderProcessInput');
+    const otherInput = document.getElementById('servicePurchaseOtherInput');
+    
+    const total = parseInt(totalInput.value) || 0;
+    const transferred = parseInt(transferredInput.value) || 0;
+    const rejected = parseInt(rejectedInput.value) || 0;
+    const underProcess = parseInt(underProcessInput.value) || 0;
+    const other = parseInt(otherInput.value) || 0;
+    
+    if (total >= 0 && transferred >= 0 && rejected >= 0 && underProcess >= 0 && other >= 0) {
+        servicePurchaseData.totalCases = total;
+        servicePurchaseData.transferredCases = transferred;
+        servicePurchaseData.rejectedCases = rejected;
+        servicePurchaseData.underProcessCases = underProcess;
+        servicePurchaseData.otherCases = other;
+        
+        saveServicePurchaseData().then(() => {
+            updateServicePurchaseDisplay();
+            closeServicePurchaseModal();
+            showNotification('تم التحديث', 'تم تحديث بيانات شراء الخدمة بنجاح', 'success');
+        });
+    } else {
+        showNotification('قيم غير صحيحة', 'يرجى إدخال أرقام صحيحة', 'error');
+    }
+}
+
+function closeServicePurchaseModal() {
+    const modal = document.getElementById('editServicePurchaseModal');
     if (modal) modal.style.display = 'none';
 }
 
