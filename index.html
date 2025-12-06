@@ -1680,7 +1680,7 @@
                 </div>
             </div>
             <div class="flex space-x-3 space-x-reverse mt-6">
-                <button onclick="addCenter()" class="btn-primary flex-1">إضافة المركز</button>
+                <button id="addCenterBtn" onclick="addCenter()" class="btn-primary flex-1">إضافة المركز</button>
                 <button onclick="closeAddCenterModal()" class="btn-secondary flex-1">إلغاء</button>
             </div>
         </div>
@@ -3276,11 +3276,11 @@
             // تغيير وظيفة الزر لتحديث بدلاً من إضافة
             const modal = document.getElementById('addCenterModal');
             const title = modal.querySelector('.login-title');
-            const button = modal.querySelector('button[onclick="addCenter()"]');
+            const button = document.getElementById('addCenterBtn');
             
             title.textContent = '✏️ تعديل مركز إسعافي';
             button.textContent = 'تحديث المركز';
-            button.setAttribute('onclick', `updateCenter(${centerId})`);
+            button.onclick = function() { window.updateCenter(centerId); };
             
             modal.style.display = 'flex';
         }
@@ -3370,11 +3370,11 @@
         function resetAddCenterModal() {
             const modal = document.getElementById('addCenterModal');
             const title = modal.querySelector('.login-title');
-            const button = modal.querySelector('button[onclick^="updateCenter"], button[onclick="addCenter()"]');
+            const button = document.getElementById('addCenterBtn');
             
             title.textContent = '➕ إضافة مركز إسعافي جديد';
             button.textContent = 'إضافة المركز';
-            button.setAttribute('onclick', 'addCenter()');
+            button.onclick = function() { window.addCenter(); };
             
             modal.style.display = 'none';
             clearAddCenterForm();
