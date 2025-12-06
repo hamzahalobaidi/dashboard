@@ -2364,8 +2364,9 @@
 
             let tableRows = '';
             emergencyCenters.forEach((center, index) => {
-                const staffPercentage = center.totalStaff > 0 ? Math.round((center.currentStaff / center.totalStaff) * 100) : 0;
-                const ambulancePercentage = center.totalAmbulances > 0 ? Math.round((center.activeAmbulances / center.totalAmbulances) * 100) : 0;
+                // حساب النسبة المئوية مع ضمان عدم تجاوز 100%
+                const staffPercentage = center.totalStaff > 0 ? Math.min(100, Math.round((center.currentStaff / center.totalStaff) * 100)) : 0;
+                const ambulancePercentage = center.totalAmbulances > 0 ? Math.min(100, Math.round((center.activeAmbulances / center.totalAmbulances) * 100)) : 0;
                 const staffColor = getResourceColor(staffPercentage);
                 const ambulanceColor = getResourceColor(ambulancePercentage);
                 
@@ -2704,16 +2705,39 @@
                 }
 
                 // إنشاء المركز الجديد
+                const totalStaff = parseInt(document.getElementById('totalStaffInput').value) || 0;
+                const currentStaff = parseInt(document.getElementById('currentStaffInput').value) || 0;
+                const totalAmbulances = parseInt(document.getElementById('totalAmbulancesInput').value) || 0;
+                const activeAmbulances = parseInt(document.getElementById('activeAmbulancesInput').value) || 0;
+                const inactiveAmbulances = parseInt(document.getElementById('inactiveAmbulancesInput').value) || 0;
+                const supportAmbulances = parseInt(document.getElementById('supportAmbulancesInput').value) || 0;
+                
+                // التحقق من صحة البيانات
+                if (currentStaff > totalStaff) {
+                    alert('❌ خطأ: عدد الموظفين المتوفرين (' + currentStaff + ') لا يمكن أن يتجاوز الإجمالي (' + totalStaff + ')');
+                    return;
+                }
+                
+                if (activeAmbulances > totalAmbulances) {
+                    alert('❌ خطأ: عدد الإسعافات النشطة (' + activeAmbulances + ') لا يمكن أن يتجاوز الإجمالي (' + totalAmbulances + ')');
+                    return;
+                }
+                
+                if ((inactiveAmbulances + supportAmbulances + activeAmbulances) > totalAmbulances) {
+                    alert('❌ خطأ: مجموع الإسعافات (' + (inactiveAmbulances + supportAmbulances + activeAmbulances) + ') لا يمكن أن يتجاوز الإجمالي (' + totalAmbulances + ')');
+                    return;
+                }
+                
                 const newCenter = {
                     id: Date.now(), // استخدام timestamp كـ ID فريد
                     name: name,
                     location: location,
-                    totalStaff: parseInt(document.getElementById('totalStaffInput').value) || 0,
-                    currentStaff: parseInt(document.getElementById('currentStaffInput').value) || 0,
-                    totalAmbulances: parseInt(document.getElementById('totalAmbulancesInput').value) || 0,
-                    activeAmbulances: parseInt(document.getElementById('activeAmbulancesInput').value) || 0,
-                    inactiveAmbulances: parseInt(document.getElementById('inactiveAmbulancesInput').value) || 0,
-                    supportAmbulances: parseInt(document.getElementById('supportAmbulancesInput').value) || 0,
+                    totalStaff: totalStaff,
+                    currentStaff: currentStaff,
+                    totalAmbulances: totalAmbulances,
+                    activeAmbulances: activeAmbulances,
+                    inactiveAmbulances: inactiveAmbulances,
+                    supportAmbulances: supportAmbulances,
                     lifeSavingCases: parseInt(document.getElementById('lifeSavingCasesInput').value) || 0,
                     homeCases: parseInt(document.getElementById('homeCasesInput').value) || 0,
                     moderateCases: parseInt(document.getElementById('moderateCasesInput').value) || 0,
@@ -2748,7 +2772,14 @@
                 // إغلاق النافذة
                 closeAddCenterModal();
                 
-                // حفظ البيانات
+                // حفظ البيانات في Supabase
+                syncManager.saveData('emergencyCenters', emergencyCenters).then(() => {
+                    console.log('✅ تم حفظ بيانات المراكز في Supabase');
+                }).catch(error => {
+                    console.error('❌ خطأ في حفظ البيانات:', error);
+                });
+                
+                // حفظ البيانات المحلية
                 try {
                     saveDataToStorage();
                     console.log('✅ تم حفظ البيانات');
@@ -3258,16 +3289,40 @@
             const centerIndex = emergencyCenters.findIndex(c => c.id === centerId);
             if (centerIndex === -1) return;
 
+            // الحصول على البيانات
+            const totalStaff = parseInt(document.getElementById('totalStaffInput').value) || 0;
+            const currentStaff = parseInt(document.getElementById('currentStaffInput').value) || 0;
+            const totalAmbulances = parseInt(document.getElementById('totalAmbulancesInput').value) || 0;
+            const activeAmbulances = parseInt(document.getElementById('activeAmbulancesInput').value) || 0;
+            const inactiveAmbulances = parseInt(document.getElementById('inactiveAmbulancesInput').value) || 0;
+            const supportAmbulances = parseInt(document.getElementById('supportAmbulancesInput').value) || 0;
+            
+            // التحقق من صحة البيانات
+            if (currentStaff > totalStaff) {
+                alert('❌ خطأ: عدد الموظفين المتوفرين (' + currentStaff + ') لا يمكن أن يتجاوز الإجمالي (' + totalStaff + ')');
+                return;
+            }
+            
+            if (activeAmbulances > totalAmbulances) {
+                alert('❌ خطأ: عدد الإسعافات النشطة (' + activeAmbulances + ') لا يمكن أن يتجاوز الإجمالي (' + totalAmbulances + ')');
+                return;
+            }
+            
+            if ((inactiveAmbulances + supportAmbulances + activeAmbulances) > totalAmbulances) {
+                alert('❌ خطأ: مجموع الإسعافات (' + (inactiveAmbulances + supportAmbulances + activeAmbulances) + ') لا يمكن أن يتجاوز الإجمالي (' + totalAmbulances + ')');
+                return;
+            }
+
             emergencyCenters[centerIndex] = {
                 ...emergencyCenters[centerIndex],
                 name: document.getElementById('centerName').value,
                 location: document.getElementById('centerLocation').value,
-                totalStaff: parseInt(document.getElementById('totalStaffInput').value) || 0,
-                currentStaff: parseInt(document.getElementById('currentStaffInput').value) || 0,
-                totalAmbulances: parseInt(document.getElementById('totalAmbulancesInput').value) || 0,
-                activeAmbulances: parseInt(document.getElementById('activeAmbulancesInput').value) || 0,
-                inactiveAmbulances: parseInt(document.getElementById('inactiveAmbulancesInput').value) || 0,
-                supportAmbulances: parseInt(document.getElementById('supportAmbulancesInput').value) || 0,
+                totalStaff: totalStaff,
+                currentStaff: currentStaff,
+                totalAmbulances: totalAmbulances,
+                activeAmbulances: activeAmbulances,
+                inactiveAmbulances: inactiveAmbulances,
+                supportAmbulances: supportAmbulances,
                 lifeSavingCases: parseInt(document.getElementById('lifeSavingCasesInput').value) || 0,
                 homeCases: parseInt(document.getElementById('homeCasesInput').value) || 0,
                 moderateCases: parseInt(document.getElementById('moderateCasesInput').value) || 0,
@@ -3279,10 +3334,17 @@
             displayCenters();
             resetAddCenterModal();
             
+            // حفظ البيانات في Supabase
+            syncManager.saveData('emergencyCenters', emergencyCenters).then(() => {
+                console.log('✅ تم حفظ بيانات المراكز في Supabase');
+            }).catch(error => {
+                console.error('❌ خطأ في حفظ البيانات:', error);
+            });
+            
             // إطلاق حدث تحديث المركز للحفظ التلقائي
             document.dispatchEvent(new CustomEvent('centerUpdated'));
             
-            showNotification('تم تحديث المركز بنجاح', 'تم حفظ التغييرات تلقائياً', 'success');
+            showNotification('تم تحديث المركز بنجاح', 'تم حفظ التغييرات في Supabase', 'success');
         }
 
         function deleteCenter(centerId) {
@@ -3291,10 +3353,17 @@
                 updateMainStats();
                 displayCenters();
                 
+                // حفظ البيانات في Supabase
+                syncManager.saveData('emergencyCenters', emergencyCenters).then(() => {
+                    console.log('تم حفظ بيانات المراكز في Supabase');
+                }).catch(error => {
+                    console.error('خطأ في حفظ البيانات:', error);
+                });
+                
                 // إطلاق حدث تحديث المركز للحفظ التلقائي
                 document.dispatchEvent(new CustomEvent('centerUpdated'));
                 
-                showNotification('تم حذف المركز بنجاح', 'تم حفظ التغييرات تلقائياً', 'success');
+                showNotification('تم حذف المركز بنجاح', 'تم حفظ التغييرات في Supabase', 'success');
             }
         }
 
