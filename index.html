@@ -2565,18 +2565,18 @@
         }
 
         // وظائف الإدارة
-        function showViewMode() {
+        window.showViewMode = function() {
             isAdminMode = false;
             document.getElementById('adminControls').style.display = 'none';
             document.getElementById('printButton').classList.remove('admin-mode');
             displayCenters();
         }
 
-        function showAdminMode() {
+        window.showAdminMode = function() {
             document.getElementById('loginModal').style.display = 'flex';
         }
 
-        function attemptLogin() {
+        window.attemptLogin = function() {
             const password = document.getElementById('loginPassword').value;
             const errorDiv = document.getElementById('loginError');
             
@@ -2594,18 +2594,18 @@
             }
         }
 
-        function cancelLogin() {
+        window.cancelLogin = function() {
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('loginPassword').value = '';
             document.getElementById('loginError').style.display = 'none';
         }
 
         // وظائف إضافة المراكز
-        function showAddCenterModal() {
+        window.showAddCenterModal = function() {
             document.getElementById('addCenterModal').style.display = 'flex';
         }
 
-        function closeAddCenterModal() {
+        window.closeAddCenterModal = function() {
             document.getElementById('addCenterModal').style.display = 'none';
             clearAddCenterForm();
         }
@@ -3310,7 +3310,7 @@
         }
 
         // إصلاح وظيفة تسجيل الدخول لاستخدام كلمة المرور المحدثة
-        function attemptLogin() {
+        window.attemptLogin = function() {
             const password = document.getElementById('loginPassword').value;
             const errorDiv = document.getElementById('loginError');
             
