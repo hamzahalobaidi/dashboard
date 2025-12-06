@@ -2169,6 +2169,7 @@
                 updateMainStats();
                 displayCenters();
                 updateTopActiveCenters();
+                    renderCustomFacilities();
                 updateLastUpdateTime();
             }).catch(error => {
                 console.log('⚠️ خطأ في تحميل البيانات من Supabase، سيتم استخدام البيانات المحفوظة');
@@ -2184,6 +2185,7 @@
                     updateMainStats();
                     displayCenters();
                     updateTopActiveCenters();
+                    renderCustomFacilities();
                 }).catch(error => {
                     console.log('⚠️ خطأ في مزامنة البيانات');
                 });
@@ -4826,26 +4828,26 @@ function loadServicePurchaseData() {
 // ===== إدارة المنشآت الجديدة =====
 
 // متغير لتخزين المنشآت المضافة
-let customFacilities = [];
+window.customFacilities = [];
 
 // تحميل المنشآت من Supabase عند بدء التشغيل
 async function loadCustomFacilitiesFromSupabase() {
     try {
         const data = await syncManager.loadData('customFacilities');
         if (data) {
-            customFacilities = Array.isArray(data) ? data : [];
+            window.customFacilities = Array.isArray(data) ? data : [];
             console.log('✅ تم تحميل المنشآت من Supabase:', customFacilities.length);
         } else {
             // محاولة من localStorage كـ fallback
             const localData = localStorage.getItem('customFacilities');
-            customFacilities = localData ? JSON.parse(localData) : [];
+            window.customFacilities = localData ? JSON.parse(localData) : [];
             console.log('✅ تم تحميل المنشآت من localStorage:', customFacilities.length);
         }
     } catch (error) {
         console.error('❌ خطأ في تحميل المنشآت:', error);
         // محاولة من localStorage كـ fallback
         const localData = localStorage.getItem('customFacilities');
-        customFacilities = localData ? JSON.parse(localData) : [];
+        window.customFacilities = localData ? JSON.parse(localData) : [];
     }
 }
 
@@ -4913,8 +4915,16 @@ function saveFacility() {
         nicu: { occupied: nicuOccupied, total: nicuTotal }
     };
 
-    customFacilities.push(facility);
-    localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
+    window.customFacilities.push(facility);
+    localStorage.setItem('customFacilities', JSON.stringify(window.customFacilities));
+    
+    // حفظ في Supabase
+    try {
+        await syncManager.saveData('customFacilities', window.customFacilities);
+        console.log('✅ تم حفظ المنشأة في Supabase');
+    } catch (error) {
+        console.error('❌ خطأ في حفظ المنشأة في Supabase:', error);
+    }
     
     renderCustomFacilities();
     closeFacilityModal();
@@ -4935,7 +4945,7 @@ function renderCustomFacilities() {
     customContainer.innerHTML = '';
     
     // إضافة البطاقات الجديدة
-    customFacilities.forEach(facility => {
+    window.customFacilities.forEach(facility => {
         const cardHTML = createFacilityCardHTML(facility);
         customContainer.insertAdjacentHTML('beforeend', cardHTML);
     });
@@ -5168,8 +5178,17 @@ function createFacilityCardHTML(facility) {
 // حذف منشأة مخصصة
 function deleteCustomFacility(facilityId) {
     if (confirm('هل أنت متأكد من حذف هذه المنشأة؟')) {
-        customFacilities = customFacilities.filter(f => f.id !== facilityId);
-        localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
+        window.customFacilities = window.customFacilities.filter(f => f.id !== facilityId);
+        localStorage.setItem('customFacilities', JSON.stringify(window.customFacilities));
+        
+        // حفظ في Supabase
+        try {
+            syncManager.saveData('customFacilities', window.customFacilities);
+            console.log('✅ تم حذف المنشأة من Supabase');
+        } catch (error) {
+            console.error('❌ خطأ في حذف المنشأة من Supabase:', error);
+        }
+        
         renderCustomFacilities();
         alert('تم حذف المنشأة بنجاح!');
     }
@@ -5177,7 +5196,7 @@ function deleteCustomFacility(facilityId) {
 
 // تعديل منشأة مخصصة
 function editCustomFacility(facilityId) {
-    const facility = customFacilities.find(f => f.id === facilityId);
+    const facility = window.customFacilities.find(f => f.id === facilityId);
     if (!facility) return;
 
     // فتح نموذج التعديل مع البيانات الحالية
@@ -5221,10 +5240,10 @@ function updateCustomFacility(facilityId) {
         return;
     }
 
-    const facilityIndex = customFacilities.findIndex(f => f.id === facilityId);
+    const facilityIndex = window.customFacilities.findIndex(f => f.id === facilityId);
     if (facilityIndex !== -1) {
-        customFacilities[facilityIndex] = {
-            ...customFacilities[facilityIndex],
+        window.customFacilities[facilityIndex] = {
+            ...window.customFacilities[facilityIndex],
             name: name,
             color: color,
             emergency: { occupied: emergencyOccupied, total: emergencyTotal },
@@ -5232,7 +5251,16 @@ function updateCustomFacility(facilityId) {
             ccu: { occupied: ccuOccupied, total: ccuTotal }
         };
 
-        localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
+        localStorage.setItem('customFacilities', JSON.stringify(window.customFacilities));
+        
+        // حفظ في Supabase
+        try {
+            syncManager.saveData('customFacilities', window.customFacilities);
+            console.log('✅ تم تحديث المنشأة في Supabase');
+        } catch (error) {
+            console.error('❌ خطأ في تحديث المنشأة في Supabase:', error);
+        }
+        
         renderCustomFacilities();
         closeFacilityModal();
         
@@ -5247,7 +5275,7 @@ function updateCustomFacility(facilityId) {
 
 // تعديل السعة السريرية فقط للمنشأة المخصصة
 function editCustomFacilityBeds(facilityId) {
-    const facility = customFacilities.find(f => f.id === facilityId);
+    const facility = window.customFacilities.find(f => f.id === facilityId);
     if (!facility) return;
 
     // فتح نموذج التعديل مع البيانات الحالية للأسرة فقط
