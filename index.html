@@ -1326,6 +1326,19 @@
                     </div>
                 </div>
 
+                <!-- بطاقة Mobile Medical Team -->
+                <div class="bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-lg rounded-2xl p-3 border border-blue-300/20 card-hover" onclick="if(isAdminMode) openMobileTeamModal()" style="cursor: pointer;">
+                    <div class="mb-2">
+                        <div class="flex justify-between items-center mb-2">
+                            <p class="text-blue-200 text-xs font-medium">Mobile Medical Team</p>
+                            <p class="text-blue-300 text-lg font-bold" id="mobileTeamTotalCount">0</p>
+                        </div>
+                        <div id="mobileTeamsList" class="space-y-1">
+                            <!-- سيتم ملء القائمة ديناميكياً -->
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
 
@@ -1878,6 +1891,35 @@
         </div>
     </div>
 
+    <!-- نافذة تعديل Mobile Medical Team -->
+    <div id="editMobileTeamModal" class="login-modal" style="display: none;">
+        <div class="login-form" style="width: 500px; max-width: 95vw;">
+            <div class="login-title">🚘 إدارة فرق Mobile Medical Team</div>
+            <div class="text-white/70 mb-4">أضف أو احذف الفرق الطبية المتنقلة</div>
+            
+            <div class="mb-4">
+                <label class="block text-white font-medium text-sm mb-2">اسم المنشأة:</label>
+                <input type="text" id="mobileTeamFacilityInput" class="form-input" placeholder="اسم المستشفى أو المركز">
+            </div>
+            <div class="mb-4">
+                <label class="block text-white font-medium text-sm mb-2">عدد الفرق:</label>
+                <input type="number" id="mobileTeamTeamsInput" class="form-input" min="1" placeholder="0">
+            </div>
+            
+            <button onclick="addMobileTeam()" class="btn-success w-full mb-4">إضافة فريق</button>
+            
+            <div class="bg-gray-700/30 rounded-lg p-3 mb-4 max-h-64 overflow-y-auto">
+                <div id="mobileTeamsListContainer">
+                    <!-- سيتم ملء القائمة ديناميكياً -->
+                </div>
+            </div>
+            
+            <div class="flex space-x-3 space-x-reverse">
+                <button onclick="closeMobileTeamModal()" class="btn-secondary flex-1">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- نافذة تعديل إحالات إنقاذ الحياة -->
     <div id="editSideLifeSavingModal" class="login-modal" style="display: none;">
@@ -2178,6 +2220,12 @@
                     servicePurchaseData = allData.servicePurchaseData;
                     console.log('✅ تم تحميل servicePurchaseData');
                     updateServicePurchaseDisplay();
+                }
+                
+                if (allData.mobileTeams) {
+                    mobileTeamData = allData.mobileTeams;
+                    console.log('✅ تم تحميل mobileTeams');
+                    updateMobileTeamsDisplay();
                 }
                 
                 console.log('✅ تم تحميل جميع البيانات من Supabase بنجاح');
@@ -4852,6 +4900,110 @@ function closeServicePurchaseModal() {
     if (modal) modal.style.display = 'none';
 }
 
+
+// ===== إدارة فرق Mobile Medical Team =====
+
+let mobileTeamData = [];
+const MAX_MOBILE_TEAMS = 5;
+
+async function loadMobileTeamsFromSupabase() {
+    try {
+        const data = await syncManager.loadData('mobileTeams');
+        if (data && Array.isArray(data)) {
+            mobileTeamData = data.slice(0, MAX_MOBILE_TEAMS);
+            updateMobileTeamsDisplay();
+        }
+    } catch (error) {
+        console.error('خطأ في تحميل الفرق:', error);
+    }
+}
+
+async function saveMobileTeamsData() {
+    try {
+        await syncManager.saveData('mobileTeams', mobileTeamData);
+        localStorage.setItem('mobileTeams', JSON.stringify(mobileTeamData));
+    } catch (error) {
+        console.error('خطأ في حفظ الفرق:', error);
+    }
+}
+
+function updateMobileTeamsDisplay() {
+    const totalCount = mobileTeamData.reduce((sum, team) => sum + (team.teamsCount || 0), 0);
+    document.getElementById('mobileTeamTotalCount').textContent = totalCount;
+    const listContainer = document.getElementById('mobileTeamsList');
+    listContainer.innerHTML = '';
+    if (mobileTeamData.length === 0) {
+        listContainer.innerHTML = '<p class="text-blue-300 text-xs text-center py-1">لا توجد فرق مضافة</p>';
+    } else {
+        mobileTeamData.forEach((team) => {
+            const teamDiv = document.createElement('div');
+            teamDiv.className = 'flex justify-between items-center text-xs bg-blue-500/10 rounded-lg p-1.5 border border-blue-300/20';
+            teamDiv.innerHTML = `<span class="text-blue-300">${team.facilityName}</span><span class="text-blue-200 font-semibold">${team.teamsCount}</span>`;
+            listContainer.appendChild(teamDiv);
+        });
+    }
+}
+
+function openMobileTeamModal() {
+    if (!isAdminMode) return;
+    const modal = document.getElementById('editMobileTeamModal');
+    if (modal) {
+        updateMobileTeamsList();
+        modal.style.display = 'flex';
+    }
+}
+
+function closeMobileTeamModal() {
+    const modal = document.getElementById('editMobileTeamModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function updateMobileTeamsList() {
+    const container = document.getElementById('mobileTeamsListContainer');
+    container.innerHTML = '';
+    if (mobileTeamData.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">لا توجد فرق مضافة</p>';
+    } else {
+        mobileTeamData.forEach((team, index) => {
+            const teamDiv = document.createElement('div');
+            teamDiv.className = 'flex justify-between items-center bg-gray-700/30 rounded-lg p-2 mb-2';
+            teamDiv.innerHTML = `<div><p class="text-white text-sm font-semibold">${team.facilityName}</p><p class="text-gray-400 text-xs">عدد الفرق: ${team.teamsCount}</p></div><button onclick="deleteMobileTeam(${index})" class="bg-red-500/20 hover:bg-red-500/40 text-red-300 px-2 py-1 rounded text-xs">حذف</button>`;
+            container.appendChild(teamDiv);
+        });
+    }
+}
+
+function addMobileTeam() {
+    if (mobileTeamData.length >= MAX_MOBILE_TEAMS) {
+        showNotification('الحد الأقصى', `لا يمكن إضافة أكثر من ${MAX_MOBILE_TEAMS} منشآت`, 'error');
+        return;
+    }
+    const facilityInput = document.getElementById('mobileTeamFacilityInput');
+    const teamsInput = document.getElementById('mobileTeamTeamsInput');
+    const facilityName = facilityInput.value.trim();
+    const teamsCount = parseInt(teamsInput.value) || 0;
+    if (!facilityName || teamsCount <= 0) {
+        showNotification('بيانات غير صحيحة', 'يرجى إدخال اسم المنشأة وعدد الفرق', 'error');
+        return;
+    }
+    mobileTeamData.push({ facilityName, teamsCount });
+    saveMobileTeamsData().then(() => {
+        updateMobileTeamsDisplay();
+        updateMobileTeamsList();
+        facilityInput.value = '';
+        teamsInput.value = '';
+        showNotification('تم الإضافة', 'تم إضافة الفريق بنجاح', 'success');
+    });
+}
+
+function deleteMobileTeam(index) {
+    mobileTeamData.splice(index, 1);
+    saveMobileTeamsData().then(() => {
+        updateMobileTeamsDisplay();
+        updateMobileTeamsList();
+        showNotification('تم الحذف', 'تم حذف الفريق بنجاح', 'success');
+    });
+}
 
 
 // ===== إدارة المنشآت الجديدة =====
