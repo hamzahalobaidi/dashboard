@@ -2115,22 +2115,71 @@
             }
         });
 
+        // تحميل جميع البيانات من Supabase
+        async function loadAllDataFromSupabase() {
+            try {
+                console.log('🔄 جاري تحميل البيانات من Supabase...');
+                
+                // تحميل جميع البيانات
+                const allData = await syncManager.loadAllData();
+                
+                // تحديث المتغيرات العامة
+                if (allData.emergencyCenters) {
+                    emergencyCenters = allData.emergencyCenters;
+                    console.log('✅ تم تحميل emergencyCenters:', emergencyCenters.length);
+                }
+                
+                if (allData.customFacilities) {
+                    customFacilities = allData.customFacilities;
+                    console.log('✅ تم تحميل customFacilities:', customFacilities.length);
+                }
+                
+                if (allData.servicePurchaseData) {
+                    servicePurchaseData = allData.servicePurchaseData;
+                    console.log('✅ تم تحميل servicePurchaseData');
+                }
+                
+                if (allData.mobileTeamsData) {
+                    mobileTeamsData = allData.mobileTeamsData;
+                    console.log('✅ تم تحميل mobileTeamsData');
+                }
+                
+                if (allData.emergencyDashboardData) {
+                    emergencyDashboardData = allData.emergencyDashboardData;
+                    console.log('✅ تم تحميل emergencyDashboardData');
+                }
+                
+                console.log('✅ تم تحميل جميع البيانات من Supabase بنجاح');
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في تحميل البيانات من Supabase:', error);
+                return false;
+            }
+        }
+        
         // تهيئة الداشبورد بعد تسجيل الدخول
         function initializeDashboard() {
             console.log('بدء تحميل الداشبورد...');
             
-            // تحميل البيانات المحفوظة أولاً
-            const dataLoaded = loadDataFromStorage();
-            
-            // تحديث العرض
-            updateMainStats();
-            displayCenters();
-            updateTopActiveCenters();
-            updateLastUpdateTime();
+            // تحميل البيانات من Supabase أولاً
+            loadAllDataFromSupabase().then(() => {
+                console.log('✅ تم تحميل البيانات من Supabase');
+                
+                // تحديث العرض
+                updateMainStats();
+                displayCenters();
+                updateTopActiveCenters();
+                updateLastUpdateTime();
+            }).catch(error => {
+                console.log('⚠️ خطأ في تحميل البيانات من Supabase، سيتم استخدام البيانات المحفوظة');
+                const dataLoaded = loadDataFromStorage();
+            });
             
             // تعيين التحديث الافتراضي كل 30 ثانية
-            document.getElementById('refreshInterval').value = '30000';
-            setRefreshInterval();
+            setTimeout(() => {
+                document.getElementById('refreshInterval').value = '30000';
+                setRefreshInterval();
+            }, 1000);
             
             // حفظ البيانات كل دقيقة تلقائياً (بصمت)
             setInterval(() => {
