@@ -1263,6 +1263,39 @@
                     </div>
                 </div>
 
+                <!-- بطاقة إحالات إنقاذ الحياة -->
+                <div class="bg-gradient-to-br from-red-500/20 to-red-600/10 backdrop-blur-lg rounded-2xl p-4 border border-red-300/20 card-hover" onclick="if(isAdminMode) openLifeSavingReferralsModal()" style="cursor: pointer;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-red-200 text-sm font-medium">إحالات إنقاذ الحياة</p>
+                            <p class="text-2xl font-bold text-white" id="lifeSavingReferralsCount">0</p>
+                            <p class="text-red-300 text-xs">حالة حرجة</p>
+                        </div>
+                        <div class="professional-icon" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.2)); color: #ef4444;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                <circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.6"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- بطاقة إحالات طارئة -->
+                <div class="bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 backdrop-blur-lg rounded-2xl p-4 border border-yellow-300/20 card-hover" onclick="if(isAdminMode) openEmergencyReferralsModal()" style="cursor: pointer;">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-yellow-200 text-sm font-medium">إحالات طارئة</p>
+                            <p class="text-2xl font-bold text-white" id="emergencyReferralsCount">0</p>
+                            <p class="text-yellow-300 text-xs">حالة طارئة</p>
+                        </div>
+                        <div class="professional-icon" style="background: linear-gradient(135deg, rgba(234, 179, 8, 0.3), rgba(202, 138, 4, 0.2)); color: #eab308;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
@@ -1743,6 +1776,38 @@
 
             <div class="flex space-x-3 space-x-reverse">
                 <button onclick="closeEmergencyAlertModal()" class="btn-secondary flex-1">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل إحالات إنقاذ الحياة (متزامنة) -->
+    <div id="editLifeSavingReferralsModal" class="login-modal" style="display: none;">
+        <div class="login-form" style="width: 400px; max-width: 95vw;">
+            <div class="login-title">🚨 تعديل إحالات إنقاذ الحياة</div>
+            <div class="text-white/70 mb-6">أدخل عدد إحالات إنقاذ الحياة</div>
+            <div class="mb-4">
+                <label class="block text-white font-medium text-sm mb-2">العدد:</label>
+                <input type="number" id="lifeSavingReferralsInput" class="form-input" min="0" placeholder="0">
+            </div>
+            <div class="flex space-x-3 space-x-reverse">
+                <button onclick="saveLifeSavingReferrals()" class="btn-success flex-1">حفظ</button>
+                <button onclick="closeLifeSavingReferralsModal()" class="btn-secondary flex-1">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تعديل الإحالات الطارئة (متزامنة) -->
+    <div id="editEmergencyReferralsModal" class="login-modal" style="display: none;">
+        <div class="login-form" style="width: 400px; max-width: 95vw;">
+            <div class="login-title">🚨 تعديل الإحالات الطارئة</div>
+            <div class="text-white/70 mb-6">أدخل عدد الإحالات الطارئة</div>
+            <div class="mb-4">
+                <label class="block text-white font-medium text-sm mb-2">العدد:</label>
+                <input type="number" id="emergencyReferralsInput" class="form-input" min="0" placeholder="0">
+            </div>
+            <div class="flex space-x-3 space-x-reverse">
+                <button onclick="saveEmergencyReferrals()" class="btn-success flex-1">حفظ</button>
+                <button onclick="closeEmergencyReferralsModal()" class="btn-secondary flex-1">إلغاء</button>
             </div>
         </div>
     </div>
@@ -4733,6 +4798,122 @@ function loadServicePurchaseData() {
     
     // تحديث العدد الكلي بعد تحميل البيانات
     updateServicePurchaseTotal();
+}
+
+// ===== إدارة الإحالات =====
+
+// متغيرات لتخزين بيانات الإحالات
+let referralsData = {
+    lifeSavingReferrals: 0,
+    emergencyReferrals: 0
+};
+
+// تحميل بيانات الإحالات من Supabase
+async function loadReferralsData() {
+    try {
+        const data = await syncManager.loadData('referralsData');
+        if (data) {
+            referralsData = data;
+            console.log('✅ تم تحميل بيانات الإحالات');
+        }
+    } catch (error) {
+        console.error('❌ خطأ في تحميل بيانات الإحالات:', error);
+    }
+}
+
+// حفظ بيانات الإحالات إلى Supabase
+async function saveReferralsData() {
+    try {
+        await syncManager.saveData('referralsData', referralsData);
+        console.log('✅ تم حفظ بيانات الإحالات');
+    } catch (error) {
+        console.error('❌ خطأ في حفظ بيانات الإحالات:', error);
+    }
+}
+
+// تحديث عرض الإحالات
+function updateReferralsDisplay() {
+    const lifeSavingElement = document.getElementById('lifeSavingReferralsCount');
+    const emergencyElement = document.getElementById('emergencyReferralsCount');
+    
+    if (lifeSavingElement) {
+        lifeSavingElement.textContent = referralsData.lifeSavingReferrals || 0;
+    }
+    if (emergencyElement) {
+        emergencyElement.textContent = referralsData.emergencyReferrals || 0;
+    }
+}
+
+// فتح نافذة تعديل إحالات إنقاذ الحياة
+function openLifeSavingReferralsModal() {
+    if (!isAdminMode) return;
+    
+    const modal = document.getElementById('editLifeSavingReferralsModal');
+    const input = document.getElementById('lifeSavingReferralsInput');
+    
+    if (modal && input) {
+        input.value = referralsData.lifeSavingReferrals || 0;
+        modal.style.display = 'flex';
+        setTimeout(() => input.focus(), 100);
+    }
+}
+
+// حفظ بيانات إحالات إنقاذ الحياة
+function saveLifeSavingReferrals() {
+    const input = document.getElementById('lifeSavingReferralsInput');
+    const value = parseInt(input.value) || 0;
+    
+    if (value >= 0) {
+        referralsData.lifeSavingReferrals = value;
+        saveReferralsData().then(() => {
+            updateReferralsDisplay();
+            closeLifeSavingReferralsModal();
+            showNotification('تم التحديث', 'تم تحديث إحالات إنقاذ الحياة بنجاح', 'success');
+        });
+    } else {
+        showNotification('قيمة غير صحيحة', 'يرجى إدخال رقم صحيح', 'error');
+    }
+}
+
+function closeLifeSavingReferralsModal() {
+    const modal = document.getElementById('editLifeSavingReferralsModal');
+    if (modal) modal.style.display = 'none';
+}
+
+// فتح نافذة تعديل الإحالات الطارئة
+function openEmergencyReferralsModal() {
+    if (!isAdminMode) return;
+    
+    const modal = document.getElementById('editEmergencyReferralsModal');
+    const input = document.getElementById('emergencyReferralsInput');
+    
+    if (modal && input) {
+        input.value = referralsData.emergencyReferrals || 0;
+        modal.style.display = 'flex';
+        setTimeout(() => input.focus(), 100);
+    }
+}
+
+// حفظ بيانات الإحالات الطارئة
+function saveEmergencyReferrals() {
+    const input = document.getElementById('emergencyReferralsInput');
+    const value = parseInt(input.value) || 0;
+    
+    if (value >= 0) {
+        referralsData.emergencyReferrals = value;
+        saveReferralsData().then(() => {
+            updateReferralsDisplay();
+            closeEmergencyReferralsModal();
+            showNotification('تم التحديث', 'تم تحديث الإحالات الطارئة بنجاح', 'success');
+        });
+    } else {
+        showNotification('قيمة غير صحيحة', 'يرجى إدخال رقم صحيح', 'error');
+    }
+}
+
+function closeEmergencyReferralsModal() {
+    const modal = document.getElementById('editEmergencyReferralsModal');
+    if (modal) modal.style.display = 'none';
 }
 
 // ===== إدارة المنشآت الجديدة =====
