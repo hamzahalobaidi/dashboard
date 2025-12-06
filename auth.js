@@ -23,7 +23,7 @@ window.checkMainPassword = function() {
         }
         
         // إظهار الداشبورد
-         const dashboard = document.getElementById('dashboardContent');
+        const dashboard = document.getElementById('dashboardContent');
         if (dashboard) {
             dashboard.style.display = 'block';
         }
