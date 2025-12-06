@@ -2126,6 +2126,12 @@
                     console.log('✅ تم تحميل emergencyDashboardData');
                 }
                 
+                if (allData.referralsData) {
+                    referralsData = allData.referralsData;
+                    console.log('✅ تم تحميل referralsData');
+                    updateReferralsDisplay();
+                }
+                
                 console.log('✅ تم تحميل جميع البيانات من Supabase بنجاح');
                 return true;
             } catch (error) {
@@ -2141,6 +2147,7 @@
             // تحميل البيانات من Supabase أولاً
             loadAllDataFromSupabase().then(() => {
                 console.log('✅ تم تحميل البيانات من Supabase');
+                loadReferralsData();
                 
                 // تحديث العرض
                 updateMainStats();
@@ -2150,6 +2157,7 @@
             }).catch(error => {
                 console.log('⚠️ خطأ في تحميل البيانات من Supabase، سيتم استخدام البيانات المحفوظة');
                 const dataLoaded = loadDataFromStorage();
+                loadReferralsData();
             });
             
             // المزامنة التلقائية مع Supabase كل 10 ثواني
