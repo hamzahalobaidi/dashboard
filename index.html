@@ -4694,7 +4694,31 @@ function loadServicePurchaseData() {
 // ===== إدارة المنشآت الجديدة =====
 
 // متغير لتخزين المنشآت المضافة
-let customFacilities = JSON.parse(localStorage.getItem('customFacilities')) || [];
+let customFacilities = [];
+
+// تحميل المنشآت من Supabase عند بدء التشغيل
+async function loadCustomFacilitiesFromSupabase() {
+    try {
+        const data = await syncManager.loadData('customFacilities');
+        if (data) {
+            customFacilities = Array.isArray(data) ? data : [];
+            console.log('✅ تم تحميل المنشآت من Supabase:', customFacilities.length);
+        } else {
+            // محاولة من localStorage كـ fallback
+            const localData = localStorage.getItem('customFacilities');
+            customFacilities = localData ? JSON.parse(localData) : [];
+            console.log('✅ تم تحميل المنشآت من localStorage:', customFacilities.length);
+        }
+    } catch (error) {
+        console.error('❌ خطأ في تحميل المنشآت:', error);
+        // محاولة من localStorage كـ fallback
+        const localData = localStorage.getItem('customFacilities');
+        customFacilities = localData ? JSON.parse(localData) : [];
+    }
+}
+
+// تحميل المنشآت عند تحميل الصفحة
+window.addEventListener('load', loadCustomFacilitiesFromSupabase);
 
 // فتح نموذج إضافة منشأة
 function openFacilityModal() {
