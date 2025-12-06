@@ -2218,13 +2218,13 @@
             console.log('تم تحميل الداشبورد بنجاح');
         }
 
-        let emergencyCenters = [];
+        window.emergencyCenters = [];
 
         // متغيرات عامة
-        let isAdminMode = false;
-        let currentZoom = 100;
-        let refreshInterval = null;
-        let globalResponseTime = 0.0;
+        window.window.isAdminMode = false;
+        window.currentZoom = 100;
+        window.refreshInterval = null;
+        window.globalResponseTime = 0.0;
 
         // تحديث البيانات الرئيسية
         function updateMainStats() {
@@ -2630,7 +2630,7 @@
 
         // وظائف الإدارة
         window.showViewMode = function() {
-            isAdminMode = false;
+            window.isAdminMode = false;
             document.getElementById('adminControls').style.display = 'none';
             document.getElementById('printButton').classList.remove('admin-mode');
             displayCenters();
@@ -2645,7 +2645,7 @@
             const errorDiv = document.getElementById('loginError');
             
             if (password === 'admin123') {
-                isAdminMode = true;
+                window.isAdminMode = true;
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('adminControls').style.display = 'block';
                 document.getElementById('printButton').classList.add('admin-mode');
@@ -2750,7 +2750,7 @@
                 console.log('✅ تم إنشاء المركز:', newCenter);
 
                 // إضافة المركز للقائمة
-                emergencyCenters.push(newCenter);
+                window.emergencyCenters.push(newCenter);
                 console.log('📊 عدد المراكز الحالي:', emergencyCenters.length);
 
                 // تحديث العرض بأمان
@@ -3447,7 +3447,7 @@
             const errorDiv = document.getElementById('loginError');
             
             if (password === adminPassword) {
-                isAdminMode = true;
+                window.isAdminMode = true;
                 document.getElementById('loginModal').style.display = 'none';
                 document.getElementById('adminControls').style.display = 'block';
                 document.getElementById('printButton').classList.add('admin-mode');
