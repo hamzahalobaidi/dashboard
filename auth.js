@@ -10,19 +10,20 @@ window.isAdminMode = false;
 window.checkMainPassword = function() {
     const passwordInput = document.getElementById('mainProtectionPassword');
     const password = passwordInput.value.trim();
+    const errorDiv = document.getElementById('mainProtectionError');
+    const mainProtectionModal = document.getElementById('mainProtectionModal');
     
     if (password === window.MAIN_PASSWORD) {
         console.log('🔐 تم التحقق من كلمة المرور بنجاح');
         window.isAuthenticated = true;
         
         // إخفاء شاشة الدخول
-        const loginModal = document.querySelector('[style*="display: flex"]') || document.querySelector('.login-modal');
-        if (loginModal) {
-            loginModal.style.display = 'none';
+        if (mainProtectionModal) {
+            mainProtectionModal.style.display = 'none';
         }
         
         // إظهار الداشبورد
-        const dashboard = document.getElementById('dashboard') || document.querySelector('.dashboard');
+        const dashboard = document.getElementById('dashboard');
         if (dashboard) {
             dashboard.style.display = 'block';
         }
@@ -42,10 +43,23 @@ window.checkMainPassword = function() {
             window.initializeDashboard();
         }
         
+        // إخفاء رسالة الخطأ
+        if (errorDiv) {
+            errorDiv.classList.add('hidden');
+        }
+        
         return true;
     } else {
         console.log('❌ كلمة المرور غير صحيحة');
-        alert('كلمة المرور غير صحيحة');
+        
+        // إظهار رسالة الخطأ
+        if (errorDiv) {
+            errorDiv.classList.remove('hidden');
+        }
+        
+        // مسح حقل كلمة المرور
+        passwordInput.value = '';
+        
         return false;
     }
 };
