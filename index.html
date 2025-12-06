@@ -1299,16 +1299,29 @@
 
                 <!-- بطاقة شراء الخدمة -->
                 <div class="bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-lg rounded-2xl p-4 border border-blue-300/20 card-hover" onclick="if(isAdminMode) openServicePurchaseModal()" style="cursor: pointer;">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-200 text-sm font-medium">شراء خدمة</p>
-                            <p class="text-2xl font-bold text-white" id="servicePurchaseTotalCount">0</p>
-                            <p class="text-blue-300 text-xs">إجمالي الحالات</p>
+                    <div class="mb-3">
+                        <p class="text-blue-200 text-sm font-medium mb-3">شراء خدمة</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-blue-500/20 rounded-lg p-2 text-center border border-blue-300/30">
+                                <p class="text-blue-300 text-xs mb-1">الإجمالي</p>
+                                <p class="text-xl font-bold text-white" id="servicePurchaseTotalCount">0</p>
+                            </div>
+                            <div class="bg-green-500/20 rounded-lg p-2 text-center border border-green-300/30">
+                                <p class="text-green-300 text-xs mb-1">تم النقل</p>
+                                <p class="text-xl font-bold text-white" id="servicePurchaseTransferredCount">0</p>
+                            </div>
+                            <div class="bg-red-500/20 rounded-lg p-2 text-center border border-red-300/30">
+                                <p class="text-red-300 text-xs mb-1">تم الرفض</p>
+                                <p class="text-xl font-bold text-white" id="servicePurchaseRejectedCount">0</p>
+                            </div>
+                            <div class="bg-yellow-500/20 rounded-lg p-2 text-center border border-yellow-300/30">
+                                <p class="text-yellow-300 text-xs mb-1">تحت الإجراء</p>
+                                <p class="text-xl font-bold text-white" id="servicePurchaseUnderProcessCount">0</p>
+                            </div>
                         </div>
-                        <div class="professional-icon" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.2)); color: #3b82f6;">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 2L6.46 6.46M15 2l2.54 4.46M2 9h20M3 9l1.68 8.4c.4 2 2.3 3.6 4.32 3.6h5c2.02 0 3.92-1.6 4.32-3.6L21 9"/>
-                            </svg>
+                        <div class="bg-purple-500/20 rounded-lg p-2 text-center border border-purple-300/30 mt-2">
+                            <p class="text-purple-300 text-xs mb-1">حالات أخرى</p>
+                            <p class="text-lg font-bold text-white" id="servicePurchaseOtherCount">0</p>
                         </div>
                     </div>
                 </div>
@@ -5022,9 +5035,16 @@ async function saveServicePurchaseData() {
 // تحديث عرض بيانات شراء الخدمة
 function updateServicePurchaseDisplay() {
     const totalElement = document.getElementById('servicePurchaseTotalCount');
-    if (totalElement) {
-        totalElement.textContent = servicePurchaseData.totalCases || 0;
-    }
+    const transferredElement = document.getElementById('servicePurchaseTransferredCount');
+    const rejectedElement = document.getElementById('servicePurchaseRejectedCount');
+    const underProcessElement = document.getElementById('servicePurchaseUnderProcessCount');
+    const otherElement = document.getElementById('servicePurchaseOtherCount');
+    
+    if (totalElement) totalElement.textContent = servicePurchaseData.totalCases || 0;
+    if (transferredElement) transferredElement.textContent = servicePurchaseData.transferredCases || 0;
+    if (rejectedElement) rejectedElement.textContent = servicePurchaseData.rejectedCases || 0;
+    if (underProcessElement) underProcessElement.textContent = servicePurchaseData.underProcessCases || 0;
+    if (otherElement) otherElement.textContent = servicePurchaseData.otherCases || 0;
 }
 
 // فتح نافذة تعديل بيانات شراء الخدمة
