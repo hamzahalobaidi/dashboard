@@ -2165,6 +2165,9 @@
             loadAllDataFromSupabase().then(() => {
                 console.log('✅ تم تحميل البيانات من Supabase');
                 
+                // تحميل السعة السريرية
+                loadCustomFacilitiesFromSupabase();
+                
                 // تحديث العرض
                 updateMainStats();
                 displayCenters();
@@ -2175,11 +2178,13 @@
                 const dataLoaded = loadDataFromStorage();
             });
             
-            // المزامنة التلقائية مع Supabase كل 10 ثواني
+            // المزامنة التلقائية مع Supabase كل 10 ثوان
             setInterval(() => {
                 console.log('🔄 جاري مزامنة البيانات مع Supabase...');
                 loadAllDataFromSupabase().then(() => {
                     console.log('✅ تم مزامنة البيانات بنجاح');
+                    // تحميل السعة السريرية
+                    loadCustomFacilitiesFromSupabase();
                     // تحديث العرض بعد المزامنة
                     updateMainStats();
                     displayCenters();
@@ -2187,7 +2192,7 @@
                 }).catch(error => {
                     console.log('⚠️ خطأ في مزامنة البيانات');
                 });
-            }, 10000); // مزامنة كل 10 ثواني
+            }, 10000); // مزامنة كل 10 ثوانني
             
             // تعيين التحديث الافتراضي كل 30 ثانية
             setTimeout(() => {
