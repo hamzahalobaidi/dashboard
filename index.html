@@ -2150,12 +2150,18 @@
             const errorDiv = document.getElementById('mainProtectionError');
             
             if (password === MAIN_PASSWORD) {
-                // كلمة المرور صحيحة
+                // كلمة المرور صحيحة - وضع الإدارة
                 isAuthenticated = true;
+                window.isAdminMode = true;
                 document.getElementById('mainProtectionModal').style.display = 'none';
                 document.getElementById('protectedContent').classList.remove('hidden');
-                
-                // تشغيل الداشبورد
+                initializeDashboard();
+            } else if (password === 'Moh@1410') {
+                // كلمة المرور للمشاهدة فقط
+                isAuthenticated = true;
+                window.isAdminMode = false;
+                document.getElementById('mainProtectionModal').style.display = 'none';
+                document.getElementById('protectedContent').classList.remove('hidden');
                 initializeDashboard();
             } else {
                 // كلمة المرور خاطئة
