@@ -4232,6 +4232,27 @@ setInterval(updateDateTime, 1000);
 // تحديث فوري عند تحميل الصفحة
 updateDateTime();
 
+// Modal Functions
+window.showAddCenterModal = function() {
+    const modal = document.getElementById('addCenterModal');
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeAddCenterModal = function() {
+    const modal = document.getElementById('addCenterModal');
+    if (modal) modal.style.display = 'none';
+};
+
+window.openFacilityModal = function() {
+    const modal = document.getElementById('facilityModal');
+    if (modal) modal.style.display = 'flex';
+};
+
+window.closeFacilityModal = function() {
+    const modal = document.getElementById('facilityModal');
+    if (modal) modal.style.display = 'none';
+};
+
 
 
 
