@@ -1364,7 +1364,7 @@
                         <button onclick="showViewMode()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200">
                             وضع العرض
                         </button>
-                        <button onclick="showAdminMode()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200">
+                        <button id="adminModeButton" onclick="showAdminMode()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-xl font-medium transition-all duration-200" style="display: none;">
                             وضع الإدارة
                         </button>
                         <div class="bg-white/10 backdrop-blur-lg rounded-xl px-4 py-2 border border-white/20">
@@ -2245,6 +2245,16 @@
         // تهيئة الداشبورد بعد تسجيل الدخول
         function initializeDashboard() {
             console.log('بدء تحميل الداشبورد...');
+            
+            // إظهار/إخفاء زر وضع الإدارة بناءً على الصلاحيات
+            const adminButton = document.getElementById('adminModeButton');
+            if (adminButton) {
+                if (window.isAdminMode) {
+                    adminButton.style.display = 'block';
+                } else {
+                    adminButton.style.display = 'none';
+                }
+            }
             
             // تحميل البيانات من Supabase أولاً
             loadAllDataFromSupabase().then(() => {
