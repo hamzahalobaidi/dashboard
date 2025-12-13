@@ -1342,6 +1342,13 @@
 
             </div>
 
+            <!-- البطاقات الجانبية على اليسار -->
+            <div class="hidden lg:block w-80 space-y-4">
+                <div id="facilitiesCardsContainer" class="space-y-4">
+                    <!-- سيتم إضافة بطاقات المنشآات هنا ديناميكياً -->
+                </div>
+            </div>
+
             <!-- المحتوى الرئيسي -->
             <div class="flex-1 flex flex-col">
                 <!-- الشريط العلوي -->
@@ -5645,3 +5652,50 @@ setInterval(() => {
 </body>
 </html>
 
+
+// دوال البطاقات الجانبية
+function renderFacilitiesCards() {
+    const container = document.getElementById('facilitiesCardsContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    const customFacilities = JSON.parse(localStorage.getItem('customFacilities') || '[]');
+    const facilitiesToShow = customFacilities.slice(0, 5);
+    
+    facilitiesToShow.forEach((facility, index) => {
+        const totalBeds = (facility.er?.total || 0) + (facility.icu?.total || 0) + (facility.ccu?.total || 0) + (facility.picu?.total || 0) + (facility.nicu?.total || 0);
+        const occupiedBeds = (facility.er?.occupied || 0) + (facility.icu?.occupied || 0) + (facility.ccu?.occupied || 0) + (facility.picu?.occupied || 0) + (facility.nicu?.occupied || 0);
+        const occupancyPercent = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
+        
+        const occupancyColor = occupancyPercent >= 75 ? 'text-red-400' : occupancyPercent >= 50 ? 'text-orange-400' : 'text-green-400';
+        const bgColor = occupancyPercent >= 75 ? 'from-red-500/20 to-red-600/10 border-red-300/20' : occupancyPercent >= 50 ? 'from-orange-500/20 to-orange-600/10 border-orange-300/20' : 'from-green-500/20 to-green-600/10 border-green-300/20';
+        
+        const card = document.createElement('div');
+        card.className = 'bg-gradient-to-br ' + bgColor + ' backdrop-blur-lg rounded-xl p-4 border card-hover';
+        
+        let bedsHTML = '';
+        if (facility.er?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>ER:</span><span>' + facility.er.occupied + '/' + facility.er.total + '</span></div>';
+        if (facility.icu?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>ICU:</span><span>' + facility.icu.occupied + '/' + facility.icu.total + '</span></div>';
+        if (facility.ccu?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>CCU:</span><span>' + facility.ccu.occupied + '/' + facility.ccu.total + '</span></div>';
+        if (facility.picu?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>PICU:</span><span>' + facility.picu.occupied + '/' + facility.picu.total + '</span></div>';
+        if (facility.nicu?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>NICU:</span><span>' + facility.nicu.occupied + '/' + facility.nicu.total + '</span></div>';
+        
+        let adminHTML = '';
+        if (window.isAdminMode) {
+            adminHTML = '<div class="flex space-x-2 space-x-reverse mt-3"><button onclick="editCustomFacility(' + index + ')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 rounded transition-all">تعديل</button><button onclick="deleteCustomFacility(' + index + ')" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs py-1 rounded transition-all">حذف</button></div>';
+        }
+        
+        card.innerHTML = '<div class="flex justify-between items-start mb-3"><div><p class="text-white font-bold text-sm">' + facility.name + '</p><p class="text-white/60 text-xs mt-1">الأسرة: ' + occupiedBeds + '/' + totalBeds + '</p></div><div class="text-right"><p class="' + occupancyColor + ' font-bold text-lg">' + occupancyPercent + '%</p></div></div><div class="space-y-2 text-xs">' + bedsHTML + '</div>' + adminHTML;
+        container.appendChild(card);
+    });
+}
+
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        renderFacilitiesCards();
+    }, 1500);
+});
+
+setInterval(() => {
+    renderFacilitiesCards();
+}, 5000);
