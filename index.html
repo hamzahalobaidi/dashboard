@@ -5515,6 +5515,7 @@ function createFacilityCardHTML(facility) {
 
     const deleteButtonHTML = isAdminMode ? `<button onclick="event.stopPropagation(); deleteCustomFacility(${facility.id})" class="text-red-400 hover:text-red-300 text-xs">🗑️</button>` : '';
     const editBedsButtonHTML = isAdminMode ? `<button onclick="event.stopPropagation(); editCustomFacilityBeds(${facility.id})" class="text-blue-400 hover:text-blue-300 text-xs ml-1">✏️</button>` : '';
+    const editNameButtonHTML = isAdminMode ? `<button onclick="event.stopPropagation(); editFacilityName(${facility.id})" class="text-yellow-400 hover:text-yellow-300 text-xs ml-1">📝</button>` : '';
     const onClickHandler = isAdminMode ? `onclick="editCustomFacility(${facility.id})"` : '';
     const cursorStyle = isAdminMode ? 'cursor-pointer' : '';
 
@@ -5523,6 +5524,7 @@ function createFacilityCardHTML(facility) {
             <div class="flex items-center justify-between mb-1">
                 <h3 class="text-white font-bold text-sm">🏥 ${facility.name}</h3>
                 <div class="flex items-center">
+                    ${editNameButtonHTML}
                     ${editBedsButtonHTML}
                     ${deleteButtonHTML}
                 </div>
@@ -5682,6 +5684,34 @@ function updateCustomFacilityBeds(facilityId) {
         saveButton.onclick = saveFacility;
         
         alert('تم تحديث السعة السريرية بنجاح!');
+    }
+}
+
+// تعديل اسم المنشأة
+function editFacilityName(facilityId) {
+    const facility = customFacilities.find(f => f.id === facilityId);
+    if (!facility) return;
+
+    const newName = prompt('أدخل الاسم الجديد للمنشأة:', facility.name);
+    
+    if (newName && newName.trim() !== '') {
+        facility.name = newName.trim();
+        
+        // حفظ في localStorage
+        localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
+        
+        // حفظ في Supabase
+        if (typeof syncManager !== 'undefined' && syncManager.saveData) {
+            syncManager.saveData('customFacilities', customFacilities).then(() => {
+                console.log('✅ تم حفظ الاسم الجديد في Supabase');
+            }).catch(err => {
+                console.error('❌ خطأ في حفظ Supabase:', err);
+            });
+        }
+        
+        // تحديث البطاقات
+        renderFacilitiesCards();
+        alert('✅ تم تحديث اسم المنشأة بنجاح!');
     }
 }
 
@@ -5845,7 +5875,18 @@ function saveFacilityBedsChanges(facilityId) {
         customFacilities[facilityIndex].picu = { occupied: picuOccupied, total: picuTotal };
         customFacilities[facilityIndex].nicu = { occupied: nicuOccupied, total: nicuTotal };
         
+        // حفظ في localStorage
         localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
+        
+        // حفظ في Supabase
+        if (typeof syncManager !== 'undefined' && syncManager.saveData) {
+            syncManager.saveData('customFacilities', customFacilities).then(() => {
+                console.log('✅ تم حفظ البيانات في Supabase');
+            }).catch(err => {
+                console.error('❌ خطأ في حفظ Supabase:', err);
+            });
+        }
+        
         renderFacilitiesCards();
         closeFacilityBedsModal();
         alert('✅ تم تحديث الأسرة بنجاح!');
