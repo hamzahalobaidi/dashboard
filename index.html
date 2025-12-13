@@ -5391,13 +5391,13 @@ function createFacilityCardHTML(facility) {
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-lg font-extrabold">ER</p>
-                    <p class="text-lg font-bold" style="color: ${emergencyPercentColor};">${emergencyPercent}%</p>
+                    <p class="${textColorClass} text-xl font-extrabold">ER</p>
+                    <p class="text-xl font-bold" style="color: ${emergencyPercentColor};">${emergencyPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
-                    <span class="text-lg font-bold text-white">${facility.emergency.occupied}</span>
-                    <span class="${slashColorClass} text-xs mx-0.5">/</span>
-                    <span class="text-sm text-white">${facility.emergency.total}</span>
+                    <span class="text-xl font-bold text-white">${facility.emergency.occupied}</span>
+                    <span class="${slashColorClass} text-sm mx-0.5">/</span>
+                    <span class="text-lg text-white">${facility.emergency.total}</span>
                 </div>
             </div>
         `;
@@ -5409,13 +5409,13 @@ function createFacilityCardHTML(facility) {
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-lg font-extrabold">ICU</p>
-                    <p class="text-lg font-bold" style="color: ${icuPercentColor};">${icuPercent}%</p>
+                    <p class="${textColorClass} text-xl font-extrabold">ICU</p>
+                    <p class="text-xl font-bold" style="color: ${icuPercentColor};">${icuPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
-                    <span class="text-lg font-bold text-white">${facility.icu.occupied}</span>
-                    <span class="${slashColorClass} text-xs mx-0.5">/</span>
-                    <span class="text-sm text-white">${facility.icu.total}</span>
+                    <span class="text-xl font-bold text-white">${facility.icu.occupied}</span>
+                    <span class="${slashColorClass} text-sm mx-0.5">/</span>
+                    <span class="text-lg text-white">${facility.icu.total}</span>
                 </div>
             </div>
         `;
@@ -5427,31 +5427,31 @@ function createFacilityCardHTML(facility) {
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-lg font-extrabold">CCU</p>
-                    <p class="text-lg font-bold" style="color: ${ccuPercentColor};">${ccuPercent}%</p>
+                    <p class="${textColorClass} text-xl font-extrabold">CCU</p>
+                    <p class="text-xl font-bold" style="color: ${ccuPercentColor};">${ccuPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
-                    <span class="text-lg font-bold text-white">${facility.ccu.occupied}</span>
-                    <span class="${slashColorClass} text-xs mx-0.5">/</span>
-                    <span class="text-sm text-white">${facility.ccu.total}</span>
+                    <span class="text-xl font-bold text-white">${facility.ccu.occupied}</span>
+                    <span class="${slashColorClass} text-sm mx-0.5">/</span>
+                    <span class="text-lg text-white">${facility.ccu.total}</span>
                 </div>
             </div>
         `;
     }
     
     // أسرة PICU
-    if (facility.picu && facility.picu.total > 0) {
+    if (facility.picu.total > 0) {
         const picuPercentColor = getBedPercentColor(picuPercent);
         bedsHTML += `
             <div class="mb-1 pb-1 border-b ${borderColorClass}">
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-lg font-extrabold">PICU</p>
-                    <p class="text-lg font-bold" style="color: ${picuPercentColor};">${picuPercent}%</p>
+                    <p class="${textColorClass} text-xl font-extrabold">PICU</p>
+                    <p class="text-xl font-bold" style="color: ${picuPercentColor};">${picuPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
-                    <span class="text-lg font-bold text-white">${facility.picu.occupied}</span>
-                    <span class="${slashColorClass} text-xs mx-0.5">/</span>
-                    <span class="text-sm text-white">${facility.picu.total}</span>
+                    <span class="text-xl font-bold text-white">${facility.picu.occupied}</span>
+                    <span class="${slashColorClass} text-sm mx-0.5">/</span>
+                    <span class="text-lg text-white">${facility.picu.total}</span>
                 </div>
             </div>
         `;
@@ -5463,13 +5463,13 @@ function createFacilityCardHTML(facility) {
         bedsHTML += `
             <div>
                 <div class="flex items-center justify-between mb-0.5">
-                    <p class="${textColorClass} text-lg font-extrabold">NICU</p>
-                    <p class="text-lg font-bold" style="color: ${nicuPercentColor};">${nicuPercent}%</p>
+                    <p class="${textColorClass} text-xl font-extrabold">NICU</p>
+                    <p class="text-xl font-bold" style="color: ${nicuPercentColor};">${nicuPercent}%</p>
                 </div>
                 <div class="flex items-baseline">
-                    <span class="text-lg font-bold text-white">${facility.nicu.occupied}</span>
-                    <span class="${slashColorClass} text-xs mx-0.5">/</span>
-                    <span class="text-sm text-white">${facility.nicu.total}</span>
+                    <span class="text-xl font-bold text-white">${facility.nicu.occupied}</span>
+                    <span class="${slashColorClass} text-sm mx-0.5">/</span>
+                    <span class="text-lg text-white">${facility.nicu.total}</span>
                 </div>
             </div>
         `;
@@ -5527,17 +5527,19 @@ function createFacilityCardHTML(facility) {
     const cursorStyle = isAdminMode ? 'cursor-pointer' : '';
 
     return `
-        <div class="custom-facility-card bg-gradient-to-br ${colorClass} backdrop-blur-lg rounded-lg p-2 border card-hover ${cursorStyle}" ${onClickHandler}>
-            <div class="flex items-center justify-between mb-1">
+        <div class="custom-facility-card bg-gradient-to-br ${colorClass} backdrop-blur-lg rounded-xl p-3 border transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/50 hover:-translate-y-2 cursor-pointer" ${onClickHandler}>
+            <div class="flex items-center justify-between mb-2">
                 <h3 class="text-white font-bold text-sm">🏥 ${facility.name}</h3>
-                <div class="flex items-center">
+                <div class="flex items-center gap-0.5">
                     ${editNameButtonHTML}
                     ${editBedsButtonHTML}
                     ${deleteButtonHTML}
                 </div>
             </div>
-            ${bedsHTML}
-            ${resourcesHTML}
+            <div class="space-y-1.5">
+                ${bedsHTML}
+                ${resourcesHTML}
+            </div>
         </div>
     `;
 }
