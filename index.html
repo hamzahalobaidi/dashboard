@@ -2285,7 +2285,7 @@
             });
             
             // المزامنة التلقائية مع Supabase كل 10 ثواني
-            setInterval(() => {
+            let syncIntervalId = setInterval(() => {
                 console.log('🔄 جاري مزامنة البيانات مع Supabase...');
                 loadAllDataFromSupabase().then(() => {
                     console.log('✅ تم مزامنة البيانات بنجاح');
@@ -2299,6 +2299,9 @@
                     console.log('⚠️ خطأ في مزامنة البيانات');
                 });
             }, 10000); // مزامنة كل 10 ثواني
+            
+            // تعريف متغير عام للتحكم في المزامنة
+            window.syncIntervalId = syncIntervalId;
             
             // تعيين التحديث الافتراضي كل 30 ثانية
             setTimeout(() => {
@@ -4410,8 +4413,17 @@ window.closeAddCenterModal = function() {
 };
 
 window.openFacilityModal = function() {
-    const modal = document.getElementById('facilityModal');
-    if (modal) modal.style.display = 'flex';
+    const modal = document.getElementById('addFacilityModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        
+        // إيقاف المزامنة التلقائية أثناء تعديل البيانات
+        if (window.syncIntervalId) {
+            clearInterval(window.syncIntervalId);
+            window.syncIntervalId = null;
+            console.log('⏸️ تم إيقاف المزامنة التلقائية');
+        }
+    }
 };
 
 
@@ -5244,6 +5256,24 @@ function closeFacilityModal() {
     if (modal) {
         modal.style.display = 'none';
         console.log('تم إغلاق النافذة بنجاح');
+        
+        // استئناف المزامنة التلقائية بعد إغلاق النافذة
+        if (!window.syncIntervalId) {
+            window.syncIntervalId = setInterval(() => {
+                console.log('🔄 جاري مزامنة البيانات مع Supabase...');
+                loadAllDataFromSupabase().then(() => {
+                    console.log('✅ تم مزامنة البيانات بنجاح');
+                    updateMainStats();
+                    displayCenters();
+                    renderFacilitiesCards();
+                    renderCustomFacilities();
+                    updateTopActiveCenters();
+                }).catch(error => {
+                    console.log('⚠️ خطأ في مزامنة البيانات');
+                });
+            }, 10000);
+            console.log('✅ تم استئناف المزامنة التلقائية');
+        }
     } else {
         console.error('لم يتم العثور على النافذة المنبثقة');
     }
