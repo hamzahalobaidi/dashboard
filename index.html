@@ -1188,6 +1188,11 @@
 
     <!-- المحتوى الرئيسي المحمي -->
     <div id="protectedContent" class="hidden">
+    <!-- بطاقات المنشآت الصحية أسفل الأزرار -->
+    <div id="facilitiesCardsContainer" class="px-4 py-3 flex gap-4 overflow-x-auto no-print" style="scroll-behavior: smooth;">
+        <!-- سيتم إضافة بطاقات المنشآت هنا ديناميكياً -->
+    </div>
+    
     <div class="relative z-10 compact-container" id="dashboardContent">
         <!-- التخطيط الجديد مع المساحات الجانبية -->
         <div class="flex compact-spacing h-full gap-6 items-start">
@@ -2268,6 +2273,7 @@
                 updateMainStats();
                 loadServicePurchaseData();
                 displayCenters();
+                renderFacilitiesCards();
                 updateTopActiveCenters();
                 updateLastUpdateTime();
             }).catch(error => {
@@ -2285,6 +2291,7 @@
                     // تحديث العرض بعد المزامنة
                     updateMainStats();
                     displayCenters();
+                    renderFacilitiesCards();
                     updateTopActiveCenters();
                 }).catch(error => {
                     console.log('⚠️ خطأ في مزامنة البيانات');
@@ -2585,6 +2592,55 @@
             updateCaseDistributionChart();
             
 
+        }
+        
+        // دالة عرض بطاقات المنشآات الصحية
+        function renderFacilitiesCards() {
+            const container = document.getElementById('facilitiesCardsContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // التحقق من وجود منشآات
+            if (!customFacilities || customFacilities.length === 0) {
+                return;
+            }
+            
+            // عرض كل منشأة كبطاقة
+            customFacilities.forEach(facility => {
+                // حساب إجمالي الأسررة والمشغولة
+                const totalBeds = facility.beds ? Object.values(facility.beds).reduce((a, b) => a + b, 0) : 0;
+                const occupiedBeds = facility.occupied ? Object.values(facility.occupied).reduce((a, b) => a + b, 0) : 0;
+                const occupancyPercent = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
+                const occupancyColor = occupancyPercent >= 75 ? '#ef4444' : occupancyPercent >= 50 ? '#f97316' : '#10b981';
+                
+                const card = document.createElement('div');
+                card.className = 'flex-shrink-0 bg-gradient-to-br from-indigo-500/20 to-indigo-600/10 backdrop-blur-lg rounded-2xl p-4 border border-indigo-300/20 card-hover min-w-max';
+                card.style.width = '280px';
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <p class="text-indigo-200 text-sm font-medium">${facility.name}</p>
+                            <p class="text-2xl font-bold text-white">${occupiedBeds}/${totalBeds}</p>
+                            <p class="text-indigo-300 text-xs">سرير</p>
+                        </div>
+                        <div class="professional-icon" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(79, 70, 229, 0.2)); color: #6366f1;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                                <path d="M12 8v4"/>
+                                <path d="M10 10h4"/>
+                                <circle cx="12" cy="6" r="1.5" fill="currentColor" opacity="0.6"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="w-full h-2 bg-white/20 rounded-full">
+                        <div class="h-2 rounded-full transition-all duration-500" style="width: ${occupancyPercent}%; background: ${occupancyColor}"></div>
+                    </div>
+                    <div class="text-xs mt-2" style="color: ${occupancyColor}">${occupancyPercent}% إشغال</div>
+                `;
+                container.appendChild(card);
+            });
         }
         
         // دالة تحديث رسم توزيع الحالات
