@@ -5234,19 +5234,12 @@ window.addEventListener('load', loadCustomFacilitiesFromSupabase);
 // فتح نموذج إضافة منشأة
 function openFacilityModal() {
     document.getElementById('addFacilityModal').style.display = 'flex';
-    // مسح البيانات السابقة
-    document.getElementById('facilityName').value = '';
-    document.getElementById('facilityColor').value = 'green';
-    document.getElementById('facilityEmergencyOccupied').value = '';
-    document.getElementById('facilityEmergencyTotal').value = '';
-    document.getElementById('facilityIcuOccupied').value = '';
-    document.getElementById('facilityIcuTotal').value = '';
-    document.getElementById('facilityCcuOccupied').value = '';
-    document.getElementById('facilityCcuTotal').value = '';
-    document.getElementById('facilityPicuOccupied').value = '';
-    document.getElementById('facilityPicuTotal').value = '';
-    document.getElementById('facilityNicuOccupied').value = '';
-    document.getElementById('facilityNicuTotal').value = '';
+    // إيقاف المزامنة التلقائية أثناء التعديل
+    if (window.syncIntervalId) {
+        clearInterval(window.syncIntervalId);
+        window.syncIntervalId = null;
+        console.log('⏸️ تم إيقاف المزامنة التلقائية');
+    }
 }
 
 // إغلاق نموذج إضافة منشأة
@@ -5256,6 +5249,20 @@ function closeFacilityModal() {
     if (modal) {
         modal.style.display = 'none';
         console.log('تم إغلاق النافذة بنجاح');
+        
+        // مسح الحقول بعد إغلاق النافذة
+        document.getElementById('facilityName').value = '';
+        document.getElementById('facilityColor').value = 'green';
+        document.getElementById('facilityEmergencyOccupied').value = '';
+        document.getElementById('facilityEmergencyTotal').value = '';
+        document.getElementById('facilityIcuOccupied').value = '';
+        document.getElementById('facilityIcuTotal').value = '';
+        document.getElementById('facilityCcuOccupied').value = '';
+        document.getElementById('facilityCcuTotal').value = '';
+        document.getElementById('facilityPicuOccupied').value = '';
+        document.getElementById('facilityPicuTotal').value = '';
+        document.getElementById('facilityNicuOccupied').value = '';
+        document.getElementById('facilityNicuTotal').value = '';
         
         // استئناف المزامنة التلقائية بعد إغلاق النافذة
         if (!window.syncIntervalId) {
