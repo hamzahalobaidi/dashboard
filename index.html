@@ -5266,23 +5266,9 @@ function closeFacilityModal() {
         document.getElementById('facilityNicuOccupied').value = '';
         document.getElementById('facilityNicuTotal').value = '';
         
-        // استئناف المزامنة التلقائية بعد إغلاق النافذة
-        if (!window.syncIntervalId) {
-            window.syncIntervalId = setInterval(() => {
-                console.log('🔄 جاري مزامنة البيانات مع Supabase...');
-                loadAllDataFromSupabase().then(() => {
-                    console.log('✅ تم مزامنة البيانات بنجاح');
-                    updateMainStats();
-                    displayCenters();
-                    renderFacilitiesCards();
-                    renderCustomFacilities();
-                    updateTopActiveCenters();
-                }).catch(error => {
-                    console.log('⚠️ خطأ في مزامنة البيانات');
-                });
-            }, 10000);
-            console.log('✅ تم استئناف المزامنة التلقائية');
-        }
+        // تحديث البطاقات مباشرة بعد إغلاق النافذة
+        console.log('✅ تحديث البطاقات مباشرة');
+        renderCustomFacilities();
     } else {
         console.error('لم يتم العثور على النافذة المنبثقة');
     }
@@ -5342,15 +5328,16 @@ function saveFacility() {
     
     alert('تم إضافة المنشأة بنجاح!');
     
-    // تحديث Supabase واستئناف المزامنة
-    saveCustomFacilitiesToSupabase().then(() => {
-        console.log('✅ تم حفظ البيانات بنجاح في Supabase');
-        window.startSync();
-        console.log('✅ تم استئناف المزامنة');
-    }).catch(error => {
-        console.error('⚠️ خطأ في حفظ البيانات:', error);
-        window.startSync();
-    });
+    // تحديث Supabase مباشرة
+    if (typeof syncManager !== 'undefined' && syncManager.saveData) {
+        syncManager.saveData('customFacilities', customFacilities).then(() => {
+            console.log('✅ تم حفظ البيانات بنجاح في Supabase');
+        }).catch(error => {
+            console.error('⚠️ خطأ في حفظ البيانات:', error);
+        });
+    } else {
+        console.warn('⚠️ syncManager غير متاح - سيتم الحفظ فقط في localStorage');
+    }
 }
 
 // عرض المنشآت المخصصة
@@ -5610,23 +5597,21 @@ function createFacilityCardHTML(facility) {
 // حذف منشأة مخصصة
 function deleteCustomFacility(facilityId) {
     if (confirm('هل أنت متأكد من حذف هذه المنشأة؟')) {
-        // إيقاف المزامنة أثناء الحذف
-        window.stopSync();
-        console.log('⏸️ تم إيقاف المزامنة');
         customFacilities = customFacilities.filter(f => f.id !== facilityId);
         localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
         renderCustomFacilities();
         alert('تم حذف المنشأة بنجاح!');
         
-        // تحديث Supabase واستئناف المزامنة
-        saveCustomFacilitiesToSupabase().then(() => {
-            console.log('✅ تم حذف البيانات بنجاح');
-            window.startSync();
-            console.log('✅ تم استئناف المزامنة');
-        }).catch(error => {
-            console.error('⚠️ خطأ في حذف البيانات:', error);
-            window.startSync();
-        });
+        // تحديث Supabase مباشرة
+        if (typeof syncManager !== 'undefined' && syncManager.saveData) {
+            syncManager.saveData('customFacilities', customFacilities).then(() => {
+                console.log('✅ تم حذف البيانات بنجاح');
+            }).catch(error => {
+                console.error('⚠️ خطأ في حذف البيانات:', error);
+            });
+        } else {
+            console.warn('⚠️ syncManager غير متاح - سيتم الحذف فقط من localStorage');
+        }
     }
 }
 
@@ -5762,6 +5747,15 @@ function updateCustomFacilityBeds(facilityId) {
         localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
         renderCustomFacilities();
         closeFacilityModal();
+        
+        // حفظ في Supabase
+        if (typeof syncManager !== 'undefined' && syncManager.saveData) {
+            syncManager.saveData('customFacilities', customFacilities).then(() => {
+                console.log('تم حفظ السعة السريرية في Supabase');
+            }).catch(error => {
+                console.error('خطأ في حفظ البيانات:', error);
+            });
+        }
         
         // إعادة تعيين زر الحفظ
         const saveButton = document.querySelector('#addFacilityModal .btn-success');
@@ -5952,10 +5946,6 @@ function saveFacilityBedsChanges(facilityId) {
         return;
     }
     
-    // إيقاف المزامنة أثناء الحفظ
-    window.stopSync();
-    console.log('⏸️ تم إيقاف المزامنة');
-    
     const facilityIndex = customFacilities.findIndex(f => f.id === facilityId);
     if (facilityIndex !== -1) {
         customFacilities[facilityIndex].emergency = { occupied: erOccupied, total: erTotal };
@@ -5967,22 +5957,22 @@ function saveFacilityBedsChanges(facilityId) {
         // حفظ في localStorage
         localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
         
-        // حفظ في Supabase واستئناف المزامنة
-        const savePromise = typeof syncManager !== 'undefined' && syncManager.saveData 
-            ? syncManager.saveData('customFacilities', customFacilities)
-            : saveCustomFacilitiesToSupabase();
-        
-        savePromise.then(() => {
-            console.log('✅ تم حفظ البيانات بنجاح');
+        // حفظ في Supabase
+        if (typeof syncManager !== 'undefined' && syncManager.saveData) {
+            syncManager.saveData('customFacilities', customFacilities).then(() => {
+                console.log('تم حفظ البيانات بنجاح');
+                renderFacilitiesCards();
+                closeFacilityBedsModal();
+                alert('تم تحديث الأسرة بنجاح!');
+            }).catch(err => {
+                console.error('خطأ في حفظ Supabase:', err);
+            });
+        } else {
+            console.warn('⚠️ syncManager غير متاح - سيتم الحفظ فقط في localStorage');
             renderFacilitiesCards();
             closeFacilityBedsModal();
-            alert('✅ تم تحديث الأسرة بنجاح!');
-            window.startSync();
-            console.log('✅ تم استئناف المزامنة');
-        }).catch(err => {
-            console.error('❌ خطأ في حفظ Supabase:', err);
-            window.startSync();
-        });
+            alert('تم تحديث الأسرة بنجاح!');
+        }
     }
 }
 
