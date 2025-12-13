@@ -1191,13 +1191,6 @@
     <div class="relative z-10 compact-container" id="dashboardContent">
         <!-- التخطيط الجديد مع المساحات الجانبية -->
         <div class="flex compact-spacing h-full gap-6 items-start">
-            <!-- البطاقات الجانبية على اليسار -->
-            <div class="w-80 space-y-4 mt-20">
-                <div id="facilitiesCardsContainer" class="space-y-4">
-                    <!-- سيتم إضافة بطاقات المنشآات هنا ديناميكياً -->
-                </div>
-            </div>
-
             <!-- العمود الجانبي الأيسر - البطاقات السريعة -->
             <div class="hidden lg:block w-72 space-y-4 mt-20">
                 <!-- بطاقة معلومات الفرق -->
@@ -1586,6 +1579,15 @@
                         <span>🚨 إدارة الأحداث الجارية</span>
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- الكتابة في الوسط -->
+        <div class="mt-12 text-center text-white/60 text-sm no-print">
+            <div class="bg-white/5 backdrop-blur-lg rounded-xl p-4 border border-white/10">
+                <p class="font-medium">تصميم خاص لإدارة الأزمات والكوارث</p>
+                <p class="text-white/40">تجمع جدة الصحي الثاني</p>
+                <p class="text-white/40 mt-2">تصميم Hafalobaidi | النسخة 6.0.0</p>
             </div>
         </div>
 
@@ -3195,6 +3197,9 @@
                         <p>تصميم خاص لإدارة الطوارئ والأزمات والكوارث</p>
                         <p>تجمع جدة الصحي الثاني</p>
                         <p>تصميم Hafalobaidi | النسخة 6.0.0</p>
+                    </div>
+                </body>
+                </html>
             `);
             printWindow.document.close();
             printWindow.print();
@@ -5639,164 +5644,6 @@ setInterval(() => {
   }
 }, 30000);
 </script>
-
-<!-- الكتابة في الأسفل -->
-<div class="mt-12 text-center text-white/60 text-sm no-print" style="padding: 20px; margin-top: 40px;">
-    <div class="bg-white/5 backdrop-blur-lg rounded-xl p-4 border border-white/10">
-        <p class="font-medium">تصميم خاص لإدارة الأزمات والكوارث</p>
-        <p class="text-white/40">تجمع جدة الصحي الثاني</p>
-        <p class="text-white/40 mt-2">تصميم Hafalobaidi | النسخة 6.0.0</p>
-    </div>
-</div>
-
 </body>
 </html>
 
-
-// دوال البطاقات الجانبية
-function renderFacilitiesCards() {
-    const container = document.getElementById('facilitiesCardsContainer');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    const customFacilities = JSON.parse(localStorage.getItem('customFacilities') || '[]');
-    const facilitiesToShow = customFacilities.slice(0, 5);
-    
-    facilitiesToShow.forEach((facility, index) => {
-        const totalBeds = (facility.er?.total || 0) + (facility.icu?.total || 0) + (facility.ccu?.total || 0) + (facility.picu?.total || 0) + (facility.nicu?.total || 0);
-        const occupiedBeds = (facility.er?.occupied || 0) + (facility.icu?.occupied || 0) + (facility.ccu?.occupied || 0) + (facility.picu?.occupied || 0) + (facility.nicu?.occupied || 0);
-        const occupancyPercent = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
-        
-        const occupancyColor = occupancyPercent >= 75 ? 'text-red-400' : occupancyPercent >= 50 ? 'text-orange-400' : 'text-green-400';
-        const bgColor = occupancyPercent >= 75 ? 'from-red-500/20 to-red-600/10 border-red-300/20' : occupancyPercent >= 50 ? 'from-orange-500/20 to-orange-600/10 border-orange-300/20' : 'from-green-500/20 to-green-600/10 border-green-300/20';
-        
-        const card = document.createElement('div');
-        card.className = 'bg-gradient-to-br ' + bgColor + ' backdrop-blur-lg rounded-xl p-4 border card-hover';
-        
-        let bedsHTML = '';
-        if (facility.er?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>ER:</span><span>' + facility.er.occupied + '/' + facility.er.total + '</span></div>';
-        if (facility.icu?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>ICU:</span><span>' + facility.icu.occupied + '/' + facility.icu.total + '</span></div>';
-        if (facility.ccu?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>CCU:</span><span>' + facility.ccu.occupied + '/' + facility.ccu.total + '</span></div>';
-        if (facility.picu?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>PICU:</span><span>' + facility.picu.occupied + '/' + facility.picu.total + '</span></div>';
-        if (facility.nicu?.total) bedsHTML += '<div class="flex justify-between text-white/70"><span>NICU:</span><span>' + facility.nicu.occupied + '/' + facility.nicu.total + '</span></div>';
-        
-        let adminHTML = '';
-        if (window.isAdminMode) {
-            adminHTML = '<div class="flex space-x-2 space-x-reverse mt-3"><button onclick="editCustomFacility(' + index + ')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 rounded transition-all">تعديل</button><button onclick="deleteCustomFacility(' + index + ')" class="flex-1 bg-red-600 hover:bg-red-700 text-white text-xs py-1 rounded transition-all">حذف</button></div>';
-        }
-        
-        card.innerHTML = '<div class="flex justify-between items-start mb-3"><div><p class="text-white font-bold text-sm">' + facility.name + '</p><p class="text-white/60 text-xs mt-1">الأسرة: ' + occupiedBeds + '/' + totalBeds + '</p></div><div class="text-right"><p class="' + occupancyColor + ' font-bold text-lg">' + occupancyPercent + '%</p></div></div><div class="space-y-2 text-xs">' + bedsHTML + '</div>' + adminHTML;
-        container.appendChild(card);
-    });
-}
-
-window.addEventListener('load', function() {
-    setTimeout(() => {
-        renderFacilitiesCards();
-    }, 1500);
-});
-
-setInterval(() => {
-    renderFacilitiesCards();
-}, 5000);
-
-
-// دالة تحديث البطاقات عند تغيير البيانات
-window.updateFacilitiesCards = function() {
-    if (window.renderFacilitiesCards) {
-        window.renderFacilitiesCards();
-    }
-};
-
-// دالة تحرير منشأة
-window.editCustomFacility = function(index) {
-    const facilities = JSON.parse(localStorage.getItem('customFacilities') || '[]');
-    const facility = facilities[index];
-    
-    let bedsHTML = '';
-    ['er', 'icu', 'ccu', 'picu', 'nicu'].forEach(type => {
-        if (facility[type]) {
-            bedsHTML += `<div class="mb-2">
-                <label class="text-white/70 text-sm">${type.toUpperCase()}</label>
-                <div class="flex space-x-2 space-x-reverse">
-                    <input type="number" id="edit_${type}_total" value="${facility[type].total}" class="flex-1 bg-white/10 text-white rounded px-2 py-1 text-sm" placeholder="الإجمالي">
-                    <input type="number" id="edit_${type}_occupied" value="${facility[type].occupied}" class="flex-1 bg-white/10 text-white rounded px-2 py-1 text-sm" placeholder="المشغول">
-                </div>
-            </div>`;
-        }
-    });
-    
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
-    modal.innerHTML = `
-        <div class="bg-gradient-to-br from-purple-900 to-purple-800 rounded-xl p-6 w-96 border border-purple-300/20">
-            <h2 class="text-white font-bold mb-4">تعديل المنشأة</h2>
-            <input type="text" id="edit_name" value="${facility.name}" class="w-full bg-white/10 text-white rounded px-3 py-2 mb-4 text-sm" placeholder="اسم المنشأة">
-            ${bedsHTML}
-            <div class="flex space-x-2 space-x-reverse mt-6">
-                <button onclick="this.closest('.fixed').remove()" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 rounded transition-all">إلغاء</button>
-                <button onclick="saveEditedFacility(${index}); this.closest('.fixed').remove()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded transition-all">حفظ</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-};
-
-// دالة حفظ التعديلات
-window.saveEditedFacility = function(index) {
-    const facilities = JSON.parse(localStorage.getItem('customFacilities') || '[]');
-    const facility = facilities[index];
-    
-    facility.name = document.getElementById('edit_name').value;
-    ['er', 'icu', 'ccu', 'picu', 'nicu'].forEach(type => {
-        if (facility[type]) {
-            facility[type].total = parseInt(document.getElementById(`edit_${type}_total`).value) || 0;
-            facility[type].occupied = parseInt(document.getElementById(`edit_${type}_occupied`).value) || 0;
-        }
-    });
-    
-    localStorage.setItem('customFacilities', JSON.stringify(facilities));
-    window.updateFacilitiesCards();
-    alert('تم حفظ التعديلات');
-};
-
-// دالة حذف منشأة
-window.deleteCustomFacility = function(index) {
-    if (confirm('هل أنت متأكد من حذف هذه المنشأة؟')) {
-        const facilities = JSON.parse(localStorage.getItem('customFacilities') || '[]');
-        facilities.splice(index, 1);
-        localStorage.setItem('customFacilities', JSON.stringify(facilities));
-        window.updateFacilitiesCards();
-        alert('تم حذف المنشأة');
-    }
-};
-
-// دالة عرض البطاقات الجانبية
-window.updateFacilitiesCards = function() {
-    const container = document.getElementById('facilitiesCardsContainer');
-    if (!container) return;
-    container.innerHTML = '';
-    const customFacilities = JSON.parse(localStorage.getItem('customFacilities') || '[]');
-    const facilitiesToShow = customFacilities.slice(0, 5);
-    facilitiesToShow.forEach((facility, index) => {
-        const totalBeds = (facility.er?.total || 0) + (facility.icu?.total || 0) + (facility.ccu?.total || 0) + (facility.picu?.total || 0) + (facility.nicu?.total || 0);
-        const occupiedBeds = (facility.er?.occupied || 0) + (facility.icu?.occupied || 0) + (facility.ccu?.occupied || 0) + (facility.picu?.occupied || 0) + (facility.nicu?.occupied || 0);
-        const occupancyPercent = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
-        const occupancyColor = occupancyPercent >= 75 ? 'text-red-400' : occupancyPercent >= 50 ? 'text-orange-400' : 'text-green-400';
-        const bgColor = occupancyPercent >= 75 ? 'from-red-500/20 to-red-600/10 border-red-300/20' : occupancyPercent >= 50 ? 'from-orange-500/20 to-orange-600/10 border-orange-300/20' : 'from-green-500/20 to-green-600/10 border-green-300/20';
-        const card = document.createElement('div');
-        card.className = 'bg-gradient-to-br ' + bgColor + ' backdrop-blur-lg rounded-xl p-4 border card-hover';
-        let bedsHTML = '';
-        if (facility.er?.total) bedsHTML += '<div class="flex justify-between text-white/70 text-xs"><span>ER:</span><span>' + facility.er.occupied + '/' + facility.er.total + '</span></div>';
-        if (facility.icu?.total) bedsHTML += '<div class="flex justify-between text-white/70 text-xs"><span>ICU:</span><span>' + facility.icu.occupied + '/' + facility.icu.total + '</span></div>';
-        if (facility.ccu?.total) bedsHTML += '<div class="flex justify-between text-white/70 text-xs"><span>CCU:</span><span>' + facility.ccu.occupied + '/' + facility.ccu.total + '</span></div>';
-        if (facility.picu?.total) bedsHTML += '<div class="flex justify-between text-white/70 text-xs"><span>PICU:</span><span>' + facility.picu.occupied + '/' + facility.picu.total + '</span></div>';
-        if (facility.nicu?.total) bedsHTML += '<div class="flex justify-between text-white/70 text-xs"><span>NICU:</span><span>' + facility.nicu.occupied + '/' + facility.nicu.total + '</span></div>';
-        card.innerHTML = '<div class="flex justify-between items-start mb-3"><div><p class="text-white font-bold text-sm">' + facility.name + '</p><p class="text-white/60 text-xs mt-1">الأسرة: ' + occupiedBeds + '/' + totalBeds + '</p></div><div class="text-right"><p class="' + occupancyColor + ' font-bold text-lg">' + occupancyPercent + '%</p></div></div><div class="space-y-1 text-xs">' + bedsHTML + '</div>';
-        container.appendChild(card);
-    });
-};
-window.updateFacilitiesCards();
-</script>
-</body>
-</html>
