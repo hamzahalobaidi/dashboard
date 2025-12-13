@@ -1106,6 +1106,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
             </svg>
         </button>
+        <!-- بطاقات المنشآت الصحية تحت الزر -->
+        <div id="facilitiesCardsContainer" class="mt-4 space-y-3 no-print" style="max-width: 100px;">
+            <!-- سيتم إضافة بطاقات المنشآت هنا ديناميكياً -->
+        </div>
     </div>
 
     <div class="print-btn no-print" id="printButton">
@@ -1188,11 +1192,6 @@
 
     <!-- المحتوى الرئيسي المحمي -->
     <div id="protectedContent" class="hidden">
-    <!-- بطاقات المنشآت الصحية أسفل الأزرار -->
-    <div id="facilitiesCardsContainer" class="px-4 py-3 flex gap-4 overflow-x-auto no-print" style="scroll-behavior: smooth;">
-        <!-- سيتم إضافة بطاقات المنشآت هنا ديناميكياً -->
-    </div>
-    
     <div class="relative z-10 compact-container" id="dashboardContent">
         <!-- التخطيط الجديد مع المساحات الجانبية -->
         <div class="flex compact-spacing h-full gap-6 items-start">
