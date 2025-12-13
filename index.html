@@ -5362,6 +5362,13 @@ function createFacilityCardHTML(facility) {
     const borderColorClass = borderColorClasses[facility.color] || borderColorClasses.green;
     const slashColorClass = slashColorClasses[facility.color] || slashColorClasses.green;
 
+    // التحقق من وجود البيانات
+    if (!facility.emergency) facility.emergency = { occupied: 0, total: 0 };
+    if (!facility.icu) facility.icu = { occupied: 0, total: 0 };
+    if (!facility.ccu) facility.ccu = { occupied: 0, total: 0 };
+    if (!facility.picu) facility.picu = { occupied: 0, total: 0 };
+    if (!facility.nicu) facility.nicu = { occupied: 0, total: 0 };
+    
     const emergencyPercent = facility.emergency.total > 0 ? Math.round((facility.emergency.occupied / facility.emergency.total) * 100) : 0;
     const icuPercent = facility.icu.total > 0 ? Math.round((facility.icu.occupied / facility.icu.total) * 100) : 0;
     const ccuPercent = facility.ccu.total > 0 ? Math.round((facility.ccu.occupied / facility.ccu.total) * 100) : 0;
