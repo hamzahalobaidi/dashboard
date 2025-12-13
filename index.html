@@ -1775,7 +1775,7 @@
 
     <!-- نافذة إدارة الأحداث الجارية -->
     <div id="emergencyAlertModal" class="login-modal" style="display: none;">
-        <div class="login-form" style="width: 600px; max-width: 95vw; max-height: 90vh; overflow-y: auto;">
+        <div class="login-form" style="width: 600px; max-width: 95vw; max-height: 90vh; overflow-y: auto;" onclick="event.stopPropagation();">
             <div class="login-title">🚨 إدارة الأحداث الجارية</div>
             <div class="text-white/70 mb-6">إضافة وإدارة الأحداث الطارئة</div>
             
@@ -2055,8 +2055,8 @@
     </div>
 
     <!-- نافذة إضافة منشأة جديدة -->
-    <div id="addFacilityModal" class="login-modal" style="display: none;">
-        <div class="login-form" style="width: 600px; max-width: 95vw; max-height: 90vh; overflow-y: auto;">
+    <div id="addFacilityModal" class="login-modal" style="display: none;" onclick="event.stopPropagation();">
+        <div class="login-form" style="width: 600px; max-width: 95vw; max-height: 90vh; overflow-y: auto;" onclick="event.stopPropagation();">
             <div class="login-title">🏥 إضافة منشأة جديدة</div>
             
             <div class="space-y-4">
