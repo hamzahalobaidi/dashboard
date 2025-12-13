@@ -2274,6 +2274,7 @@
                 loadServicePurchaseData();
                 displayCenters();
                 renderFacilitiesCards();
+                renderCustomFacilities();
                 updateTopActiveCenters();
                 updateLastUpdateTime();
             }).catch(error => {
@@ -2292,6 +2293,7 @@
                     updateMainStats();
                     displayCenters();
                     renderFacilitiesCards();
+                    renderCustomFacilities();
                     updateTopActiveCenters();
                 }).catch(error => {
                     console.log('⚠️ خطأ في مزامنة البيانات');
