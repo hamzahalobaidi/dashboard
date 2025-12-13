@@ -5242,7 +5242,14 @@ function openFacilityModal() {
 
 // إغلاق نموذج إضافة منشأة
 function closeFacilityModal() {
-    document.getElementById('addFacilityModal').style.display = 'none';
+    console.log('إغلاق النافذة المنبثقة');
+    const modal = document.getElementById('addFacilityModal');
+    if (modal) {
+        modal.style.display = 'none';
+        console.log('تم إغلاق النافذة بنجاح');
+    } else {
+        console.error('لم يتم العثور على النافذة المنبثقة');
+    }
 }
 
 // حفظ منشأة جديدة
@@ -5285,11 +5292,18 @@ function saveFacility() {
 
     customFacilities.push(facility);
     localStorage.setItem('customFacilities', JSON.stringify(customFacilities));
+    console.log('تم حفظ المنشأة:', facility);
     
     renderCustomFacilities();
+    console.log('تم تحديث البطاقات');
+    
     closeFacilityModal();
+    console.log('تم استدعاء closeFacilityModal');
     
     alert('تم إضافة المنشأة بنجاح!');
+    
+    // تحديث Supabase
+    saveCustomFacilitiesToSupabase();
 }
 
 // عرض المنشآت المخصصة
