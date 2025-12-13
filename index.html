@@ -2607,7 +2607,10 @@
             
             // عرض كل منشأة كبطاقة
             customFacilities.forEach(facility => {
-                const occupancyPercent = facility.total > 0 ? Math.round((facility.occupied / facility.total) * 100) : 0;
+                // حساب إجمالي الأسررة والمشغولة
+                const totalBeds = facility.beds ? Object.values(facility.beds).reduce((a, b) => a + b, 0) : 0;
+                const occupiedBeds = facility.occupied ? Object.values(facility.occupied).reduce((a, b) => a + b, 0) : 0;
+                const occupancyPercent = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
                 const occupancyColor = occupancyPercent >= 75 ? '#ef4444' : occupancyPercent >= 50 ? '#f97316' : '#10b981';
                 
                 const card = document.createElement('div');
@@ -2616,7 +2619,7 @@
                     <div class="flex items-center justify-between mb-3">
                         <div>
                             <p class="text-indigo-200 text-sm font-medium">${facility.name}</p>
-                            <p class="text-2xl font-bold text-white">${facility.occupied}/${facility.total}</p>
+                            <p class="text-2xl font-bold text-white">${occupiedBeds}/${totalBeds}</p>
                             <p class="text-indigo-300 text-xs">سرير</p>
                         </div>
                         <div class="professional-icon" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(79, 70, 229, 0.2)); color: #6366f1;">
