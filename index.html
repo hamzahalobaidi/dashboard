@@ -3445,11 +3445,19 @@
             }
             
             if (interval > 0) {
-                refreshInterval = setInterval(() => {
-                    // تحديث الوقت فقط بدون تغيير البيانات
+                refreshInterval = setInterval(async () => {
+                    // تحديث الوقت
                     updateLastUpdateTime();
                     
-                    // حفظ البيانات بصمت (بدون تغيير)
+                    // تحميل البيانات الجديدة من Supabase
+                    try {
+                        await loadAllDataFromSupabase();
+                        console.log('✅ تم تحديث البيانات من Supabase');
+                    } catch (error) {
+                        console.error('❌ خطأ في تحديث البيانات:', error);
+                    }
+                    
+                    // حفظ البيانات بصمت
                     saveDataToStorage(true);
                 }, interval);
                 
