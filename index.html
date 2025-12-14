@@ -3453,6 +3453,30 @@
                     try {
                         await loadAllDataFromSupabase();
                         console.log('✅ تم تحديث البيانات من Supabase');
+                        
+                        // تحديث العرض - عرض المراكز والسعة السريرية
+                        try {
+                            displayCenters();
+                            console.log('✅ تم تحديث عرض المراكز الإسعافية');
+                        } catch (error) {
+                            console.warn('⚠️ خطأ في تحديث عرض المراكز:', error);
+                        }
+                        
+                        // تحديث بطاقات المنشآات
+                        try {
+                            renderFacilitiesCards();
+                            console.log('✅ تم تحديث بطاقات المنشآات');
+                        } catch (error) {
+                            console.warn('⚠️ خطأ في تحديث بطاقات المنشآات:', error);
+                        }
+                        
+                        // تحديث البطاقات المخصصة
+                        try {
+                            renderCustomFacilities();
+                            console.log('✅ تم تحديث البطاقات المخصصة');
+                        } catch (error) {
+                            console.warn('⚠️ خطأ في تحديث البطاقات المخصصة:', error);
+                        }
                     } catch (error) {
                         console.error('❌ خطأ في تحديث البيانات:', error);
                     }
