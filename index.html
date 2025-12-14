@@ -2305,9 +2305,9 @@
             
             // لا تستدعي startSync - المزامنة معطلة تماماً
             
-            // تعيين التحديث الافتراضي كل 30 ثانية
+            // تعيين التحديث الافتراضي كل 10 ثوان
             setTimeout(() => {
-                document.getElementById('refreshInterval').value = '30000';
+                document.getElementById('refreshInterval').value = '10000';
                 setRefreshInterval();
             }, 1000);
             
@@ -3486,13 +3486,14 @@
                 }, interval);
                 
                 // إشعار بدء التحديث التلقائي (مرة واحدة فقط)
-                const intervalText = interval === 15000 ? '15 ثانية' : 
+                const intervalText = interval === 10000 ? '10 ثوان' :
+                                   interval === 15000 ? '15 ثانية' : 
                                    interval === 30000 ? '30 ثانية' : 
                                    interval === 60000 ? 'دقيقة واحدة' : 
                                    interval === 300000 ? '5 دقائق' : 
                                    interval === 900000 ? '15 دقيقة' : 'مخصص';
                 
-                showNotification('تم تفعيل التحديث التلقائي', `سيتم تحديث الوقت كل ${intervalText} (البيانات ثابتة)`, 'info');
+                showNotification('تم تفعيل التحديث التلقائي', `سيتم تحديث البيانات والعرض كل ${intervalText}`, 'info');
             } else {
                 showNotification('تم إيقاف التحديث التلقائي', 'لن يتم تحديث الوقت تلقائياً', 'warning');
             }
