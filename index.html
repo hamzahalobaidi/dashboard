@@ -2156,7 +2156,7 @@
                 // تحديث المتغيرات العامة
                 if (allData.emergencyCenters) {
                     window.emergencyCenters = allData.emergencyCenters;
-                    console.log('✅ تم تحميل emergencyCenters:', window.emergencyCenters.length);
+                    console.log('✅ تم تحميل emergencyCenters:', window.window.emergencyCenters.length);
                 }
                 
                 if (allData.customFacilities) {
@@ -2306,20 +2306,20 @@
                 // تحديث البطاقات الرئيسية
 
                 // تحديث مباشر للبطاقات بدون الاعتماد على updateMainStats
-                if (emergencyCenters && emergencyCenters.length > 0) {
-                    console.log('📄 بيانات emergencyCenters موجودة:', emergencyCenters.length, 'مراكز');
+                if (emergencyCenters && window.emergencyCenters.length > 0) {
+                    console.log('📄 بيانات emergencyCenters موجودة:', window.emergencyCenters.length, 'مراكز');
                     
                     // حساب المجاميع مباشرة
-                    const totalStaff = emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
-                    const currentStaff = emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
-                    const lifeSavingCases = emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
-                    const moderateCases = emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
-                    const stableCases = emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
-                    const homeCases = emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
-                    const healthCenterCases = emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
-                    const totalAmbulances = emergencyCenters.reduce((sum, c) => sum + c.totalAmbulances, 0);
-                    const activeAmbulances = emergencyCenters.reduce((sum, c) => sum + c.activeAmbulances, 0);
-                    const outOfService = emergencyCenters.reduce((sum, c) => sum + (c.inactiveAmbulances || 0), 0);
+                    const totalStaff = window.emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
+                    const currentStaff = window.emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
+                    const lifeSavingCases = window.emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
+                    const moderateCases = window.emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
+                    const stableCases = window.emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
+                    const homeCases = window.emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
+                    const healthCenterCases = window.emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
+                    const totalAmbulances = window.emergencyCenters.reduce((sum, c) => sum + c.totalAmbulances, 0);
+                    const activeAmbulances = window.emergencyCenters.reduce((sum, c) => sum + c.activeAmbulances, 0);
+                    const outOfService = window.emergencyCenters.reduce((sum, c) => sum + (c.inactiveAmbulances || 0), 0);
                     
                     // تحديث مباشر للعناصر
                     const updates = {
@@ -2377,8 +2377,8 @@
             console.log('🔄 جاري updateMainStats...');
             // استخدام emergencyCenters الحالي (يتم تحديثه من loadAllDataFromSupabase)
             // التأكد من أن البيانات محدثة
-            const centersData = (typeof emergencyCenters !== 'undefined' && emergencyCenters && emergencyCenters.length > 0) ? emergencyCenters : [];
-            console.log('📄 emergencyCenters.length:', centersData.length);
+            const centersData = (typeof window.emergencyCenters !== 'undefined' && window.emergencyCenters && window.window.emergencyCenters.length > 0) ? window.emergencyCenters : [];
+            console.log('📄 window.window.emergencyCenters.length:', centersData.length);
             
             const totalStaff = centersData.reduce((sum, center) => sum + center.totalStaff, 0);
             const currentStaff = centersData.reduce((sum, center) => sum + center.currentStaff, 0);
@@ -2469,7 +2469,7 @@
             grid.innerHTML = '';
 
             // التحقق من وجود مراكز
-            if (emergencyCenters.length === 0) {
+            if (window.emergencyCenters.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full">
                         <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-12 border border-purple-300/20 card-hover text-center">
@@ -2499,7 +2499,7 @@
                                 🏥 جدول المراكز الإسعافية
                             </h2>
                             <div class="text-white/70 text-sm">
-                                إجمالي المراكز: <span class="text-white font-bold">${emergencyCenters.length}</span>
+                                إجمالي المراكز: <span class="text-white font-bold">${window.emergencyCenters.length}</span>
                             </div>
                         </div>
                         
@@ -2531,7 +2531,7 @@
             };
 
             let tableRows = '';
-            emergencyCenters.forEach((center, index) => {
+            window.emergencyCenters.forEach((center, index) => {
                 // حساب النسبة المئوية مع ضمان عدم تجاوز 100%
                 const staffPercentage = center.totalStaff > 0 ? Math.min(100, Math.round((center.currentStaff / center.totalStaff) * 100)) : 0;
                 const ambulancePercentage = center.totalAmbulances > 0 ? Math.min(100, Math.round((center.activeAmbulances / center.totalAmbulances) * 100)) : 0;
@@ -2625,19 +2625,19 @@
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 <div class="bg-purple-600/20 rounded-lg p-3 text-center">
                                     <div class="text-purple-200 text-sm">إجمالي الموظفين</div>
-                                    <div class="text-white font-bold text-xl">${emergencyCenters.reduce((sum, center) => sum + center.currentStaff, 0)}/${emergencyCenters.reduce((sum, center) => sum + center.totalStaff, 0)}</div>
+                                    <div class="text-white font-bold text-xl">${window.emergencyCenters.reduce((sum, center) => sum + center.currentStaff, 0)}/${window.emergencyCenters.reduce((sum, center) => sum + center.totalStaff, 0)}</div>
                                 </div>
                                 <div class="bg-green-600/20 rounded-lg p-3 text-center">
                                     <div class="text-green-200 text-sm">إجمالي الإسعافات</div>
-                                    <div class="text-white font-bold text-xl">${emergencyCenters.reduce((sum, center) => sum + center.activeAmbulances, 0)}/${emergencyCenters.reduce((sum, center) => sum + center.totalAmbulances, 0)}</div>
+                                    <div class="text-white font-bold text-xl">${window.emergencyCenters.reduce((sum, center) => sum + center.activeAmbulances, 0)}/${window.emergencyCenters.reduce((sum, center) => sum + center.totalAmbulances, 0)}</div>
                                 </div>
                                 <div class="bg-red-600/20 rounded-lg p-3 text-center">
                                     <div class="text-red-200 text-sm">إجمالي حالات إنقاذ الحياة</div>
-                                    <div class="text-white font-bold text-xl">${emergencyCenters.reduce((sum, center) => sum + center.lifeSavingCases, 0)}</div>
+                                    <div class="text-white font-bold text-xl">${window.emergencyCenters.reduce((sum, center) => sum + center.lifeSavingCases, 0)}</div>
                                 </div>
                                 <div class="bg-yellow-600/20 rounded-lg p-3 text-center">
                                     <div class="text-yellow-200 text-sm">متوسط زمن الاستجابة</div>
-                                    <div class="text-white font-bold text-xl">${emergencyCenters.length > 0 ? (emergencyCenters.reduce((sum, center) => sum + center.responseTime, 0) / emergencyCenters.length).toFixed(1) : '0.0'} دقيقة</div>
+                                    <div class="text-white font-bold text-xl">${window.emergencyCenters.length > 0 ? (window.emergencyCenters.reduce((sum, center) => sum + center.responseTime, 0) / window.emergencyCenters.length).toFixed(1) : '0.0'} دقيقة</div>
                                 </div>
                             </div>
                         </div>
@@ -2801,11 +2801,11 @@
         
         // دالة تحديث رسم توزيع الحالات
         function updateCaseDistributionChart() {
-            const totalLifeSaving = emergencyCenters.reduce((sum, center) => sum + center.lifeSavingCases, 0);
-            const totalModerate = emergencyCenters.reduce((sum, center) => sum + center.moderateCases, 0);
-            const totalStable = emergencyCenters.reduce((sum, center) => sum + center.stableCases, 0);
-            const totalHome = emergencyCenters.reduce((sum, center) => sum + center.homeCases, 0);
-            const totalHealthCenter = emergencyCenters.reduce((sum, center) => sum + center.healthCenterCases, 0);
+            const totalLifeSaving = window.emergencyCenters.reduce((sum, center) => sum + center.lifeSavingCases, 0);
+            const totalModerate = window.emergencyCenters.reduce((sum, center) => sum + center.moderateCases, 0);
+            const totalStable = window.emergencyCenters.reduce((sum, center) => sum + center.stableCases, 0);
+            const totalHome = window.emergencyCenters.reduce((sum, center) => sum + center.homeCases, 0);
+            const totalHealthCenter = window.emergencyCenters.reduce((sum, center) => sum + center.healthCenterCases, 0);
             
             const totalCases = totalLifeSaving + totalModerate + totalStable + totalHome + totalHealthCenter;
             
@@ -3140,7 +3140,7 @@
             const content = document.getElementById('quickEditContent');
             content.innerHTML = '';
 
-            emergencyCenters.forEach(center => {
+            window.emergencyCenters.forEach(center => {
                 content.innerHTML += `
                     <div class="bg-white/5 rounded-lg p-4 mb-4">
                         <h4 class="text-white font-bold mb-3">${center.name}</h4>
@@ -3182,7 +3182,7 @@
         }
 
         function saveQuickEdit() {
-            emergencyCenters.forEach(center => {
+            window.emergencyCenters.forEach(center => {
                 const currentStaff = document.getElementById(`edit_currentStaff_${center.id}`);
                 const activeAmbulances = document.getElementById(`edit_activeAmbulances_${center.id}`);
                 const healthCenterCases = document.getElementById(`edit_healthCenterCases_${center.id}`);
@@ -3242,7 +3242,7 @@
         }
 
         function exportToExcel() {
-            const data = emergencyCenters.map(center => ({
+            const data = window.emergencyCenters.map(center => ({
                 'اسم المركز': center.name,
                 'الموقع': center.location,
                 'إجمالي الموظفين': center.totalStaff,
@@ -3282,13 +3282,13 @@
             // إضافة الإحصائيات العامة
             doc.text('General Statistics:', 20, yPosition);
             yPosition += 10;
-            doc.text(`Total Staff: ${emergencyCenters.reduce((sum, center) => sum + center.totalStaff, 0)}`, 20, yPosition);
+            doc.text(`Total Staff: ${window.emergencyCenters.reduce((sum, center) => sum + center.totalStaff, 0)}`, 20, yPosition);
             yPosition += 8;
-            doc.text(`Current Staff: ${emergencyCenters.reduce((sum, center) => sum + center.currentStaff, 0)}`, 20, yPosition);
+            doc.text(`Current Staff: ${window.emergencyCenters.reduce((sum, center) => sum + center.currentStaff, 0)}`, 20, yPosition);
             yPosition += 8;
-            doc.text(`Total Ambulances: ${emergencyCenters.reduce((sum, center) => sum + center.totalAmbulances, 0)}`, 20, yPosition);
+            doc.text(`Total Ambulances: ${window.emergencyCenters.reduce((sum, center) => sum + center.totalAmbulances, 0)}`, 20, yPosition);
             yPosition += 8;
-            doc.text(`Active Ambulances: ${emergencyCenters.reduce((sum, center) => sum + center.activeAmbulances, 0)}`, 20, yPosition);
+            doc.text(`Active Ambulances: ${window.emergencyCenters.reduce((sum, center) => sum + center.activeAmbulances, 0)}`, 20, yPosition);
             yPosition += 8;
             doc.text(`Response Time: ${globalResponseTime} minutes`, 20, yPosition);
             yPosition += 15;
@@ -3297,7 +3297,7 @@
             doc.text('Centers Details:', 20, yPosition);
             yPosition += 10;
             
-            emergencyCenters.forEach((center, index) => {
+            window.emergencyCenters.forEach((center, index) => {
                 if (yPosition > 250) {
                     doc.addPage();
                     yPosition = 20;
@@ -3335,10 +3335,10 @@
         function showCasesSummaryModal() {
             const content = document.getElementById('casesSummaryContent');
             
-            const totalLifeSaving = emergencyCenters.reduce((sum, center) => sum + center.lifeSavingCases, 0);
-            const totalModerate = emergencyCenters.reduce((sum, center) => sum + center.moderateCases, 0);
-            const totalStable = emergencyCenters.reduce((sum, center) => sum + center.stableCases, 0);
-            const totalHome = emergencyCenters.reduce((sum, center) => sum + center.homeCases, 0);
+            const totalLifeSaving = window.emergencyCenters.reduce((sum, center) => sum + center.lifeSavingCases, 0);
+            const totalModerate = window.emergencyCenters.reduce((sum, center) => sum + center.moderateCases, 0);
+            const totalStable = window.emergencyCenters.reduce((sum, center) => sum + center.stableCases, 0);
+            const totalHome = window.emergencyCenters.reduce((sum, center) => sum + center.homeCases, 0);
             const totalCases = totalLifeSaving + totalModerate + totalStable + totalHome;
             
             content.innerHTML = `
@@ -3374,7 +3374,7 @@
                 <div class="bg-white/5 rounded-lg p-4">
                     <h4 class="text-white font-bold mb-3">🏥 تفصيل الحالات حسب المراكز</h4>
                     <div class="space-y-3">
-                        ${emergencyCenters.map(center => {
+                        ${window.emergencyCenters.map(center => {
                             const centerTotal = center.lifeSavingCases + center.moderateCases + center.stableCases + center.homeCases;
                             return `
                                 <div class="bg-white/5 rounded-lg p-3">
@@ -3657,8 +3657,8 @@
                 return;
             }
 
-            emergencyCenters[centerIndex] = {
-                ...emergencyCenters[centerIndex],
+            window.emergencyCenters[centerIndex] = {
+                ...window.emergencyCenters[centerIndex],
                 name: document.getElementById('centerName').value,
                 location: document.getElementById('centerLocation').value,
                 totalStaff: totalStaff,
@@ -3707,7 +3707,7 @@
 
         function deleteCenter(centerId) {
             if (confirm('هل أنت متأكد من حذف هذا المركز؟')) {
-                window.emergencyCenters = window.emergencyCenters.filter(c => c.id !== centerId);
+                window.emergencyCenters = window.window.emergencyCenters.filter(c => c.id !== centerId);
                 
                 // تحديث جميع البطاقات بشكل صريح
                 forceUpdateAllCards();
@@ -6143,7 +6143,7 @@ if (originalAddCenter) {
     originalAddCenter();
     // حفظ المراكز في Firebase بعد إضافة مركز جديد
     setTimeout(() => {
-      if (emergencyCenters && emergencyCenters.length > 0) {
+      if (emergencyCenters && window.emergencyCenters.length > 0) {
         saveDataToFirebase('emergencyCenters', emergencyCenters);
         console.log('تم حفظ المراكز في Firebase:', emergencyCenters);
       }
@@ -6157,7 +6157,7 @@ if (originalUpdateCenter) {
   window.updateCenter = function(centerId) {
     originalUpdateCenter(centerId);
     setTimeout(() => {
-      if (emergencyCenters && emergencyCenters.length > 0) {
+      if (emergencyCenters && window.emergencyCenters.length > 0) {
         saveDataToFirebase('emergencyCenters', emergencyCenters);
       }
     }, 500);
@@ -6170,7 +6170,7 @@ if (originalDeleteCenter) {
   window.deleteCenter = function(centerId) {
     originalDeleteCenter(centerId);
     setTimeout(() => {
-      if (emergencyCenters && emergencyCenters.length > 0) {
+      if (emergencyCenters && window.emergencyCenters.length > 0) {
         saveDataToFirebase('emergencyCenters', emergencyCenters);
       } else {
         database.ref('emergencyCenters').remove();
@@ -6195,7 +6195,7 @@ window.addEventListener('load', function() {
 
 // حفظ البيانات تلقائياً كل 30 ثانية
 setInterval(() => {
-  if (isAuthenticated && emergencyCenters && emergencyCenters.length > 0) {
+  if (isAuthenticated && emergencyCenters && window.emergencyCenters.length > 0) {
     saveDataToFirebase('emergencyCenters', emergencyCenters);
   }
 }, 30000);
@@ -6320,20 +6320,20 @@ if (typeof BroadcastChannel !== 'undefined') {
                 loadAllDataFromSupabase().then(() => {
                     console.log('✅ تم تحميل البيانات من Supabase');
                     console.log('window.emergencyCenters:', typeof window.emergencyCenters !== 'undefined' ? window.emergencyCenters : 'undefined');
-                    console.log('عدد المراكز:', window.emergencyCenters ? window.emergencyCenters.length : 0);
+                    console.log('عدد المراكز:', window.emergencyCenters ? window.window.emergencyCenters.length : 0);
                     
                     // تحديث مباشر للعناصر بعد التحميل
-                    if (window.emergencyCenters && window.emergencyCenters.length > 0) {
+                    if (window.emergencyCenters && window.window.emergencyCenters.length > 0) {
                         console.log('📊 تحديث مباشر للبطاقات بعد تحميل البيانات...');
                         
                         // حساب القيم مباشرة
-                        const totalStaff = window.emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
-                        const currentStaff = window.emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
-                        const lifeSavingCases = window.emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
-                        const moderateCases = window.emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
-                        const stableCases = window.emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
-                        const homeCases = window.emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
-                        const healthCenterCases = window.emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
+                        const totalStaff = window.window.emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
+                        const currentStaff = window.window.emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
+                        const lifeSavingCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
+                        const moderateCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
+                        const stableCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
+                        const homeCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
+                        const healthCenterCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
                         
                         // تحديث مباشر للعناصر
                         const directUpdates = {
