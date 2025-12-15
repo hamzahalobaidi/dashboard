@@ -2156,7 +2156,7 @@
                 // تحديث المتغيرات العامة
                 if (allData.emergencyCenters) {
                     window.emergencyCenters = allData.emergencyCenters;
-                    console.log('✅ تم تحميل emergencyCenters:', window.window.emergencyCenters.length);
+                    console.log('✅ تم تحميل emergencyCenters:', window.emergencyCenters.length);
                 }
                 
                 if (allData.customFacilities) {
@@ -2292,7 +2292,7 @@
         window.emergencyCenters = [];
 
         // متغيرات عامة
-        window.window.isAdminMode = false;
+        window.isAdminMode = false;
         window.currentZoom = 100;
         window.refreshInterval = null;
         window.globalResponseTime = 0.0;
@@ -2377,8 +2377,8 @@
             console.log('🔄 جاري updateMainStats...');
             // استخدام emergencyCenters الحالي (يتم تحديثه من loadAllDataFromSupabase)
             // التأكد من أن البيانات محدثة
-            const centersData = (typeof window.emergencyCenters !== 'undefined' && window.emergencyCenters && window.window.emergencyCenters.length > 0) ? window.emergencyCenters : [];
-            console.log('📄 window.window.emergencyCenters.length:', centersData.length);
+            const centersData = (typeof window.emergencyCenters !== 'undefined' && window.emergencyCenters && window.emergencyCenters.length > 0) ? window.emergencyCenters : [];
+            console.log('📄 window.emergencyCenters.length:', centersData.length);
             
             const totalStaff = centersData.reduce((sum, center) => sum + center.totalStaff, 0);
             const currentStaff = centersData.reduce((sum, center) => sum + center.currentStaff, 0);
@@ -3707,7 +3707,7 @@
 
         function deleteCenter(centerId) {
             if (confirm('هل أنت متأكد من حذف هذا المركز؟')) {
-                window.emergencyCenters = window.window.emergencyCenters.filter(c => c.id !== centerId);
+                window.emergencyCenters = window.emergencyCenters.filter(c => c.id !== centerId);
                 
                 // تحديث جميع البطاقات بشكل صريح
                 forceUpdateAllCards();
@@ -6320,20 +6320,20 @@ if (typeof BroadcastChannel !== 'undefined') {
                 loadAllDataFromSupabase().then(() => {
                     console.log('✅ تم تحميل البيانات من Supabase');
                     console.log('window.emergencyCenters:', typeof window.emergencyCenters !== 'undefined' ? window.emergencyCenters : 'undefined');
-                    console.log('عدد المراكز:', window.emergencyCenters ? window.window.emergencyCenters.length : 0);
+                    console.log('عدد المراكز:', window.emergencyCenters ? window.emergencyCenters.length : 0);
                     
                     // تحديث مباشر للعناصر بعد التحميل
-                    if (window.emergencyCenters && window.window.emergencyCenters.length > 0) {
+                    if (window.emergencyCenters && window.emergencyCenters.length > 0) {
                         console.log('📊 تحديث مباشر للبطاقات بعد تحميل البيانات...');
                         
                         // حساب القيم مباشرة
-                        const totalStaff = window.window.emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
-                        const currentStaff = window.window.emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
-                        const lifeSavingCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
-                        const moderateCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
-                        const stableCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
-                        const homeCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
-                        const healthCenterCases = window.window.emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
+                        const totalStaff = window.emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
+                        const currentStaff = window.emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
+                        const lifeSavingCases = window.emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
+                        const moderateCases = window.emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
+                        const stableCases = window.emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
+                        const homeCases = window.emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
+                        const healthCenterCases = window.emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
                         
                         // تحديث مباشر للعناصر
                         const directUpdates = {
