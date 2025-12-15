@@ -2451,9 +2451,8 @@
             try {
                 // تحديث البطاقات الرئيسية بدقة
                 const elements = {
-                    // بطاقة العاملين (ملاحظة: البطاقة الجديدة لها IDs مختلفة)
-                    'currentStaff': currentStaff,
-                    'totalStaff': totalStaff,
+                    // ملاحظة: بطاقة العاملين الآن لها IDs جديدة (staffCardValue, staffCardTotal)
+                    // لا نحدث currentStaff و totalStaff القديمة
                     
                     // بطاقة حالات إنقاذ الحياة (من المراكز)
                     'lifeSavingCasesTotal': lifeSavingCases,
