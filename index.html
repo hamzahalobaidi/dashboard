@@ -2468,21 +2468,7 @@
             const grid = document.getElementById('centersGrid');
             grid.innerHTML = '';
 
-            // حساب الإحصائيات للبطاقات العليا
-            const totalStaff = window.emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
-            const currentStaff = window.emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
-            const lifeSavingCases = window.emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
-            const moderateCases = window.emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
-            const stableCases = window.emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
-            const homeCases = window.emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
-            const healthCenterCases = window.emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
-            const totalAmbulances = window.emergencyCenters.reduce((sum, c) => sum + c.totalAmbulances, 0);
-            const activeAmbulances = window.emergencyCenters.reduce((sum, c) => sum + c.activeAmbulances, 0);
-            const outOfService = window.emergencyCenters.reduce((sum, c) => sum + (c.inactiveAmbulances || 0), 0);
-            const totalTeams = Math.floor(currentStaff / 2);
-            const totalCases = lifeSavingCases + moderateCases + stableCases + homeCases + healthCenterCases;
-
-            // إضافة البطاقات العليا
+            // إضافة البطاقات العليا - بنفس طريقة البطاقات السفلية
             const topCards = `
                 <div class="col-span-full">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-4">
@@ -2491,7 +2477,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-red-200 text-sm font-medium">حالات إنقاذ الحياة</p>
-                                    <p class="text-2xl font-bold text-white" id="lifeSavingCasesTotal">${lifeSavingCases}</p>
+                                    <p class="text-2xl font-bold text-white">${window.emergencyCenters.reduce((sum, center) => sum + center.lifeSavingCases, 0)}</p>
                                     <p class="text-red-300 text-xs">حالة حرجة</p>
                                 </div>
                             </div>
@@ -2502,7 +2488,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-orange-200 text-sm font-medium">الحالات المتوسطة</p>
-                                    <p class="text-2xl font-bold text-white" id="moderateCasesTotal">${moderateCases}</p>
+                                    <p class="text-2xl font-bold text-white">${window.emergencyCenters.reduce((sum, center) => sum + center.moderateCases, 0)}</p>
                                     <p class="text-orange-300 text-xs">حالة متوسطة</p>
                                 </div>
                             </div>
@@ -2513,7 +2499,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-green-200 text-sm font-medium">الحالات المستقرة</p>
-                                    <p class="text-2xl font-bold text-white" id="stableCasesTotal">${stableCases}</p>
+                                    <p class="text-2xl font-bold text-white">${window.emergencyCenters.reduce((sum, center) => sum + center.stableCases, 0)}</p>
                                     <p class="text-green-300 text-xs">حالة مستقرة</p>
                                 </div>
                             </div>
@@ -2524,7 +2510,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-blue-200 text-sm font-medium">الحالات المنزلية</p>
-                                    <p class="text-2xl font-bold text-white" id="homeCasesTotal">${homeCases}</p>
+                                    <p class="text-2xl font-bold text-white">${window.emergencyCenters.reduce((sum, center) => sum + center.homeCases, 0)}</p>
                                     <p class="text-blue-300 text-xs">حالة منزلية</p>
                                 </div>
                             </div>
@@ -2535,7 +2521,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-purple-200 text-sm font-medium">مراكز صحية</p>
-                                    <p class="text-2xl font-bold text-white" id="healthCenterCasesTotal">${healthCenterCases}</p>
+                                    <p class="text-2xl font-bold text-white">${window.emergencyCenters.reduce((sum, center) => sum + center.healthCenterCases, 0)}</p>
                                     <p class="text-purple-300 text-xs">مركز صحي</p>
                                 </div>
                             </div>
@@ -2546,7 +2532,7 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-purple-200 text-sm font-medium">إجمالي الموظفين</p>
-                                    <p class="text-2xl font-bold text-white">${currentStaff}/${totalStaff}</p>
+                                    <p class="text-2xl font-bold text-white">${window.emergencyCenters.reduce((sum, center) => sum + center.currentStaff, 0)}/${window.emergencyCenters.reduce((sum, center) => sum + center.totalStaff, 0)}</p>
                                     <p class="text-purple-300 text-xs">من أصل</p>
                                 </div>
                             </div>
