@@ -2330,14 +2330,39 @@
                 loadMobileTeamsFromSupabase();
             });
             
-            // المزامنة التلقائية مع Supabase - معطلة تماماً
-            // لا تستدعي المزامنة التلقائية - يجب تحديث البيانات يدويًا فقط
+            // المزامنة التلقائية مع Supabase - مفعلة كل 10 ثواني
             window.syncIntervalId = null;
             
-            // دالة لبدء المزامنة (معطلة تماماً - لا تُستخدم)
+            // دالة لبدء المزامنة التلقائية
             window.startSync = function() {
-                console.log('⚠️ المزامنة التلقائية معطلة - يجب تحديث البيانات يدويًا');
-                // لا تفعل شيء
+                if (window.syncIntervalId) {
+                    clearInterval(window.syncIntervalId);
+                }
+                
+                // مزامنة كل 10 ثواني
+                window.syncIntervalId = setInterval(async () => {
+                    try {
+                        console.log('🔄 مزامنة تلقائية...');
+                        await loadAllDataFromSupabase();
+                        updateMainStats();
+                        displayCenters();
+                        updateTopActiveCenters();
+                        updateLastUpdateTime();
+                        
+                        // تحديث البطاقات الجانبية
+                        if (typeof updateReferralsDisplay === 'function') updateReferralsDisplay();
+                        if (typeof updateServicePurchaseDisplay === 'function') updateServicePurchaseDisplay();
+                        if (typeof updateMobileTeamsDisplay === 'function') updateMobileTeamsDisplay();
+                        if (typeof renderFacilitiesCards === 'function') renderFacilitiesCards();
+                        if (typeof renderCustomFacilities === 'function') renderCustomFacilities();
+                        
+                        console.log('✅ تم التحديث التلقائي');
+                    } catch (error) {
+                        console.error('❌ خطأ في المزامنة التلقائية:', error);
+                    }
+                }, 10000); // كل 10 ثواني
+                
+                console.log('🚀 تم بدء المزامنة التلقائية (كل 10 ثواني)');
             };
             
             // دالة لإيقاف المزامنة
@@ -2349,7 +2374,8 @@
                 }
             };
             
-            // لا تستدعي startSync - المزامنة معطلة تماماً
+            // بدء المزامنة التلقائية
+            startSync();
             
             // تعيين التحديث الافتراضي كل 10 ثوان
             setTimeout(() => {
