@@ -6302,10 +6302,15 @@ if (typeof BroadcastChannel !== 'undefined') {
         // معالجة تحديثات البطاقات
         if (event.data.type === 'stats_updated') {
             console.log('📡 تحديث البطاقات من نافذة أخرى');
-            if (typeof updateMainStats === 'function') {
-                updateMainStats();
-                console.log('✅ تم تحديث البطاقات من BroadcastChannel');
-            }
+            // تحديث البيانات من Supabase أولاً
+            loadAllDataFromSupabase().then(() => {
+                if (typeof updateMainStats === 'function') {
+                    updateMainStats();
+                    console.log('✅ تم تحديث البطاقات من BroadcastChannel');
+                }
+            }).catch(error => {
+                console.error('❌ خطأ في تحديث البطاقات:', error);
+            });
         }
         
         // معالجة تحديثات المراكز
