@@ -1427,6 +1427,25 @@
                 </div>
             </div>
 
+            <!-- بطاقة العاملين -->
+            <div class="bg-gradient-to-br from-purple-500/20 to-purple-600/10 backdrop-blur-lg rounded-2xl p-6 border border-purple-300/20 card-hover">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-purple-200 text-sm font-medium">إجمالي العاملين</p>
+                        <p class="text-3xl font-bold text-white" id="totalStaffTotal">0</p>
+                        <p class="text-purple-300 text-xs">عامل نشط</p>
+                    </div>
+                    <div class="professional-icon icon-staff">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
             <!-- بطاقة الحالات المستقرة -->
             <div class="bg-gradient-to-br from-green-500/20 to-green-600/10 backdrop-blur-lg rounded-2xl p-6 border border-green-300/20 card-hover">
                 <div class="flex items-center justify-between mb-4">
@@ -2346,6 +2365,7 @@
                     
                     // تحديث مباشر للعناصر
                     const updates = {
+                        'totalStaffTotal': currentStaff,
                         'currentStaff': currentStaff,
                         'lifeSavingCasesTotal': lifeSavingCases,
                         'emergencyCasesTotal': moderateCases,
@@ -2446,6 +2466,7 @@
                     'healthCenterCasesTotal': healthCenterCases,
                     
                     // بطاقات إضافية
+                    'totalStaffTotal': currentStaff,
                     'responseTime': globalResponseTime.toFixed(1),
                     'totalActiveCenters': totalCenters,
                     'availableTeams': totalTeams,
