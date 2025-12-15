@@ -6450,6 +6450,58 @@ if (typeof BroadcastChannel !== 'undefined') {
     };
     console.log('✅ تم تفعيل مستمع BroadcastChannel الدائم');
 }
+
+// 🔄 Polling: تحديث البطاقات الـ 10 كل ثانية واحدة
+let lastDataHash = '';
+setInterval(() => {
+    if (typeof window.emergencyCenters !== 'undefined' && window.emergencyCenters && window.emergencyCenters.length > 0) {
+        // حساب hash للبيانات الحالية
+        const currentHash = JSON.stringify(window.emergencyCenters);
+        
+        // إذا تغيرت البيانات، حدّث البطاقات
+        if (currentHash !== lastDataHash) {
+            console.log('🔄 Polling: تغيرت البيانات، جاري تحديث البطاقات الـ 10...');
+            lastDataHash = currentHash;
+            
+            // حساب القيم مباشرة
+            const totalStaff = window.emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
+            const currentStaff = window.emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
+            const totalAmbulances = window.emergencyCenters.reduce((sum, c) => sum + c.totalAmbulances, 0);
+            const activeAmbulances = window.emergencyCenters.reduce((sum, c) => sum + c.activeAmbulances, 0);
+            const lifeSavingCases = window.emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
+            const moderateCases = window.emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
+            const stableCases = window.emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
+            const homeCases = window.emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
+            const healthCenterCases = window.emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
+            const outOfService = window.emergencyCenters.reduce((sum, c) => sum + (c.inactiveAmbulances || 0), 0);
+            const totalTeams = Math.floor(currentStaff / 2);
+            const totalCases = lifeSavingCases + moderateCases + stableCases + homeCases + healthCenterCases;
+            
+            // تحديث جميع البطاقات الـ 10
+            const updates = {
+                'availableTeams': totalTeams,
+                'quickStats': totalCases,
+                'vehicleStatus': activeAmbulances,
+                'outOfServiceTotal': outOfService,
+                'lifeSavingCasesTotal': lifeSavingCases,
+                'stableCasesTotal': stableCases,
+                'moderateCasesTotal': moderateCases,
+                'homeCasesTotal': homeCases,
+                'healthCenterCasesTotal': healthCenterCases,
+                'emergencyCasesTotal': moderateCases
+            };
+            
+            for (const [id, value] of Object.entries(updates)) {
+                const el = document.getElementById(id);
+                if (el && el.textContent !== String(value)) {
+                    el.textContent = value;
+                    console.log(`✅ Polling: ${id} = ${value}`);
+                }
+            }
+        }
+    }
+}, 1000); // كل ثانية واحدة
+console.log('🔄 تم تفعيل Polling لتحديث البطاقات الـ 10');
 </script>
 </body>
 </html>
