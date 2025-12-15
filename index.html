@@ -2323,8 +2323,13 @@
                     
                     // تحديث مباشر للعناصر
                     const updates = {
+                        'lifeSavingCasesTotal': lifeSavingCases,
+                        'emergencyCasesTotal': moderateCases,
+                        'stableCasesTotal': stableCases,
+                        'moderateCasesTotal': moderateCases,
+                        'homeCasesTotal': homeCases,
+                        'healthCenterCasesTotal': healthCenterCases,
                         'currentStaff': currentStaff,
-
                         'vehicleStatus': activeAmbulances,
                         'totalAmbulances': totalAmbulances,
                         'outOfServiceTotal': outOfService
@@ -6329,6 +6334,39 @@ if (typeof BroadcastChannel !== 'undefined') {
                     }, 300);
                 }).catch(error => {
                     console.error('❌ خطأ في تحديث البيانات:', error);
+                });
+            }
+        }
+        
+        // معالجة تحديثات الأسرة في المنشآت
+        if (event.data.type === 'facility_beds_updated') {
+            console.log('🏥 تحديث الأسرة في المنشآت من نافذة أخرى');
+            if (typeof renderCustomFacilities === 'function') {
+                renderCustomFacilities();
+                console.log('✅ تم تحديث المنشآت المخصصة');
+            }
+        }
+        
+        // معالجة حذف المنشآت
+        if (event.data.type === 'facility_deleted') {
+            console.log('🗑️ حذف منشأة من نافذة أخرى');
+            if (typeof renderCustomFacilities === 'function') {
+                renderCustomFacilities();
+                console.log('✅ تم تحديث المنشآت المخصصة بعد الحذف');
+            }
+        }
+        
+        // معالجة تحديثات المنشآت من Supabase
+        if (event.data.type === 'facilities_updated') {
+            console.log('📡 تحديث المنشآت من Supabase');
+            if (typeof loadAllDataFromSupabase === 'function') {
+                loadAllDataFromSupabase().then(() => {
+                    if (typeof renderCustomFacilities === 'function') {
+                        renderCustomFacilities();
+                        console.log('✅ تم تحديث المنشآت المخصصة من Supabase');
+                    }
+                }).catch(error => {
+                    console.error('❌ خطأ في تحديث المنشآت:', error);
                 });
             }
         }

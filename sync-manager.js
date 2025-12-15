@@ -1,8 +1,8 @@
 // sync-manager.js - إدارة المزامنة مع Supabase
 
 const syncManager = {
-    supabaseUrl: 'https://qwgwvpvqvlhqbfbzqhvl.supabase.co',
-    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3Z3d2cHZxdmxocWJmYnpxaHZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA3MTExMDAsImV4cCI6MjA0NjI4NzEwMH0.Zz0wFXR7P0Ew1dFKvPGnzNQqEPvzNhQyJkKvXZqhFxw',
+    supabaseUrl: 'https://yytxgzksiheseorqhdqm.supabase.co',
+    supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5dHhnemtzaWhlc2VvcnFoZHFtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU3ODc4MDgsImV4cCI6MjA4MTM2MzgwOH0.aReF32tD8LbY39nEMBqBUmU06V7o2nf-M_zmLJmVlyc',
     client: null,
 
     // تهيئة عميل Supabase
@@ -24,6 +24,14 @@ const syncManager = {
 
     // تحميل جميع البيانات من Supabase
     async loadAllData() {
+        // استخدام localStorageWrapper إذا كان موجوداً
+        const storage = (typeof window !== 'undefined' && window.localStorageWrapper) ? window.localStorageWrapper : {
+            set: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
+            get: (key, defaultValue) => {
+                const val = localStorage.getItem(key);
+                return val ? JSON.parse(val) : defaultValue;
+            }
+        };
         try {
             console.log('🔄 جاري تحميل جميع البيانات من Supabase...');
             
@@ -49,18 +57,16 @@ const syncManager = {
                 if (centersError) {
                     console.warn('⚠️ خطأ في تحميل المراكز:', centersError);
                     // استخدام البيانات المحفوظة محلياً
-                    const saved = localStorage.getItem('emergencyCenters');
-                    result.emergencyCenters = saved ? JSON.parse(saved) : [];
+                    result.emergencyCenters = storage.get('emergencyCenters', []);
                 } else {
                     result.emergencyCenters = centers || [];
                     console.log('✅ تم تحميل المراكز:', result.emergencyCenters.length);
                     // حفظ محلياً
-                    localStorage.setItem('emergencyCenters', JSON.stringify(result.emergencyCenters));
+                    storage.set('emergencyCenters', result.emergencyCenters);
                 }
             } catch (error) {
                 console.error('❌ خطأ في تحميل المراكز:', error);
-                const saved = localStorage.getItem('emergencyCenters');
-                result.emergencyCenters = saved ? JSON.parse(saved) : [];
+                result.emergencyCenters = storage.get('emergencyCenters', []);
             }
 
             // تحميل المنشآت المخصصة
@@ -71,17 +77,15 @@ const syncManager = {
                 
                 if (facilitiesError) {
                     console.warn('⚠️ خطأ في تحميل المنشآت:', facilitiesError);
-                    const saved = localStorage.getItem('customFacilities');
-                    result.customFacilities = saved ? JSON.parse(saved) : [];
+                    result.customFacilities = storage.get('customFacilities', []);
                 } else {
                     result.customFacilities = facilities || [];
                     console.log('✅ تم تحميل المنشآت:', result.customFacilities.length);
-                    localStorage.setItem('customFacilities', JSON.stringify(result.customFacilities));
+                    storage.set('customFacilities', result.customFacilities);
                 }
             } catch (error) {
                 console.error('❌ خطأ في تحميل المنشآت:', error);
-                const saved = localStorage.getItem('customFacilities');
-                result.customFacilities = saved ? JSON.parse(saved) : [];
+                result.customFacilities = storage.get('customFacilities', []);
             }
 
             // تحميل بيانات شراء الخدمة
@@ -93,15 +97,13 @@ const syncManager = {
                 
                 if (!serviceError) {
                     result.servicePurchaseData = servicePurchase;
-                    localStorage.setItem('servicePurchaseData', JSON.stringify(servicePurchase));
+                    storage.set('servicePurchaseData', servicePurchase);
                 } else {
-                    const saved = localStorage.getItem('servicePurchaseData');
-                    result.servicePurchaseData = saved ? JSON.parse(saved) : null;
+                    result.servicePurchaseData = storage.get('servicePurchaseData', null);
                 }
             } catch (error) {
                 console.error('❌ خطأ في تحميل بيانات الخدمة:', error);
-                const saved = localStorage.getItem('servicePurchaseData');
-                result.servicePurchaseData = saved ? JSON.parse(saved) : null;
+                result.servicePurchaseData = storage.get('servicePurchaseData', null);
             }
 
             // تحميل بيانات الإحالات
@@ -112,15 +114,13 @@ const syncManager = {
                 
                 if (!referralsError) {
                     result.referralsData = referrals;
-                    localStorage.setItem('referralsData', JSON.stringify(referrals));
+                    storage.set('referralsData', referrals);
                 } else {
-                    const saved = localStorage.getItem('referralsData');
-                    result.referralsData = saved ? JSON.parse(saved) : null;
+                    result.referralsData = storage.get('referralsData', null);
                 }
             } catch (error) {
                 console.error('❌ خطأ في تحميل الإحالات:', error);
-                const saved = localStorage.getItem('referralsData');
-                result.referralsData = saved ? JSON.parse(saved) : null;
+                result.referralsData = storage.get('referralsData', null);
             }
 
             // تحميل فرق الطب المتنقل
@@ -131,15 +131,13 @@ const syncManager = {
                 
                 if (!teamsError) {
                     result.mobileTeams = mobileTeams || [];
-                    localStorage.setItem('mobileTeams', JSON.stringify(result.mobileTeams));
+                    storage.set('mobileTeams', result.mobileTeams);
                 } else {
-                    const saved = localStorage.getItem('mobileTeams');
-                    result.mobileTeams = saved ? JSON.parse(saved) : [];
+                    result.mobileTeams = storage.get('mobileTeams', []);
                 }
             } catch (error) {
                 console.error('❌ خطأ في تحميل الفرق:', error);
-                const saved = localStorage.getItem('mobileTeams');
-                result.mobileTeams = saved ? JSON.parse(saved) : [];
+                result.mobileTeams = storage.get('mobileTeams', []);
             }
 
             console.log('✅ تم تحميل جميع البيانات بنجاح');
@@ -163,17 +161,15 @@ const syncManager = {
             
             if (error) {
                 console.warn(`⚠️ خطأ في تحميل ${table}:`, error);
-                const saved = localStorage.getItem(table);
-                return saved ? JSON.parse(saved) : null;
+                return storage.get(table, null);
             }
 
             // حفظ محلياً
-            localStorage.setItem(table, JSON.stringify(data));
+            storage.set(table, data);
             return data;
         } catch (error) {
             console.error(`❌ خطأ في loadData(${table}):`, error);
-            const saved = localStorage.getItem(table);
-            return saved ? JSON.parse(saved) : null;
+            return storage.get(table, null);
         }
     },
 
@@ -187,7 +183,7 @@ const syncManager = {
             }
 
             // حفظ محلياً أولاً
-            localStorage.setItem(table, JSON.stringify(data));
+            storage.set(table, data);
 
             // محاولة الحفظ في Supabase
             if (table === 'emergencyCenters') {
@@ -296,11 +292,59 @@ const syncManager = {
     }
 };
 
+// إضافة Realtime Listeners
+syncManager.setupRealtimeListeners = function() {
+    try {
+        if (!this.client) {
+            this.initialize();
+        }
+
+        // مستمع للمراكز الإسعافية
+        this.client
+            .from('emergency_centers')
+            .on('*', payload => {
+                console.log('📡 تحديث المراكز من Supabase:', payload);
+                // بث الرسالة عبر BroadcastChannel
+                if (typeof BroadcastChannel !== 'undefined') {
+                    const channel = new BroadcastChannel('emergency_dashboard_updates');
+                    channel.postMessage({
+                        type: 'centers_updated',
+                        data: payload
+                    });
+                    setTimeout(() => channel.close(), 100);
+                }
+            })
+            .subscribe();
+
+        // مستمع للمنشآت المخصصة
+        this.client
+            .from('custom_facilities')
+            .on('*', payload => {
+                console.log('📡 تحديث المنشآت من Supabase:', payload);
+                if (typeof BroadcastChannel !== 'undefined') {
+                    const channel = new BroadcastChannel('emergency_dashboard_updates');
+                    channel.postMessage({
+                        type: 'facilities_updated',
+                        data: payload
+                    });
+                    setTimeout(() => channel.close(), 100);
+                }
+            })
+            .subscribe();
+
+        console.log('✅ تم تفعيل Realtime Listeners');
+    } catch (error) {
+        console.error('❌ خطأ في setupRealtimeListeners:', error);
+    }
+};
+
 // تهيئة تلقائية عند تحميل الملف
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         syncManager.initialize();
+        syncManager.setupRealtimeListeners();
     });
 } else {
     syncManager.initialize();
+    syncManager.setupRealtimeListeners();
 }
