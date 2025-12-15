@@ -2155,8 +2155,8 @@
                 
                 // تحديث المتغيرات العامة
                 if (allData.emergencyCenters) {
-                    emergencyCenters = allData.emergencyCenters;
-                    console.log('✅ تم تحميل emergencyCenters:', emergencyCenters.length);
+                    window.emergencyCenters = allData.emergencyCenters;
+                    console.log('✅ تم تحميل emergencyCenters:', window.emergencyCenters.length);
                 }
                 
                 if (allData.customFacilities) {
@@ -3707,7 +3707,7 @@
 
         function deleteCenter(centerId) {
             if (confirm('هل أنت متأكد من حذف هذا المركز؟')) {
-                emergencyCenters = emergencyCenters.filter(c => c.id !== centerId);
+                window.emergencyCenters = window.emergencyCenters.filter(c => c.id !== centerId);
                 
                 // تحديث جميع البطاقات بشكل صريح
                 forceUpdateAllCards();
@@ -6184,7 +6184,7 @@ window.addEventListener('load', function() {
   setTimeout(() => {
     loadDataFromFirebase('emergencyCenters', function(data) {
       if (data && isAuthenticated) {
-        emergencyCenters = data;
+        window.emergencyCenters = data;
         updateMainStats();
         displayCenters();
         console.log('تم تحميل البيانات من Firebase:', data);
@@ -6319,10 +6319,42 @@ if (typeof BroadcastChannel !== 'undefined') {
             if (typeof loadAllDataFromSupabase === 'function') {
                 loadAllDataFromSupabase().then(() => {
                     console.log('✅ تم تحميل البيانات من Supabase');
-                    console.log('emergencyCenters:', typeof emergencyCenters !== 'undefined' ? emergencyCenters : 'undefined');
-                    console.log('عدد المراكز:', emergencyCenters ? emergencyCenters.length : 0);
+                    console.log('window.emergencyCenters:', typeof window.emergencyCenters !== 'undefined' ? window.emergencyCenters : 'undefined');
+                    console.log('عدد المراكز:', window.emergencyCenters ? window.emergencyCenters.length : 0);
                     
-                    // تأخير أطول (500ms) للتأكد من اكتمال loadAllDataFromSupabase()
+                    // تحديث مباشر للعناصر بعد التحميل
+                    if (window.emergencyCenters && window.emergencyCenters.length > 0) {
+                        console.log('📊 تحديث مباشر للبطاقات بعد تحميل البيانات...');
+                        
+                        // حساب القيم مباشرة
+                        const totalStaff = window.emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
+                        const currentStaff = window.emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
+                        const lifeSavingCases = window.emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
+                        const moderateCases = window.emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
+                        const stableCases = window.emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
+                        const homeCases = window.emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
+                        const healthCenterCases = window.emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
+                        
+                        // تحديث مباشر للعناصر
+                        const directUpdates = {
+                            'lifeSavingCasesTotal': lifeSavingCases,
+                            'emergencyCasesTotal': moderateCases,
+                            'stableCasesTotal': stableCases,
+                            'moderateCasesTotal': moderateCases,
+                            'homeCasesTotal': homeCases,
+                            'healthCenterCasesTotal': healthCenterCases
+                        };
+                        
+                        for (const [id, value] of Object.entries(directUpdates)) {
+                            const el = document.getElementById(id);
+                            if (el) {
+                                el.textContent = value;
+                                console.log(`✅ تحديث مباشر: ${id} = ${value}`);
+                            }
+                        }
+                    }
+                    
+                    // تأخير أطول (200ms) للاستدعاءات الإضافية
                     setTimeout(() => {
                         // استدعاء updateMainStats مباشرة لتحديث البطاقات
                         if (typeof updateMainStats === 'function') {
@@ -6343,7 +6375,7 @@ if (typeof BroadcastChannel !== 'undefined') {
                             forceUpdateAllCards();
                             console.log('✅ تم تحديث جميع البطاقات من BroadcastChannel');
                         }
-                    }, 500);
+                    }, 200);
                 }).catch(error => {
                     console.error('❌ خطأ في تحديث البيانات:', error);
                 });
