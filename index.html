@@ -1128,18 +1128,12 @@
                 </svg>
             </button>
             <div id="settingsDropdown" class="settings-dropdown">
+                <!-- تم حذف إعداد التحديث التلقائي - يعمل دائماً كل 5 ثواني -->
                 <div class="mb-4">
-                    <label class="block text-white font-medium text-sm mb-2">التحديث التلقائي:</label>
-                    <select id="refreshInterval" onchange="setRefreshInterval()" class="form-input text-sm">
-                        <option value="5000">5 ثوان</option>
-                        <option value="10000">10 ثوان</option>
-                        <option value="15000">15 ثانية</option>
-                        <option value="30000">30 ثانية</option>
-                        <option value="60000">دقيقة واحدة</option>
-                        <option value="300000">5 دقائق</option>
-                        <option value="900000">15 دقيقة</option>
-                        <option value="0">إيقاف التحديث</option>
-                    </select>
+                    <div class="flex items-center justify-between">
+                        <span class="text-white text-sm">التحديث التلقائي:</span>
+                        <span class="text-green-300 text-xs">كل 5 ثواني ✅</span>
+                    </div>
                 </div>
                 <div class="mb-4">
                     <div class="flex items-center justify-between">
@@ -2231,6 +2225,10 @@
                 
                 // إضافة Realtime Listener للتزامن الفوري
                 setupRealtimeListeners();
+                
+                // 🔄 بدء التحديث التلقائي كل 5 ثواني
+                startAutoRefresh();
+                console.log('🔄 تم بدء التحديث التلقائي كل 5 ثواني');
             }).catch(error => {
                 console.log('⚠️ خطأ في تحميل البيانات من Supabase، سيتم استخدام البيانات المحفوظة');
                 const dataLoaded = loadDataFromStorage();
@@ -3543,39 +3541,32 @@
             dropdown.classList.toggle('show');
         }
 
-        function setRefreshInterval() {
-            const interval = parseInt(document.getElementById('refreshInterval').value);
+        // التحديث التلقائي يعمل دائماً كل 5 ثواني
+        function startAutoRefresh() {
+            const interval = 5000; // 5 ثواني
             
             if (refreshInterval) {
                 clearInterval(refreshInterval);
             }
             
+            refreshInterval = setInterval(async () => {
+                updateLastUpdateTime();
+                try {
+                    await loadAllDataFromSupabase();
+                    forceUpdateAllCards();
+                    displayCenters();
+                    console.log('🔄 تحديث تلقائي: تم تحميل البيانات وتحديث البطاقات');
+                } catch (error) {
+                    console.error('خطأ في تحديث البيانات:', error);
+                }
+            }, interval);
             
-            if (interval > 0) {
-                refreshInterval = setInterval(async () => {
-                    updateLastUpdateTime();
-                    try {
-                        await loadAllDataFromSupabase();
-                        forceUpdateAllCards();
-                    } catch (error) {
-                        console.error('خطأ في تحديث البيانات:', error);
-                    }
-                    saveDataToStorage(true);
-                }, interval);
-                }, interval);
-                
-                // إشعار بدء التحديث التلقائي (مرة واحدة فقط)
-                const intervalText = interval === 10000 ? '10 ثوان' :
-                                   interval === 15000 ? '15 ثانية' : 
-                                   interval === 30000 ? '30 ثانية' : 
-                                   interval === 60000 ? 'دقيقة واحدة' : 
-                                   interval === 300000 ? '5 دقائق' : 
-                                   interval === 900000 ? '15 دقيقة' : 'مخصص';
-                
-                showNotification('تم تفعيل التحديث التلقائي', `سيتم تحديث البيانات والعرض كل ${intervalText}`, 'info');
-            } else {
-                showNotification('تم إيقاف التحديث التلقائي', 'لن يتم تحديث الوقت تلقائياً', 'warning');
-            }
+            console.log('✅ تم تفعيل التحديث التلقائي كل 5 ثواني');
+        }
+        
+        // للتوافق مع الكود القديم
+        function setRefreshInterval() {
+            startAutoRefresh();
         }
         
         
