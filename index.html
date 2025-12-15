@@ -3674,7 +3674,6 @@
                 healthCenterCases: parseInt(document.getElementById('healthCenterCasesInput').value) || 0
             };
 
-            forceUpdateAllCards();
             // تحديث جميع البطاقات بشكل صريح
             forceUpdateAllCards();
             resetAddCenterModal();
@@ -3827,6 +3826,7 @@
                 document.getElementById('printButton').classList.add('admin-mode');
                 document.getElementById('loginPassword').value = '';
                 errorDiv.style.display = 'none';
+                updateMainStats();
                 displayCenters();
             } else {
                 errorDiv.textContent = 'كلمة مرور خاطئة';
@@ -6322,7 +6322,7 @@ if (typeof BroadcastChannel !== 'undefined') {
                     console.log('emergencyCenters:', typeof emergencyCenters !== 'undefined' ? emergencyCenters : 'undefined');
                     console.log('عدد المراكز:', emergencyCenters ? emergencyCenters.length : 0);
                     
-                    // تأخير أطول للتأكد من اكتمال loadAllDataFromSupabase()
+                    // تأخير أطول (500ms) للتأكد من اكتمال loadAllDataFromSupabase()
                     setTimeout(() => {
                         // استدعاء updateMainStats مباشرة لتحديث البطاقات
                         if (typeof updateMainStats === 'function') {
@@ -6331,12 +6331,19 @@ if (typeof BroadcastChannel !== 'undefined') {
                             console.log('✅ تم تحديث البطاقات مباشرة');
                         }
                         
+                        // استدعاء displayCenters لتحديث الجدول
+                        if (typeof displayCenters === 'function') {
+                            console.log('📊 استدعاء displayCenters لتحديث الجدول...');
+                            displayCenters();
+                            console.log('✅ تم تحديث جدول المراكز من BroadcastChannel');
+                        }
+                        
                         if (typeof forceUpdateAllCards === 'function') {
                             console.log('🔄 جاري استدعاء forceUpdateAllCards...');
                             forceUpdateAllCards();
                             console.log('✅ تم تحديث جميع البطاقات من BroadcastChannel');
                         }
-                    }, 300);
+                    }, 500);
                 }).catch(error => {
                     console.error('❌ خطأ في تحديث البيانات:', error);
                 });
