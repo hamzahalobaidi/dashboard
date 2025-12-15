@@ -6347,25 +6347,35 @@ if (typeof BroadcastChannel !== 'undefined') {
                     
                     // تحديث مباشر للعناصر بعد التحميل
                     if (window.emergencyCenters && window.emergencyCenters.length > 0) {
-                        console.log('📊 تحديث مباشر للبطاقات بعد تحميل البيانات...');
+                        console.log('📊 تحديث مباشر للبطاقات الـ 10 بعد تحميل البيانات...');
                         
                         // حساب القيم مباشرة
                         const totalStaff = window.emergencyCenters.reduce((sum, c) => sum + c.totalStaff, 0);
                         const currentStaff = window.emergencyCenters.reduce((sum, c) => sum + c.currentStaff, 0);
+                        const totalAmbulances = window.emergencyCenters.reduce((sum, c) => sum + c.totalAmbulances, 0);
+                        const activeAmbulances = window.emergencyCenters.reduce((sum, c) => sum + c.activeAmbulances, 0);
                         const lifeSavingCases = window.emergencyCenters.reduce((sum, c) => sum + c.lifeSavingCases, 0);
                         const moderateCases = window.emergencyCenters.reduce((sum, c) => sum + c.moderateCases, 0);
                         const stableCases = window.emergencyCenters.reduce((sum, c) => sum + c.stableCases, 0);
                         const homeCases = window.emergencyCenters.reduce((sum, c) => sum + c.homeCases, 0);
                         const healthCenterCases = window.emergencyCenters.reduce((sum, c) => sum + c.healthCenterCases, 0);
+                        const outOfService = window.emergencyCenters.reduce((sum, c) => sum + (c.inactiveAmbulances || 0), 0);
+                        const totalCenters = window.emergencyCenters.length;
+                        const totalTeams = Math.floor(currentStaff / 2);
+                        const totalCases = lifeSavingCases + moderateCases + stableCases + homeCases + healthCenterCases;
                         
-                        // تحديث مباشر للعناصر
+                        // تحديث مباشر لجميع البطاقات الـ 10
                         const directUpdates = {
+                            'availableTeams': totalTeams,
+                            'quickStats': totalCases,
+                            'vehicleStatus': activeAmbulances,
+                            'outOfServiceTotal': outOfService,
                             'lifeSavingCasesTotal': lifeSavingCases,
-                            'emergencyCasesTotal': moderateCases,
                             'stableCasesTotal': stableCases,
                             'moderateCasesTotal': moderateCases,
                             'homeCasesTotal': homeCases,
-                            'healthCenterCasesTotal': healthCenterCases
+                            'healthCenterCasesTotal': healthCenterCases,
+                            'emergencyCasesTotal': moderateCases
                         };
                         
                         for (const [id, value] of Object.entries(directUpdates)) {
