@@ -2147,6 +2147,52 @@
     
     <script>
 // بيانات المراكز - مصفوفة فارغة للبدء من الصفر
+
+        // === نظام المزامنة بين النوافذ (BroadcastChannel) ===
+        const dashboardChannel = new BroadcastChannel('emergency_dashboard_sync');
+        
+        // استقبال رسائل المزامنة من النوافذ الأخرى
+        dashboardChannel.onmessage = async function(event) {
+            console.log('📡 استلام رسالة مزامنة:', event.data);
+            
+            if (event.data.type === 'data_updated') {
+                console.log('🔄 جاري تحديث البيانات من Supabase...');
+                
+                try {
+                    // تحميل البيانات الجديدة من Supabase
+                    await loadAllDataFromSupabase();
+                    
+                    // تحديث العرض
+                    updateMainStats();
+                    displayCenters();
+                    updateTopActiveCenters();
+                    updateLastUpdateTime();
+                    
+                    // تحديث البطاقات الجانبية
+                    if (typeof updateReferralsDisplay === 'function') updateReferralsDisplay();
+                    if (typeof updateServicePurchaseDisplay === 'function') updateServicePurchaseDisplay();
+                    if (typeof updateMobileTeamsDisplay === 'function') updateMobileTeamsDisplay();
+                    if (typeof renderFacilitiesCards === 'function') renderFacilitiesCards();
+                    if (typeof renderCustomFacilities === 'function') renderCustomFacilities();
+                    
+                    console.log('✅ تم تحديث البيانات بنجاح من نافذة أخرى');
+                } catch (error) {
+                    console.error('❌ خطأ في تحديث البيانات:', error);
+                }
+            }
+        };
+        
+        // دالة إرسال إشعار المزامنة لجميع النوافذ
+        function notifyOtherWindows(dataType = 'general') {
+            dashboardChannel.postMessage({
+                type: 'data_updated',
+                dataType: dataType,
+                timestamp: Date.now()
+            });
+            console.log('📤 تم إرسال إشعار المزامنة للنوافذ الأخرى');
+        }
+        // === نهاية نظام المزامنة ===
+
         // نظام الحماية الرئيسي
         const MAIN_PASSWORD = "emergency2024"; // كلمة المرور الرئيسية
         let isAuthenticated = false;
@@ -3030,6 +3076,7 @@
                 // حفظ البيانات في Supabase
                 syncManager.saveData('emergencyCenters', emergencyCenters).then(() => {
                     console.log('✅ تم حفظ بيانات المراكز في Supabase');
+                    notifyOtherWindows('emergencyCenters'); // إشعار النوافذ الأخرى
                 }).catch(error => {
                     console.error('❌ خطأ في حفظ البيانات:', error);
                 });
@@ -3625,6 +3672,7 @@
             // حفظ البيانات في Supabase
             syncManager.saveData('emergencyCenters', emergencyCenters).then(() => {
                 console.log('✅ تم حفظ بيانات المراكز في Supabase');
+                notifyOtherWindows('emergencyCenters'); // إشعار النوافذ الأخرى
             }).catch(error => {
                 console.error('❌ خطأ في حفظ البيانات:', error);
             });
@@ -3644,6 +3692,7 @@
                 // حفظ البيانات في Supabase
                 syncManager.saveData('emergencyCenters', emergencyCenters).then(() => {
                     console.log('تم حفظ بيانات المراكز في Supabase');
+                    notifyOtherWindows('emergencyCenters'); // إشعار النوافذ الأخرى
                 }).catch(error => {
                     console.error('خطأ في حفظ البيانات:', error);
                 });
@@ -4938,6 +4987,7 @@ async function saveReferralsData() {
     try {
         await syncManager.saveData('referralsData', referralsData);
         console.log('✅ تم حفظ بيانات الإحالات');
+        notifyOtherWindows('referralsData'); // إشعار النوافذ الأخرى
     } catch (error) {
         console.error('❌ خطأ في حفظ بيانات الإحالات:', error);
     }
@@ -5058,6 +5108,7 @@ async function saveServicePurchaseData() {
     try {
         await syncManager.saveData('servicePurchaseData', servicePurchaseData);
         console.log('✅ تم حفظ بيانات شراء الخدمة');
+        notifyOtherWindows('servicePurchaseData'); // إشعار النوافذ الأخرى
     } catch (error) {
         console.error('❌ خطأ في حفظ بيانات شراء الخدمة:', error);
     }
@@ -5153,6 +5204,7 @@ async function saveMobileTeamsData() {
     try {
         await syncManager.saveData('mobileTeams', mobileTeamData);
         localStorage.setItem('mobileTeams', JSON.stringify(mobileTeamData));
+        notifyOtherWindows('mobileTeams'); // إشعار النوافذ الأخرى
     } catch (error) {
         console.error('خطأ في حفظ الفرق:', error);
     }
@@ -5365,6 +5417,7 @@ function saveFacility() {
     if (typeof syncManager !== 'undefined' && syncManager.saveData) {
         syncManager.saveData('customFacilities', customFacilities).then(() => {
             console.log('✅ تم حفظ البيانات بنجاح في Supabase');
+            notifyOtherWindows('customFacilities'); // إشعار النوافذ الأخرى
         }).catch(error => {
             console.error('⚠️ خطأ في حفظ البيانات:', error);
         });
@@ -5639,6 +5692,7 @@ function deleteCustomFacility(facilityId) {
         if (typeof syncManager !== 'undefined' && syncManager.saveData) {
             syncManager.saveData('customFacilities', customFacilities).then(() => {
                 console.log('✅ تم حذف البيانات بنجاح');
+                notifyOtherWindows('customFacilities'); // إشعار النوافذ الأخرى
             }).catch(error => {
                 console.error('⚠️ خطأ في حذف البيانات:', error);
             });
@@ -5785,6 +5839,7 @@ function updateCustomFacilityBeds(facilityId) {
         if (typeof syncManager !== 'undefined' && syncManager.saveData) {
             syncManager.saveData('customFacilities', customFacilities).then(() => {
                 console.log('تم حفظ السعة السريرية في Supabase');
+                notifyOtherWindows('customFacilities'); // إشعار النوافذ الأخرى
             }).catch(error => {
                 console.error('خطأ في حفظ البيانات:', error);
             });
@@ -5816,6 +5871,7 @@ function editFacilityName(facilityId) {
         if (typeof syncManager !== 'undefined' && syncManager.saveData) {
             syncManager.saveData('customFacilities', customFacilities).then(() => {
                 console.log('✅ تم حفظ الاسم الجديد في Supabase');
+                notifyOtherWindows('customFacilities'); // إشعار النوافذ الأخرى
             }).catch(err => {
                 console.error('❌ خطأ في حفظ Supabase:', err);
             });
@@ -5994,6 +6050,7 @@ function saveFacilityBedsChanges(facilityId) {
         if (typeof syncManager !== 'undefined' && syncManager.saveData) {
             syncManager.saveData('customFacilities', customFacilities).then(() => {
                 console.log('تم حفظ البيانات بنجاح');
+                notifyOtherWindows('customFacilities'); // إشعار النوافذ الأخرى
                 renderFacilitiesCards();
                 closeFacilityBedsModal();
                 alert('تم تحديث الأسرة بنجاح!');
